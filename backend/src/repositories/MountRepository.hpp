@@ -28,24 +28,15 @@ private:
         return std::string(v) == "RW" ? MODE::RW : MODE::RO;
     }
 
-    int ensureDeviceInfo(const DeviceInfo& info)
-    {
+    int ensureDeviceInfo(const DeviceInfo& info) {
         std::string sql =
             "SELECT id FROM DeviceInfo WHERE "
             "vendorId = " + sqlValue(info.vendorId) + " AND "
             "productId = " + sqlValue(info.productId) + " AND "
             "serial = " + sqlValue(info.serial) + " LIMIT 1;";
 
-        int id = 0;
-
-        db.query(sql,
-            [&](int, char** values, char**) {
-                if (values && values[0])
-                    id = std::stoi(values[0]);
-            });
-
-        if (id != 0)
-            return id;
+        auto id = db.queryScalar<int>(sql);
+        if (*id) return *id;
 
         std::string insert =
             "INSERT INTO DeviceInfo "
@@ -57,7 +48,6 @@ private:
             sqlValue(info.vendorName) + ");";
 
         db.execute(insert);
-
         return db.lastInsertId();
     }
 
@@ -65,8 +55,7 @@ public:
     explicit MountRepository(DBConnection& connection)
         : db(connection) {}
 
-    void add(const MountRecord& record)
-    {
+    void add(const MountRecord& record) {
         int deviceInfoId = ensureDeviceInfo(record.info);
 
         std::string sql =
@@ -81,20 +70,13 @@ public:
         db.execute(sql);
     }
 
-    void update(const MountRecord& record)
-    {
+    void update(const MountRecord& record) {
         std::string findSql =
             "SELECT id FROM MountRecord WHERE devNode = " +
             sqlValue(record.devNode) + " LIMIT 1;";
-        int mountId = 0;
-        db.query(findSql,
-            [&](int, char** v, char**) {
-                if (v && v[0])
-                    mountId = std::stoi(v[0]);
-            });
-        if (mountId == 0) {
-            return;
-        }
+
+        auto mountId = db.queryScalar<int>(findSql);
+        if (!*mountId) return;
 
         int deviceInfoId = ensureDeviceInfo(record.info);
 
@@ -104,37 +86,21 @@ public:
             "mountPoint = " + sqlValue(record.mountPoint) + ", "
             "mode = " + sqlValue(modeToStr(record.mode)) +
             " WHERE devNode = " + sqlValue(record.devNode) + ";";
-
         db.execute(sql);
     }
 
-    std::optional<std::string> getMountPointByDevNode(
-    const std::string& devNode)
-    {
-        std::optional<std::string> result;
-
+    std::optional<std::string> 
+    getMountPointByDevNode(const std::string& devNode) {
         std::string sql =
             "SELECT mountPoint "
             "FROM MountRecord "
             "WHERE devNode = " + sqlValue(devNode) + " "
             "LIMIT 1;";
 
-        db.query(sql,
-            [&](int, char** v, char**) {
-                if (!v || !v[0]) {
-                    return;
-                }
-
-                result = std::string(v[0]);
-            });
-
-        return result;
+        return db.queryScalar<std::string>(sql);
     }
 
-    std::optional<MountRecord> getById(size_t id)
-    {
-        std::optional<MountRecord> result;
-
+    std::optional<MountRecord> getById(size_t id) {
         std::string sql =
             "SELECT mr.id, mr.deviceInfoId, mr.devNode, mr.mountPoint, mr.mode, "
             "di.vendorId, di.productId, di.serial, di.vendorName, di.productName "
@@ -142,6 +108,8 @@ public:
             "JOIN MountRecord mr ON mr.deviceInfoId = d.deviceInfoId "
             "JOIN DeviceInfo di ON mr.deviceInfoId = di.id "
             "WHERE d.id = " + std::to_string(id) + " LIMIT 1;";
+
+        std::optional<MountRecord> result;
 
         db.query(sql,
             [&](int, char** v, char**) {
@@ -169,24 +137,19 @@ public:
         return result;
     }
 
-    void removeByDevNode(const std::string& devNode)
-    {
-        std::string sql =
-            "DELETE FROM MountRecord WHERE devNode = " + sqlValue(devNode) + ";";
-
-        db.execute(sql);
+    void removeByDevNode(const std::string& devNode) {
+        db.execute("DELETE FROM MountRecord WHERE devNode = " 
+            + sqlValue(devNode) + ";");
     }
 
-    std::vector<MountRecord> getAll()
-    {
-        std::vector<MountRecord> result;
-
+    std::vector<MountRecord> getAll() {
         std::string sql =
             "SELECT mr.id, mr.deviceInfoId, mr.devNode, mr.mountPoint, mr.mode, "
             "di.vendorId, di.productId, di.serial, di.vendorName, di.productName "
             "FROM MountRecord mr "
             "JOIN DeviceInfo di ON mr.deviceInfoId = di.id;";
 
+        std::vector<MountRecord> result;
         db.query(sql,
             [&](int, char** v, char**) {
                 if (!v || !v[0]) return;

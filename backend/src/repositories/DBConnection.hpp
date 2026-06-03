@@ -5,12 +5,18 @@
 #include <stdexcept>
 #include <functional>
 
-#include "DevLogger.hpp"
 #include "Exceptions.hpp"
 
 class DBConnection {
 private:
     sqlite3* db = nullptr;
+    using QueryCallback = std::function<void(int, char**, char**)>;
+
+    static void throwSQLiteError(char* errMsg) {
+        std::string error = errMsg ? errMsg : "SQLite error";
+        sqlite3_free(errMsg);
+        throw SqlDataBaseError(error.c_str());
+    }
 
 public:
     explicit DBConnection(const std::string& dbPath) {
@@ -20,56 +26,47 @@ public:
     }
 
     ~DBConnection() {
-        if (db) {
-            sqlite3_close(db);
-        }
+        sqlite3_close(db);
     }
 
+    DBConnection(const DBConnection&) = delete;
     DBConnection& operator=(const DBConnection&) = delete;
 
-    // =========================
-    // EXEC (INSERT / UPDATE / DELETE)
-    // =========================
-    void execute(const std::string& sql) {
+    void execute(std::string_view sql) {
         char* errMsg = nullptr;
-        if (sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMsg) != SQLITE_OK) {
-            std::string error = errMsg ? errMsg : "Unknown SQLite error";
-            sqlite3_free(errMsg);
-            throw SqlDataBaseError(error.c_str());
+        if (sqlite3_exec(db, sql.data(), nullptr, nullptr, &errMsg) != SQLITE_OK) {
+            throwSQLiteError(errMsg);
         }   
     }
 
-    // =========================
-    // QUERY (SELECT)
-    // callback(row) -> bool continue?
-    // =========================
-    void query(
-    const std::string& sql,
-    std::function<void(int, char**, char**)> callback
-    ) {
-        char* errMsg = nullptr;
-
+    void query(std::string_view sql, QueryCallback callback) {
         auto trampoline = [](void* data, int cols, char** values, char** names) -> int {
-            auto* cb = static_cast<std::function<void(int, char**, char**)>*>(data);
+            auto* cb = static_cast<QueryCallback*>(data);
             (*cb)(cols, values, names);
             return 0;
         };
 
-        if (sqlite3_exec(
-            db,
-            sql.c_str(),
-            trampoline,
-            &callback,
-            &errMsg
-        ) != SQLITE_OK) {
-
-            std::string error = errMsg ? errMsg : "Query error";
-            sqlite3_free(errMsg);
-            throw new SqlDataBaseError(error.c_str());
+        char* errMsg = nullptr;
+        if (sqlite3_exec(db, sql.data(), trampoline, &callback, &errMsg) != SQLITE_OK) {
+            throwSQLiteError(errMsg);
         }
     }
 
     int lastInsertId() {
         return static_cast<int>(sqlite3_last_insert_rowid(db));
+    }
+
+    template<typename T>
+    std::optional<T> queryScalar(const std::string& sql) {
+        std::optional<T> result;
+        query(sql,
+            [&](int, char** vls, char**) {
+                if (!vls || !vls[0]) return;
+                if constexpr (std::is_same_v<T, int>)
+                    result = std::stoi(vls[0]);
+                else if constexpr (std::is_same_v<T, std::string>)
+                    result = vls[0];
+            });
+        return result;
     }
 };

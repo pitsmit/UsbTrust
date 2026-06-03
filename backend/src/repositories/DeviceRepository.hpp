@@ -18,8 +18,7 @@ private:
             : "NULL";
     }
 
-    int ensureDeviceInfo(const DeviceInfo& info)
-    {
+    int ensureDeviceInfo(const DeviceInfo& info) {
         std::string sql =
             "SELECT id FROM DeviceInfo WHERE "
             "vendorId = " + sqlValue(info.vendorId) + " AND "
@@ -28,17 +27,8 @@ private:
 
         sql += " LIMIT 1;";
 
-        int id = 0;
-
-        db.query(sql,
-            [&](int /*cols*/, char** values, char** /*names*/) {
-                if (values && values[0]) {
-                    id = std::stoi(values[0]);
-                }
-            });
-
-        if (id != 0)
-            return id;
+        auto id = db.queryScalar<int>(sql);
+        if (*id) return *id;
 
         std::string insert =
             "INSERT INTO DeviceInfo "
@@ -50,7 +40,6 @@ private:
             sqlValue(info.vendorName) + ");";
 
         db.execute(insert);
-
         return db.lastInsertId();
     }
 
@@ -61,11 +50,8 @@ public:
     int add(const DeviceInfo& dev) {
         int deviceInfoId = ensureDeviceInfo(dev);
         std::string sql =
-            "INSERT INTO Device "
-            "(deviceInfoId, validTo) VALUES (" +
-            std::to_string(deviceInfoId) + "," +
-            "NULL);";
-
+            "INSERT INTO Device (deviceInfoId, validTo) VALUES (" +
+            std::to_string(deviceInfoId) + ", NULL);";
         db.execute(sql);
         return db.lastInsertId();
     }
@@ -78,7 +64,7 @@ public:
             "di.productName, di.vendorName, d.validTo "
             "FROM Device d "
             "JOIN DeviceInfo di ON d.deviceInfoId = di.id;",
-            [&](int /*cols*/, char** values, char** /*names*/) {
+            [&](int, char** values, char**) {
 
                 DeviceInfoBuilder infoBuilder;
 
@@ -116,10 +102,7 @@ public:
         );
     }
 
-    int findActiveId(const DeviceInfo& info)
-    {
-        int id = 0;
-
+    int findActiveId(const DeviceInfo& info) {
         std::string sql =
             "SELECT d.id FROM Device d "
             "JOIN DeviceInfo di ON d.deviceInfoId = di.id "
@@ -131,40 +114,7 @@ public:
             "OR d.validTo >= date('now'))";
         sql += " LIMIT 1;";
 
-        db.query(
-            sql,
-            [&](int /*cols*/, char** values, char** /*names*/)
-            {
-                if (values && values[0]) {
-                    id = std::stoi(values[0]);
-                }
-            });
-
-        return id;
-    }
-
-    bool exists(const DeviceInfo& info)
-    {
-        int id = 0;
-
-        std::string sql =
-            "SELECT d.id FROM Device d "
-            "JOIN DeviceInfo di ON d.deviceInfoId = di.id "
-            "WHERE di.vendorId = " + sqlValue(info.vendorId) + " AND "
-            "di.productId = " + sqlValue(info.productId) + " AND "
-            "di.serial = " + sqlValue(info.serial);
-
-        sql += " LIMIT 1;";
-
-        db.query(
-            sql,
-            [&](int /*cols*/, char** values, char** /*names*/)
-            {
-                if (values && values[0]) {
-                    id = std::stoi(values[0]);
-                }
-            });
-
-        return id != 0 ? true : false;
+        auto id = db.queryScalar<int>(sql);
+        return *id ? *id : 0;
     }
 };
