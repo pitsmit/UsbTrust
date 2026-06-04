@@ -18,6 +18,21 @@ private:
             : "NULL";
     }
 
+    static Device mapDevice(char** values) {
+        DeviceInfoBuilder infoBuilder;
+        if (values[1]) infoBuilder.withVendorId(values[1]);
+        if (values[2]) infoBuilder.withProductId(values[2]);
+        if (values[3]) infoBuilder.withSerial(values[3]);
+        if (values[4]) infoBuilder.withProductName(values[4]);
+        if (values[5]) infoBuilder.withVendorName(values[5]);
+        DeviceBuilder deviceBuilder;
+        if (values[6]) deviceBuilder.withValidTo(values[6]);
+        return deviceBuilder
+            .withId(std::stoull(values[0] ? values[0] : "0"))
+            .withInfo(infoBuilder.build())
+            .build();
+    }
+
     int ensureDeviceInfo(const DeviceInfo& info) {
         std::string sql =
             "SELECT id FROM DeviceInfo WHERE "
@@ -57,36 +72,16 @@ public:
     }
 
     std::vector<Device> getAll() {
-        std::vector<Device> result;
-
-        db.query(
+        static constexpr auto SQL =
             "SELECT d.id, di.vendorId, di.productId, di.serial, "
             "di.productName, di.vendorName, d.validTo "
             "FROM Device d "
-            "JOIN DeviceInfo di ON d.deviceInfoId = di.id;",
-            [&](int, char** values, char**) {
+            "JOIN DeviceInfo di ON d.deviceInfoId = di.id;";
 
-                DeviceInfoBuilder infoBuilder;
-
-                if (values[1]) infoBuilder.withVendorId(values[1]);
-                if (values[2]) infoBuilder.withProductId(values[2]);
-                if (values[3]) infoBuilder.withSerial(values[3]);
-                if (values[4]) infoBuilder.withProductName(values[4]);
-                if (values[5]) infoBuilder.withVendorName(values[5]);
-
-                DeviceBuilder deviceBuilder;
-
-                if (values[6]) deviceBuilder.withValidTo(values[6]);
-
-                Device device = deviceBuilder
-                    .withId(std::stoull(values[0] ? values[0] : "0"))
-                    .withInfo(infoBuilder.build())
-                    .build();
-
-                result.push_back(device);
-            });
-
-        return result;
+        return db.queryAll<Device>(
+            SQL,
+            mapDevice
+        );
     }
 
     void remove(size_t id) {

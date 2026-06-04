@@ -69,4 +69,32 @@ public:
             });
         return result;
     }
+
+    template<typename T, typename Mapper>
+    std::vector<T> queryAll(
+        const std::string& sql,
+        Mapper mapper)
+    {
+        std::vector<T> result;
+        query(sql,
+            [&](int, char** values, char**) {
+                if (values)
+                    result.push_back(mapper(values));
+            });
+        return result;
+    }
+
+    template<typename T, typename Mapper>
+    std::optional<T> queryOne(
+        const std::string& sql,
+        Mapper mapper)
+    {
+        std::optional<T> result;
+        query(sql,
+            [&](int, char** values, char**) {
+                if (values && !result)
+                    result = mapper(values);
+            });
+        return result;
+    }
 };

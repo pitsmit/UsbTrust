@@ -51,6 +51,31 @@ private:
         return db.lastInsertId();
     }
 
+    static DeviceInfo mapDeviceInfo(char** v,
+    int vendorIdIdx,
+    int productIdIdx,
+    int serialIdx,
+    int vendorNameIdx,
+    int productNameIdx) {
+        DeviceInfoBuilder builder;
+        if (v[vendorIdIdx]) builder.withVendorId(v[vendorIdIdx]);
+        if (v[productIdIdx]) builder.withProductId(v[productIdIdx]);
+        if (v[serialIdx]) builder.withSerial(v[serialIdx]);
+        if (v[vendorNameIdx]) builder.withVendorName(v[vendorNameIdx]);
+        if (v[productNameIdx]) builder.withProductName(v[productNameIdx]);
+        return builder.build();
+    }
+
+    static MountRecord mapMountRecord(char** v) {
+        return MountRecordBuilder()
+            .withId(std::stoull(v[0]))
+            .withDevNode(v[2] ? v[2] : "")
+            .withMountPoint(v[3] ? v[3] : "")
+            .withMode(parseMode(v[4]))
+            .withInfo(
+                mapDeviceInfo(v, 5, 6, 7, 8, 9)
+            ).build();
+    }
 public:
     explicit MountRepository(DBConnection& connection)
         : db(connection) {}
@@ -109,32 +134,10 @@ public:
             "JOIN DeviceInfo di ON mr.deviceInfoId = di.id "
             "WHERE d.id = " + std::to_string(id) + " LIMIT 1;";
 
-        std::optional<MountRecord> result;
-
-        db.query(sql,
-            [&](int, char** v, char**) {
-                if (!v || !v[0]) return;
-
-                DeviceInfoBuilder infoBuilder;
-
-                if (v[5]) infoBuilder.withVendorId(v[5]);
-                if (v[6]) infoBuilder.withProductId(v[6]);
-                if (v[7]) infoBuilder.withSerial(v[7]);
-                if (v[8]) infoBuilder.withVendorName(v[8]);
-                if (v[9]) infoBuilder.withProductName(v[9]);
-
-                MountRecord record = MountRecordBuilder()
-                    .withId(std::stoull(v[0]))
-                    .withDevNode(v[2] ? v[2] : "")
-                    .withMountPoint(v[3] ? v[3] : "")
-                    .withMode(parseMode(v[4]))
-                    .withInfo(infoBuilder.build())
-                    .build();
-
-                result = record;
-            });
-
-        return result;
+        return db.queryOne<MountRecord>(
+            sql,
+            mapMountRecord
+        );
     }
 
     void removeByDevNode(const std::string& devNode) {
@@ -143,36 +146,15 @@ public:
     }
 
     std::vector<MountRecord> getAll() {
-        std::string sql =
+        static constexpr auto SQL =
             "SELECT mr.id, mr.deviceInfoId, mr.devNode, mr.mountPoint, mr.mode, "
             "di.vendorId, di.productId, di.serial, di.vendorName, di.productName "
             "FROM MountRecord mr "
             "JOIN DeviceInfo di ON mr.deviceInfoId = di.id;";
 
-        std::vector<MountRecord> result;
-        db.query(sql,
-            [&](int, char** v, char**) {
-                if (!v || !v[0]) return;
-
-                DeviceInfoBuilder infoBuilder;
-
-                if (v[5]) infoBuilder.withVendorId(v[5]);
-                if (v[6]) infoBuilder.withProductId(v[6]);
-                if (v[7]) infoBuilder.withSerial(v[7]);
-                if (v[8]) infoBuilder.withVendorName(v[8]);
-                if (v[9]) infoBuilder.withProductName(v[9]);
-
-                MountRecord record = MountRecordBuilder()
-                    .withId(std::stoull(v[0]))
-                    .withDevNode(v[2] ? v[2] : "")
-                    .withMountPoint(v[3] ? v[3] : "")
-                    .withMode(parseMode(v[4]))
-                    .withInfo(infoBuilder.build())
-                    .build();
-
-                result.push_back(record);
-            });
-
-        return result;
+        return db.queryAll<MountRecord>(
+            SQL,
+            mapMountRecord
+        );
     }
 };
