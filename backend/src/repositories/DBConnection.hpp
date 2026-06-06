@@ -18,6 +18,18 @@ private:
         throw SqlDataBaseError(error.c_str());
     }
 
+    static void bind(sqlite3_stmt* stmt, int idx, int value) {
+        sqlite3_bind_int(stmt, idx, value);
+    }
+
+    static void bind(sqlite3_stmt* stmt, int idx, const std::string& value) {
+        sqlite3_bind_text(stmt, idx, value.c_str(), -1, SQLITE_TRANSIENT);
+    }
+
+    static void bind(sqlite3_stmt* stmt, int idx, const char* value) {
+        sqlite3_bind_text(stmt, idx, value, -1, SQLITE_TRANSIENT);
+    }
+
 public:
     explicit DBConnection(const std::string& dbPath) {
         if (sqlite3_open(dbPath.c_str(), &db) != SQLITE_OK) {
@@ -37,6 +49,22 @@ public:
         if (sqlite3_exec(db, sql.data(), nullptr, nullptr, &errMsg) != SQLITE_OK) {
             throwSQLiteError(errMsg);
         }   
+    }
+
+    template<typename... Args>
+    void execute(std::string_view sql, const Args&... args) {
+        sqlite3_stmt* stmt = nullptr;
+        if (sqlite3_prepare_v2(db, sql.data(), -1, &stmt, nullptr) != SQLITE_OK) {
+            throw SqlDataBaseError(sqlite3_errmsg(db));
+        }
+        int index = 1;
+        (bind(stmt, index++, args), ...);
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            auto err = std::string(sqlite3_errmsg(db));
+            sqlite3_finalize(stmt);
+            throw SqlDataBaseError(err.c_str());
+        }
+        sqlite3_finalize(stmt);
     }
 
     void query(std::string_view sql, QueryCallback callback) {
@@ -68,6 +96,53 @@ public:
                     result = vls[0];
             });
         return result;
+    }
+
+    template<typename T, typename... Args>
+    std::optional<T> queryScalar(
+        std::string_view sql,
+        const Args&... args)
+    {
+        sqlite3_stmt* stmt = nullptr;
+
+        if (sqlite3_prepare_v2(
+                db,
+                sql.data(),
+                -1,
+                &stmt,
+                nullptr) != SQLITE_OK)
+        {
+            throw SqlDataBaseError(sqlite3_errmsg(db));
+        }
+
+        try {
+            int idx = 1;
+            (bind(stmt, idx++, args), ...);
+
+            std::optional<T> result;
+
+            if (sqlite3_step(stmt) == SQLITE_ROW) {
+
+                if constexpr (std::is_same_v<T, int>) {
+                    result = sqlite3_column_int(stmt, 0);
+                }
+                else if constexpr (std::is_same_v<T, std::string>) {
+                    auto* txt =
+                        reinterpret_cast<const char*>(
+                            sqlite3_column_text(stmt, 0));
+
+                    if (txt)
+                        result = std::string(txt);
+                }
+            }
+
+            sqlite3_finalize(stmt);
+            return result;
+        }
+        catch (...) {
+            sqlite3_finalize(stmt);
+            throw;
+        }
     }
 
     template<typename T, typename Mapper>

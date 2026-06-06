@@ -5,20 +5,16 @@
 #include "DeviceInfo.hpp"
 #include "MountRecord.hpp"
 #include "DevLogger.hpp"
+#include "RepositoryBase.hpp"
+#include "DeviceInfoRepository.hpp"
 
 #include <vector>
 #include <string>
 #include <optional>
 
-class MountRepository {
+class MountRepository : RepositoryBase {
 private:
-    DBConnection& db;
-
-    static std::string sqlValue(const std::optional<std::string>& field) {
-        return field.has_value()
-            ? "'" + *field + "'"
-            : "NULL";
-    }
+    DeviceInfoRepository& info_rep;
 
     static std::string modeToStr(MODE m) {
         return m == MODE::RW ? "RW" : "RO";
@@ -26,29 +22,6 @@ private:
 
     static MODE parseMode(const char* v) {
         return std::string(v) == "RW" ? MODE::RW : MODE::RO;
-    }
-
-    int ensureDeviceInfo(const DeviceInfo& info) {
-        std::string sql =
-            "SELECT id FROM DeviceInfo WHERE "
-            "vendorId = " + sqlValue(info.vendorId) + " AND "
-            "productId = " + sqlValue(info.productId) + " AND "
-            "serial = " + sqlValue(info.serial) + " LIMIT 1;";
-
-        auto id = db.queryScalar<int>(sql);
-        if (*id) return *id;
-
-        std::string insert =
-            "INSERT INTO DeviceInfo "
-            "(vendorId, productId, serial, productName, vendorName) VALUES (" +
-            sqlValue(info.vendorId) + "," +
-            sqlValue(info.productId) + "," +
-            sqlValue(info.serial) + "," +
-            sqlValue(info.productName) + "," +
-            sqlValue(info.vendorName) + ");";
-
-        db.execute(insert);
-        return db.lastInsertId();
     }
 
     static DeviceInfo mapDeviceInfo(char** v,
@@ -77,11 +50,15 @@ private:
             ).build();
     }
 public:
-    explicit MountRepository(DBConnection& connection)
-        : db(connection) {}
+    explicit MountRepository(
+        DBConnection& connection,
+        DeviceInfoRepository& infoRepo)
+        : RepositoryBase(connection),
+        info_rep(infoRepo)
+    {}
 
     void add(const MountRecord& record) {
-        int deviceInfoId = ensureDeviceInfo(record.info);
+        int deviceInfoId = info_rep.ensure(record.info);
 
         std::string sql =
             "INSERT INTO MountRecord "
@@ -103,7 +80,7 @@ public:
         auto mountId = db.queryScalar<int>(findSql);
         if (!*mountId) return;
 
-        int deviceInfoId = ensureDeviceInfo(record.info);
+        int deviceInfoId = info_rep.ensure(record.info);
 
         std::string sql =
             "UPDATE MountRecord SET "

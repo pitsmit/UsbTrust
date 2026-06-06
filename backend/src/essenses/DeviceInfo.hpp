@@ -4,9 +4,9 @@
 #include <optional>
 
 struct DeviceInfo {
-    std::optional<std::string> vendorId;
-    std::optional<std::string> productId;
-    std::optional<std::string> serial;
+    std::string vendorId;
+    std::string productId;
+    std::string serial;
     std::optional<std::string> vendorName;
     std::optional<std::string> productName;
 
@@ -22,18 +22,6 @@ struct DeviceInfo {
     bool operator!=(const DeviceInfo& other) const
     {
         return !(*this == other);
-    }
-
-    explicit operator bool() const
-    {
-        return vendorId.has_value() &&
-               productId.has_value() &&
-               serial.has_value();
-    }
-
-    bool operator!() const
-    {
-        return !static_cast<bool>(*this);
     }
 };
 
