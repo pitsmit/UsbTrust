@@ -30,7 +30,8 @@ public:
     void handleEvent(const DeviceEvent& event)
     {
         try {
-            mylog->info("Start handle {} event with devnode {}", event.type == EventType::INSERT ? "INSERT" : "REMOVE", event.devNode);
+            mylog->info("Start handle {} event with devnode {}", 
+                event.type == EventType::INSERT ? "INSERT" : "REMOVE", event.devNode);
 
             if (event.type == EventType::INSERT) {
                 auto record = mountManager_.mount(event.devNode);

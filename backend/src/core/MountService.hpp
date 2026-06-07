@@ -27,7 +27,7 @@ public:
         resolver_(resolver)
     {}
 
-    MountRecord mount(const std::string& devNode)
+    MountRecord mount(std::string_view devNode)
     {
         auto info = resolver_.resolve(devNode);
         auto mountPoint = MountPointBuilder::build(info);
@@ -45,12 +45,12 @@ public:
                 .build();
     }
 
-    void unmount(const std::string& mountPoint)
+    void unmount(std::string_view mountPoint)
     {
         mountUtils_.handleUnmount(mountPoint);
     }
 
-    void remount(MountRecord &record)
+    void remount(const MountRecord &record)
     {
         mountUtils_.remountDevice(
             record.mountPoint,
