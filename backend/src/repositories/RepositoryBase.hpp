@@ -5,6 +5,8 @@
 
 class RepositoryBase {
 protected:
+    using Id = std::int64_t;
+    
     DBConnection& db;
 
     explicit RepositoryBase(DBConnection& connection)

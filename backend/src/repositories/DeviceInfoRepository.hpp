@@ -10,26 +10,27 @@ public:
         DBConnection& connection)
         : RepositoryBase(connection) {}
 
-    int ensure(const DeviceInfo& info) {
-        const std::string sql =
+    Id ensure(const DeviceInfo& info) {
+        static constexpr auto sql =
             "SELECT id FROM DeviceInfo WHERE "
-            "vendorId = " + sqlValue(info.vendorId) + " AND "
-            "productId = " + sqlValue(info.productId) + " AND "
-            "serial = " + sqlValue(info.serial) + " LIMIT 1;";
+            "vendorId = ? AND "
+            "productId = ? AND "
+            "serial = ? LIMIT 1;";
 
-        auto id = db.queryScalar<int>(sql);
+        auto id = db.queryScalar<Id>(sql, info.vendorId, info.productId, info.serial);
         if (*id) return *id;
 
-        const std::string insert =
+        static constexpr auto insert =
             "INSERT INTO DeviceInfo "
-            "(vendorId, productId, serial, productName, vendorName) VALUES (" +
-            sqlValue(info.vendorId) + "," +
-            sqlValue(info.productId) + "," +
-            sqlValue(info.serial) + "," +
-            sqlValue(info.productName) + "," +
-            sqlValue(info.vendorName) + ");";
+            "(vendorId, productId, serial, productName, vendorName) VALUES (?,?,?,?,?);";
 
-        db.execute(insert);
+        db.execute(insert,
+            info.vendorId,
+            info.productId,
+            info.serial,
+            info.productName,
+            info.vendorName
+        );
         return db.lastInsertId();
     }
 };

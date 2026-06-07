@@ -56,19 +56,6 @@ public:
     const char* what() const noexcept override { return errormsg; }
 };
 
-class NoDataFoundInDataBaseError : public BaseException{
-private:
-    const char* errIndexMsg = "NoDataFoundInDataBaseError";
-
-public:
-    NoDataFoundInDataBaseError() noexcept {snprintf(errormsg, sizebuff, "%s", errIndexMsg);}
-    NoDataFoundInDataBaseError(const char* msg) noexcept
-        : BaseException(msg) {}
-    ~NoDataFoundInDataBaseError() override = default;
-
-    const char* what() const noexcept override { return errormsg; }
-};
-
 class ResolveInfoError : public BaseException{
 private:
     const char* errIndexMsg = "ResolveInfoError";

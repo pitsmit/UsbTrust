@@ -172,4 +172,54 @@ public:
             });
         return result;
     }
+
+    template<typename T, typename Mapper, typename... Args>
+    std::optional<T> queryOne(
+        std::string_view sql,
+        Mapper mapper,
+        const Args&... args)
+    {
+        sqlite3_stmt* stmt = nullptr;
+
+        if (sqlite3_prepare_v2(
+                db,
+                sql.data(),
+                -1,
+                &stmt,
+                nullptr) != SQLITE_OK)
+        {
+            throw SqlDataBaseError(sqlite3_errmsg(db));
+        }
+
+        try {
+
+            int idx = 1;
+            (bind(stmt, idx++, args), ...);
+
+            std::optional<T> result;
+
+            if (sqlite3_step(stmt) == SQLITE_ROW) {
+
+                int cols = sqlite3_column_count(stmt);
+
+                std::vector<char*> values(cols);
+
+                for (int i = 0; i < cols; ++i) {
+                    values[i] =
+                        const_cast<char*>(
+                            reinterpret_cast<const char*>(
+                                sqlite3_column_text(stmt, i)));
+                }
+
+                result = mapper(values.data());
+            }
+
+            sqlite3_finalize(stmt);
+            return result;
+        }
+        catch (...) {
+            sqlite3_finalize(stmt);
+            throw;
+        }
+    }
 };
