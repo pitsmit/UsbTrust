@@ -1,6 +1,5 @@
 #pragma once
 
-#include "DBConnection.hpp"
 #include "Device.hpp"
 #include "DeviceInfo.hpp"
 #include "MountRecord.hpp"
@@ -60,46 +59,43 @@ public:
     void add(const MountRecord& record) {
         int deviceInfoId = info_rep.ensure(record.info);
 
-        std::string sql =
-            "INSERT INTO MountRecord "
-            "(deviceInfoId, devNode, mountPoint, mode) VALUES (" +
-            std::to_string(deviceInfoId) + "," +
-            sqlValue(record.devNode) + "," +
-            sqlValue(record.mountPoint) + "," +
-            sqlValue(modeToStr(record.mode)) +
-            ");";
+        static constexpr auto sql =
+            "INSERT INTO MountRecord (deviceInfoId, devNode, mountPoint, mode) VALUES (?, ?, ?, ?);";
 
-        db.execute(sql);
+        db.execute(sql, 
+            deviceInfoId,
+            record.devNode,
+            record.mountPoint,
+            modeToStr(record.mode)
+        );
     }
 
     void update(const MountRecord& record) {
-        std::string findSql =
-            "SELECT id FROM MountRecord WHERE devNode = " +
-            sqlValue(record.devNode) + " LIMIT 1;";
+        static constexpr auto findSql =
+            "SELECT id FROM MountRecord WHERE devNode = ? LIMIT 1;";
 
-        auto mountId = db.queryScalar<int>(findSql);
+        auto mountId = db.queryScalar<int>(findSql, record.devNode);
         if (!*mountId) return;
 
         int deviceInfoId = info_rep.ensure(record.info);
 
-        std::string sql =
-            "UPDATE MountRecord SET "
-            "deviceInfoId = " + std::to_string(deviceInfoId) + ", "
-            "mountPoint = " + sqlValue(record.mountPoint) + ", "
-            "mode = " + sqlValue(modeToStr(record.mode)) +
-            " WHERE devNode = " + sqlValue(record.devNode) + ";";
-        db.execute(sql);
+        static constexpr auto sql =
+            "UPDATE MountRecord SET deviceInfoId = ?, mountPoint = ?, mode = ? WHERE devNode = ?;";
+
+        db.execute(sql,
+            deviceInfoId,
+            record.mountPoint,
+            modeToStr(record.mode),
+            record.devNode
+        );
     }
 
     std::optional<std::string> 
     getMountPointByDevNode(const std::string& devNode) {
-        std::string sql =
-            "SELECT mountPoint "
-            "FROM MountRecord "
-            "WHERE devNode = " + sqlValue(devNode) + " "
-            "LIMIT 1;";
+        static constexpr auto sql =
+            "SELECT mountPoint FROM MountRecord WHERE devNode = ? LIMIT 1;";
 
-        return db.queryScalar<std::string>(sql);
+        return db.queryScalar<std::string>(sql, devNode);
     }
 
     std::optional<MountRecord> getById(size_t id) {
@@ -118,8 +114,7 @@ public:
     }
 
     void removeByDevNode(const std::string& devNode) {
-        db.execute("DELETE FROM MountRecord WHERE devNode = " 
-            + sqlValue(devNode) + ";");
+        db.execute("DELETE FROM MountRecord WHERE devNode = ?;", devNode);
     }
 
     std::vector<MountRecord> getAll() {

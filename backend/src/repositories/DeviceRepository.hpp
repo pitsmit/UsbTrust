@@ -1,9 +1,7 @@
 #pragma once
 
-#include "DBConnection.hpp"
 #include "Device.hpp"
 #include "DeviceInfo.hpp"
-#include "MountRecord.hpp"
 #include "RepositoryBase.hpp"
 #include "DeviceInfoRepository.hpp"
 
@@ -66,7 +64,7 @@ public:
         sqlValue(validTo), id);
     }
 
-    int findActiveId(const DeviceInfo& info) {
+    std::optional<int> findActiveId(const DeviceInfo& info) {
         static constexpr auto sql =
             "SELECT d.id FROM Device d "
             "JOIN DeviceInfo di ON d.deviceInfoId = di.id "
@@ -82,6 +80,6 @@ public:
             info.vendorId,
             info.productId,
             info.serial
-        ).value_or(0);
+        );
     }
 };
