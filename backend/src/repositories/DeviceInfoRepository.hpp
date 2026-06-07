@@ -12,25 +12,23 @@ public:
 
     Id ensure(const DeviceInfo& info) {
         static constexpr auto sql =
-            "SELECT id FROM DeviceInfo WHERE "
-            "vendorId = ? AND "
-            "productId = ? AND "
-            "serial = ? LIMIT 1;";
-
-        auto id = db.queryScalar<Id>(sql, info.vendorId, info.productId, info.serial);
-        if (*id) return *id;
-
-        static constexpr auto insert =
             "INSERT INTO DeviceInfo "
-            "(vendorId, productId, serial, productName, vendorName) VALUES (?,?,?,?,?);";
+            "(vendorId, productId, serial, productName, vendorName) "
+            "VALUES (?, ?, ?, ?, ?) "
+            "ON CONFLICT(vendorId, productId, serial) DO UPDATE SET "
+            "productName = excluded.productName, "
+            "vendorName = excluded.vendorName "
+            "RETURNING id;";
 
-        db.execute(insert,
+        auto id = db.queryScalar<Id>(
+            sql,
             info.vendorId,
             info.productId,
             info.serial,
             info.productName,
             info.vendorName
         );
-        return db.lastInsertId();
+
+        return *id;
     }
 };

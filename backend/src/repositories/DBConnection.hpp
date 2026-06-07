@@ -80,10 +80,6 @@ public:
         }
     }
 
-    int lastInsertId() {
-        return static_cast<int>(sqlite3_last_insert_rowid(db));
-    }
-
     template<typename T>
     std::optional<T> queryScalar(const std::string& sql) {
         std::optional<T> result;
@@ -104,7 +100,6 @@ public:
         const Args&... args)
     {
         sqlite3_stmt* stmt = nullptr;
-
         if (sqlite3_prepare_v2(
                 db,
                 sql.data(),
@@ -114,15 +109,11 @@ public:
         {
             throw SqlDataBaseError(sqlite3_errmsg(db));
         }
-
         try {
             int idx = 1;
             (bind(stmt, idx++, args), ...);
-
             std::optional<T> result;
-
             if (sqlite3_step(stmt) == SQLITE_ROW) {
-
                 if constexpr (std::is_same_v<T, int>) {
                     result = sqlite3_column_int(stmt, 0);
                 }
@@ -130,12 +121,10 @@ public:
                     auto* txt =
                         reinterpret_cast<const char*>(
                             sqlite3_column_text(stmt, 0));
-
                     if (txt)
                         result = std::string(txt);
                 }
             }
-
             sqlite3_finalize(stmt);
             return result;
         }
@@ -180,7 +169,6 @@ public:
         const Args&... args)
     {
         sqlite3_stmt* stmt = nullptr;
-
         if (sqlite3_prepare_v2(
                 db,
                 sql.data(),
@@ -192,28 +180,20 @@ public:
         }
 
         try {
-
             int idx = 1;
             (bind(stmt, idx++, args), ...);
-
             std::optional<T> result;
-
             if (sqlite3_step(stmt) == SQLITE_ROW) {
-
                 int cols = sqlite3_column_count(stmt);
-
                 std::vector<char*> values(cols);
-
                 for (int i = 0; i < cols; ++i) {
                     values[i] =
                         const_cast<char*>(
                             reinterpret_cast<const char*>(
                                 sqlite3_column_text(stmt, i)));
                 }
-
                 result = mapper(values.data());
             }
-
             sqlite3_finalize(stmt);
             return result;
         }

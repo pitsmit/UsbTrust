@@ -23,9 +23,9 @@ public:
     Id add(const DeviceInfo& dev) {
         auto deviceInfoId = info_rep.ensure(dev);
         static constexpr auto sql = 
-            "INSERT INTO Device (deviceInfoId, validTo) VALUES (?, NULL);";
-        db.execute(sql, deviceInfoId);
-        return db.lastInsertId();
+            "INSERT INTO Device (deviceInfoId, validTo) VALUES (?, NULL) RETURNING id;";
+        auto id = db.queryScalar<Id>(sql, deviceInfoId);
+        return *id;
     }
 
     std::vector<Device> getAll() {

@@ -18,3 +18,6 @@ CREATE TABLE IF NOT EXISTS DeviceInfo (
 
     UNIQUE(vendorId, productId, serial)
 );
+
+CREATE UNIQUE INDEX idx_deviceinfo_unique
+ON DeviceInfo(vendorId, productId, serial);

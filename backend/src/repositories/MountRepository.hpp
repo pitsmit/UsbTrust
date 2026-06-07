@@ -40,12 +40,6 @@ public:
     }
 
     void update(const MountRecord& record) {
-        static constexpr auto findSql =
-            "SELECT id FROM MountRecord WHERE devNode = ? LIMIT 1;";
-
-        auto mountId = db.queryScalar<Id>(findSql, record.devNode);
-        if (!*mountId) return;
-
         auto deviceInfoId = info_rep.ensure(record.info);
 
         static constexpr auto sql =
