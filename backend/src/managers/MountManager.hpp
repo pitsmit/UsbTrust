@@ -10,14 +10,14 @@
 #include "MountRecord.hpp"
 #include "Exceptions.hpp"
 
-class MountService {
+class MountManager {
 private:
     DeviceManager& deviceManager_;
     MountUtils& mountUtils_;
     IDeviceResolver& resolver_;
 
 public:
-    MountService(
+    MountManager(
         DeviceManager& deviceManager,
         MountUtils& mountUtils,
         IDeviceResolver& resolver
@@ -33,11 +33,10 @@ public:
         auto mountPoint = MountPointBuilder::build(info);
         MountPointBuilder::ensureExists(mountPoint);
         auto id = deviceManager_.isAllowed(info);
-
-        mountUtils_.mountDevice(devNode, mountPoint, !id);
-
         auto mode = id ? MountMode::rw()
                        : MountMode::ro();
+
+        mountUtils_.mountDevice(devNode, mountPoint, mode.isReadOnly());
 
         return MountRecordBuilder()
                 .withDevNode(devNode)

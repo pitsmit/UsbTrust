@@ -34,9 +34,9 @@ protected:
     std::unique_ptr<MountUtils> utils;
     std::unique_ptr<DeviceManager> devicemanager;
     std::unique_ptr<MockDeviceResolver> resolver;
-    std::unique_ptr<MountService> mntser;
+    std::unique_ptr<MountManager> mntser;
     std::unique_ptr<MockWebSocketServer> sct_server;
-    std::unique_ptr<DeviceEventNotifier> notifier;
+    std::unique_ptr<DeviceEventNotifyManager> notifier;
 
     std::unique_ptr<DeviceInfo> info;
 
@@ -47,10 +47,10 @@ protected:
         utils = std::make_unique<MountUtils>(sys);
         devicemanager = std::make_unique<DeviceManager>(dbHelper.get_db());
         resolver = std::make_unique<MockDeviceResolver>();
-        mntser = std::make_unique<MountService>(*devicemanager, *utils, *resolver);
+        mntser = std::make_unique<MountManager>(*devicemanager, *utils, *resolver);
         registry = std::make_unique<MountRegistryManager>(dbHelper.get_db());
         sct_server = std::make_unique<MockWebSocketServer>(1);
-        notifier = std::make_unique<DeviceEventNotifier>(*sct_server);
+        notifier = std::make_unique<DeviceEventNotifyManager>(*sct_server);
 
         svc = std::make_unique<DeviceControlService>(
             *registry,

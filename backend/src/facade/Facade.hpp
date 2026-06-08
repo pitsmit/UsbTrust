@@ -17,7 +17,7 @@ private:
     DeviceManager deviceManager;
     MountRegistryManager mountRegistry;
     MountUtils mountUtils;
-    MountService mountManager;
+    MountManager mountManager;
     CommandContext ctx;
 
 public:
@@ -34,7 +34,7 @@ public:
     }
 
     DeviceManager& devices() { return deviceManager; }
-    MountService& mounts() { return mountManager; }
+    MountManager& mounts() { return mountManager; }
     MountRegistryManager& registry() { return mountRegistry; }
     MountUtils& utils() { return mountUtils; }
 };

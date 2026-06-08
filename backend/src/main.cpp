@@ -28,7 +28,7 @@ private:
     UdevDeviceResolver resolver;
     MountRecoveryService rec;
     WebSocketServer ws;
-    DeviceEventNotifier notifier;
+    DeviceEventNotifyManager notifier;
     EventQueue<DeviceEvent> queue;
     UdevWatcher watcher;
     DeviceControlService service;

@@ -6,12 +6,12 @@
 
 #include <string>
 
-class DeviceEventNotifier {
+class DeviceEventNotifyManager {
 private:
     IWebSocketServer& ws_;
 
 public:
-    explicit DeviceEventNotifier(IWebSocketServer& ws)
+    explicit DeviceEventNotifyManager(IWebSocketServer& ws)
         : ws_(ws)
     {}
 
@@ -25,7 +25,7 @@ public:
         ws_.broadcast(payload.dump());
     }
 
-    void notifyRemove(const std::string& mountPoint)
+    void notifyRemove(std::string_view mountPoint)
     {
         json payload = {
             { "type", "remove" },

@@ -3,22 +3,22 @@
 #include "DeviceEvent.hpp"
 #include "DevLogger.hpp"
 #include "MountRegistry.hpp"
-#include "MountService.hpp"
+#include "MountManager.hpp"
 #include "IDeviceResolver.hpp"
-#include "DeviceEventNotifier.hpp"
+#include "DeviceEventNotifyManager.hpp"
 
 class DeviceControlService {
 private:
     MountRegistryManager& mountRegistry_;
-    MountService& mountManager_;
-    DeviceEventNotifier& notifier_;
+    MountManager& mountManager_;
+    DeviceEventNotifyManager& notifier_;
     IDeviceResolver& resolver_;
 
 public:
     DeviceControlService(
         MountRegistryManager& mountRegistry,
-        MountService& mountManager,
-        DeviceEventNotifier& notifier,
+        MountManager& mountManager,
+        DeviceEventNotifyManager& notifier,
         IDeviceResolver& resolver
     ) :
         mountRegistry_(mountRegistry),
