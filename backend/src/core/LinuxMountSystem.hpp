@@ -13,7 +13,7 @@ public:
         const std::string& target,
         const std::string& fs,
         bool readOnly,
-        const std::string& opts) override
+        const std::string& opts) noexcept override
     {
         return ::mount(
             dev.c_str(),
@@ -26,7 +26,7 @@ public:
 
     int remount(
         const std::string& target,
-        bool readOnly) override
+        bool readOnly) noexcept override
     {
         return ::mount(
             nullptr,
@@ -37,11 +37,11 @@ public:
         );
     }
 
-    int umount(const std::string& target) override {
+    int umount(const std::string& target) noexcept override {
         return ::umount2(target.c_str(), MNT_DETACH);
     }
 
-    void sync() override {
+    void sync() noexcept override {
         ::sync();
     }
 

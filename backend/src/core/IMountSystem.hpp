@@ -7,12 +7,12 @@ public:
         const std::string& target,
         const std::string& fs,
         bool readOnly,
-        const std::string& opts) = 0;
+        const std::string& opts) noexcept = 0;
     virtual int remount(
         const std::string& target,
-        bool readOnly) = 0;
-    virtual int umount(const std::string& target) = 0;
-    virtual void sync() = 0;
+        bool readOnly) noexcept = 0;
+    virtual int umount(const std::string& target) noexcept = 0;
+    virtual void sync() noexcept = 0;
     virtual std::string getFsType(const std::string& dev) = 0;
     virtual ~IMountSystem() = default;
 };

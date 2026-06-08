@@ -10,14 +10,13 @@
 
 class DeviceRepository : public RepositoryBase {
 private:
-    DeviceInfoRepository& info_rep;
+    DeviceInfoRepository info_rep;
 
 public:
     explicit DeviceRepository(
-        DBConnection& connection,
-        DeviceInfoRepository& infoRepo)
+        DBConnection& connection)
         : RepositoryBase(connection),
-        info_rep(infoRepo)
+        info_rep(connection)
     {}
 
     Id add(const DeviceInfo& dev) {

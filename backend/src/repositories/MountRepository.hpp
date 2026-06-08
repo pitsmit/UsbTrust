@@ -11,18 +11,13 @@
 
 class MountRepository : public RepositoryBase {
 private:
-    DeviceInfoRepository& info_rep;
-
-    static std::string modeToStr(MODE m) {
-        return m == MODE::RW ? "RW" : "RO";
-    }
+    DeviceInfoRepository info_rep;
 
 public:
     explicit MountRepository(
-        DBConnection& connection,
-        DeviceInfoRepository& infoRepo)
+        DBConnection& connection)
         : RepositoryBase(connection),
-        info_rep(infoRepo)
+        info_rep(connection)
     {}
 
     void add(const MountRecord& record) {
@@ -35,7 +30,7 @@ public:
             deviceInfoId,
             record.devNode,
             record.mountPoint,
-            modeToStr(record.mode)
+            record.mode.toString()
         );
     }
 
@@ -48,7 +43,7 @@ public:
         db.execute(sql,
             deviceInfoId,
             record.mountPoint,
-            modeToStr(record.mode),
+            record.mode.toString(),
             record.devNode
         );
     }

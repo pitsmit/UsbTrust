@@ -12,10 +12,10 @@
 
 class UdevDeviceResolver : public IDeviceResolver {
 public:
-    DeviceInfo resolve(const std::string &devNode)
+    DeviceInfo resolve(std::string_view devNode)
     {
         struct stat st{};
-        if (stat(devNode.c_str(), &st) < 0) {
+        if (stat(devNode.data(), &st) < 0) {
             throw ResolveInfoError(("Coud not extract deviceInfo from devnode: " + devNode).c_str());
         }
 
@@ -164,7 +164,7 @@ public:
     }
 
 
-    MODE getMountMode(const std::string& mountpoint)
+    MountMode getMountMode(const std::string& mountpoint)
     {
         libmnt_table* tb =
             mnt_new_table_from_file("/proc/self/mountinfo");
@@ -187,14 +187,14 @@ public:
         }
         char* value = nullptr;
         size_t size = 0;
-        std::optional<MODE> result;
+        MountMode result;
         if (mnt_optstr_get_option(opts, "rw", &value, &size) == 0)
         {
-            result = MODE::RW;
+            result = MountMode(MountMode::RW);
         }
         else if (mnt_optstr_get_option(opts, "ro", &value, &size) == 0)
         {
-            result = MODE::RO;
+            result = MountMode(MountMode::RO);
         }
         mnt_free_table(tb);
         return result;

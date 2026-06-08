@@ -34,7 +34,7 @@ public:
 
     void execute(CommandContext& ctx) override {
         id = ctx.deviceManager.addToWhitelist(record.info);
-        record.mode = MODE::RW;
+        record.mode = MountMode::rw();
         record.id = id;
         ctx.mountService.remount(record);
         ctx.mountRegistry.refresh(record);
@@ -51,7 +51,7 @@ public:
 
     void execute(CommandContext& ctx) override {
         if (auto record = ctx.mountRegistry.getById(id)) {
-            record->mode = MODE::RO;
+            record->mode = MountMode::ro();
             ctx.mountService.remount(*record);
             ctx.mountRegistry.refresh(*record);
         }

@@ -32,16 +32,19 @@ public:
         auto info = resolver_.resolve(devNode);
         auto mountPoint = MountPointBuilder::build(info);
         MountPointBuilder::ensureExists(mountPoint);
-        int id = deviceManager_.isAllowed(info);
+        auto id = deviceManager_.isAllowed(info);
 
         mountUtils_.mountDevice(devNode, mountPoint, !id);
+
+        auto mode = id ? MountMode::rw()
+                       : MountMode::ro();
 
         return MountRecordBuilder()
                 .withDevNode(devNode)
                 .withId(id)
                 .withInfo(info)
                 .withMountPoint(mountPoint)
-                .withMode(id ? MODE::RW : MODE::RO)
+                .withMode(mode)
                 .build();
     }
 
@@ -54,7 +57,7 @@ public:
     {
         mountUtils_.remountDevice(
             record.mountPoint,
-            record.mode == MODE::RO ? true : false
+            record.mode.isReadOnly()
         );
     }
 };

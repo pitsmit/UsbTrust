@@ -22,5 +22,7 @@ public:
         repo.updateValidTo(id, validTo);
     }
 
-    int isAllowed(const DeviceInfo& dev) { return repo.findActiveId(dev); }
+    std::optional<int> isAllowed(const DeviceInfo& dev) { 
+        return repo.findActiveId(dev); 
+    }
 };

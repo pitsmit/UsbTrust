@@ -18,14 +18,6 @@ public:
         PRODUCT_NAME
     };
 
-private:
-    static ::MODE parseMode(const char* value)
-    {
-        return std::string(value) == "RW"
-            ? ::MODE::RW
-            : ::MODE::RO;
-    }
-
 public:
     static MountRecord fromRow(char** v)
     {
@@ -33,7 +25,7 @@ public:
             .withId(std::stoull(v[ID]))
             .withDevNode(v[DEV_NODE] ? v[DEV_NODE] : "")
             .withMountPoint(v[MOUNT_POINT] ? v[MOUNT_POINT] : "")
-            .withMode(parseMode(v[MODE]))
+            .withMode(MountMode::parse(v[MODE]))
             .withInfo(
                 DeviceInfoMapper::fromRow(
                     v,

@@ -16,13 +16,13 @@ public:
 
     void add(const MountRecord& record) { repo.add(record); }
 
-    std::optional<std::string> getMountPointByDevNode(const std::string& devNode) {
+    std::optional<std::string> getMountPointByDevNode(std::string_view devNode) {
         return repo.getMountPointByDevNode(devNode);
     }
 
     std::optional<MountRecord> getById(size_t id) { return repo.getById(id); }
 
-    void removeByDevNode(const std::string& devNode) { repo.removeByDevNode(devNode); }
+    void removeByDevNode(std::string_view devNode) { repo.removeByDevNode(devNode); }
 
     void recreate(const MountRecord& record) {
         removeByDevNode(record.devNode);

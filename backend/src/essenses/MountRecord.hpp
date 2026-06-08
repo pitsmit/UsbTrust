@@ -3,18 +3,16 @@
 #include <string>
 
 #include "DeviceInfo.hpp"
+#include "MountMode.hpp"
 
-enum MODE {
-    RO,
-    RW
-};
+using Id = std::int64_t;
 
 struct MountRecord {
-    size_t id; /// id таблицы Device
+    std::optional<Id> id; /// id таблицы Device
     std::string devNode;
     std::string mountPoint;
     DeviceInfo info;
-    MODE mode;
+    MountMode mode{MountMode::RO};
 };
 
 class MountRecordBuilder {
@@ -22,7 +20,7 @@ private:
     MountRecord record_{};
 
 public:
-    MountRecordBuilder& withId(size_t id)
+    MountRecordBuilder& withId(Id id)
     {
         record_.id = id;
         return *this;
@@ -50,7 +48,7 @@ public:
     }
 
     MountRecordBuilder& withMode(
-        const MODE& mode)
+        const MountMode& mode)
     {
         record_.mode = mode;
         return *this;

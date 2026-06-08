@@ -35,7 +35,7 @@ public:
         return value;
     }
 
-    void stop() {
+    void stop() noexcept {
         {
             std::lock_guard lock(mutex_);
             stopped_ = true;
