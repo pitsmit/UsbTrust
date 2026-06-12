@@ -1,8 +1,9 @@
 #pragma once
 
 #include "DBConnection.hpp"
-#include "DeviceInfo.hpp"
+#include "entities/DeviceInfo.hpp"
 #include "RepositoryBase.hpp"
+#include "services/types.hpp"
 
 class DeviceInfoRepository : RepositoryBase {
 public:

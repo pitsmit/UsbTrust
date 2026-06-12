@@ -1,11 +1,11 @@
 #pragma once
 
-#include "DeviceCommands.hpp"
-#include "CommandContext.hpp"
-#include "DeviceManager.hpp"
-#include "MountRegistry.hpp"
-#include "MountUtils.hpp"
-#include "MountManager.hpp"
+#include "commands/DeviceCommands.hpp"
+#include "commands/CommandContext.hpp"
+#include "managers/DeviceManager.hpp"
+#include "managers/MountRegistry.hpp"
+#include "linux/MountUtils.hpp"
+#include "managers/MountManager.hpp"
 
 class IMountSystem;
 class IDeviceResolver;

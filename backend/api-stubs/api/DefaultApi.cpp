@@ -1,8 +1,8 @@
 #include "DefaultApi.h"
-#include "Facade.hpp"
-#include "DeviceCommands.hpp"
-#include "DeviceInfo.hpp"
-#include "JsonUtils.hpp"
+#include "facade/Facade.hpp"
+#include "commands/DeviceCommands.hpp"
+#include "entities/DeviceInfo.hpp"
+#include "transport/JsonUtils.hpp"
 
 #include <nlohmann/json.hpp>
 

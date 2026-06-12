@@ -36,6 +36,10 @@ public:
         return value_ == RW;
     }
 
+    bool operator==(const MountMode& mode) const {
+        return isReadWrite() == mode.isReadWrite();
+    }
+
     std::string toStringUpper() const {
         return value_ == RW ? "RW" : "RO";
     }

@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # =========================
 
 option(BUILD_HTTP_SERVER "Build HTTP server" ON)
-option(ENABLE_TESTS "Enable test build" ON)
+option(ENABLE_TESTS "Enable test build" OFF)
 option(ENABLE_TEST_API "Enable test-only HTTP endpoints" OFF)
 
 # =========================
@@ -37,19 +37,8 @@ add_executable(app ${APP_SOURCES})
 # Includes
 # =========================
 
-file(GLOB SRC_DIRS RELATIVE ${PROJECT_SOURCE_DIR}/src
-    ${PROJECT_SOURCE_DIR}/src/*
-)
-
-set(INCLUDE_DIRS "")
-foreach(dir ${SRC_DIRS})
-    if(IS_DIRECTORY ${PROJECT_SOURCE_DIR}/src/${dir})
-        list(APPEND INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src/${dir})
-    endif()
-endforeach()
-
 target_include_directories(app PUBLIC
-    ${INCLUDE_DIRS}
+    ${PROJECT_SOURCE_DIR}/src
 )
 
 if(BUILD_HTTP_SERVER)

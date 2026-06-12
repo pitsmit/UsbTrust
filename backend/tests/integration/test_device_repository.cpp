@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "Device.hpp"
-#include "DeviceInfo.hpp"
+#include "entities/Device.hpp"
+#include "entities/DeviceInfo.hpp"
 
 #include "../helpers/LoggerTestHelper.hpp"
 #include "../helpers/DataBaseTestHelper.hpp"
@@ -25,7 +25,7 @@ protected:
 
 TEST_F(DeviceRepositoryTest, AddAndGetAll) {
     // ARRANGE
-    DeviceInfo info = 
+    auto info = 
             DeviceInfoBuilder()
             .withVendorId("1234")
             .withProductId("ABCD")
@@ -43,7 +43,7 @@ TEST_F(DeviceRepositoryTest, AddAndGetAll) {
 
 TEST_F(DeviceRepositoryTest, Exists_ReturnsTrue) {
     // ARRANGE
-    DeviceInfo info = 
+    auto info = 
             DeviceInfoBuilder()
             .withVendorId("1234")
             .withProductId("ABCD")
@@ -60,7 +60,7 @@ TEST_F(DeviceRepositoryTest, Exists_ReturnsTrue) {
 
 TEST_F(DeviceRepositoryTest, Exists_Expired_ReturnsFalse) {
     // ARRANGE
-    DeviceInfo info = 
+    auto info = 
             DeviceInfoBuilder()
             .withVendorId("1234")
             .withProductId("ABCD")

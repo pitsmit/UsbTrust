@@ -3,10 +3,10 @@
 #include <string_view>
 
 #include "DeviceManager.hpp"
-#include "MountUtils.hpp"
-#include "IDeviceResolver.hpp"
-#include "MountPointBuilder.hpp"
-#include "MountRecord.hpp"
+#include "linux/MountUtils.hpp"
+#include "core/IDeviceResolver.hpp"
+#include "core/MountPointBuilder.hpp"
+#include "entities/MountRecord.hpp"
 
 class MountManager {
 private:

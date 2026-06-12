@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ApiBase.h"
-#include "Facade.hpp"
-#include "JsonUtils.hpp"
+#include "facade/Facade.hpp"
+#include "transport/JsonUtils.hpp"
 
 #include <pistache/router.h>
 #include <pistache/http.h>

@@ -6,9 +6,9 @@
 #include <sys/stat.h>
 #include <string.h>
 
-#include "MountRecord.hpp"
-#include "DeviceInfo.hpp"
-#include "IDeviceResolver.hpp"
+#include "entities/MountRecord.hpp"
+#include "entities/DeviceInfo.hpp"
+#include "core/IDeviceResolver.hpp"
 
 class UdevDeviceResolver : public IDeviceResolver {
 public:
@@ -16,12 +16,12 @@ public:
     {
         struct stat st{};
         if (stat(devNode.data(), &st) < 0) {
-            throw ResolveInfoError(("Coud not extract deviceInfo from devnode: " + devNode).c_str());
+            throw ResolveInfoError(std::format("Coud not extract deviceInfo from devnode: {}", devNode));
         }
 
         struct udev* udev = udev_new();
         if (!udev) {
-            throw ResolveInfoError(("Coud not extract deviceInfo from devnode: " + devNode).c_str());
+            throw ResolveInfoError(std::format("Coud not extract deviceInfo from devnode: {}", devNode));
         }
 
         struct udev_device* dev =
@@ -31,7 +31,7 @@ public:
                 st.st_rdev);
         if (!dev) {
             udev_unref(udev);
-            throw ResolveInfoError(("Coud not extract deviceInfo from devnode: " + devNode).c_str());
+            throw ResolveInfoError(std::format("Coud not extract deviceInfo from devnode: {}", devNode));
         }
 
         struct udev_device* usb =
@@ -69,7 +69,7 @@ public:
             if (const char* productName = udev_device_get_sysattr_value(usb, "product"))
                 builder.withProductName(productName);
         } else {
-            throw ResolveInfoError(("Coud not extract deviceInfo from devnode: " + devNode).c_str());
+            throw ResolveInfoError(std::format("Coud not extract deviceInfo from devnode: {}", devNode));
         }
         
         udev_device_unref(dev);
@@ -191,5 +191,6 @@ public:
         {
             return MountMode::ro();
         }
+        return MountMode::ro();
     }
 };

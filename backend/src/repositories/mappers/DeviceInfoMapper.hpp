@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DeviceInfo.hpp"
+#include "entities/DeviceInfo.hpp"
 
 class DeviceInfoMapper {
 public:

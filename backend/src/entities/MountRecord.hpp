@@ -4,6 +4,7 @@
 
 #include "DeviceInfo.hpp"
 #include "MountMode.hpp"
+#include "services/types.hpp"
 
 struct MountRecord {
     std::optional<core::Id> id; /// id таблицы Device
@@ -18,14 +19,14 @@ private:
     MountRecord record_{};
 
 public:
-    MountRecordBuilder& withId(core::Id id)
+    MountRecordBuilder& withId(std::optional<core::Id> id)
     {
-        record_.id = id;
+        record_.id = id ? id : std::nullopt;
         return *this;
     }
 
     MountRecordBuilder& withDevNode(
-        const std::string& devNode)
+        std::string_view devNode)
     {
         record_.devNode = devNode;
         return *this;

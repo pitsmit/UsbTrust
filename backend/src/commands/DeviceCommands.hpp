@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Device.hpp"
-#include "DeviceManager.hpp"
+#include "entities/Device.hpp"
+#include "managers/DeviceManager.hpp"
 #include "CommandContext.hpp"
-#include "MountRegistry.hpp"
-#include "MountManager.hpp"
-#include "types.hpp"
+#include "managers/MountRegistry.hpp"
+#include "managers/MountManager.hpp"
+#include "services/types.hpp"
 
 class Command {
 public:

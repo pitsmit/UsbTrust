@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Device.hpp"
-#include "DeviceInfo.hpp"
+#include "entities/Device.hpp"
+#include "entities/DeviceInfo.hpp"
 #include "RepositoryBase.hpp"
 #include "DeviceInfoRepository.hpp"
-#include "DeviceMapper.hpp"
+#include "mappers/DeviceMapper.hpp"
 
 #include <vector>
 

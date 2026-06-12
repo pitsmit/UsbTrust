@@ -4,8 +4,8 @@
 #include <string>
 #include <optional>
 
-#include "MountRepository.hpp"
-#include "MountRecord.hpp"
+#include "repositories/MountRepository.hpp"
+#include "entities/MountRecord.hpp"
 
 class MountRegistryManager {
 private:

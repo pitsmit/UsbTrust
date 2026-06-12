@@ -1,11 +1,11 @@
 #pragma once
 
-#include "DeviceEvent.hpp"
-#include "DevLogger.hpp"
-#include "MountRegistry.hpp"
-#include "MountManager.hpp"
-#include "IDeviceResolver.hpp"
-#include "DeviceEventNotifyManager.hpp"
+#include "entities/DeviceEvent.hpp"
+#include "services/DevLogger.hpp"
+#include "managers/MountRegistry.hpp"
+#include "managers/MountManager.hpp"
+#include "core/IDeviceResolver.hpp"
+#include "managers/DeviceEventNotifyManager.hpp"
 
 class DeviceControlService {
 private:

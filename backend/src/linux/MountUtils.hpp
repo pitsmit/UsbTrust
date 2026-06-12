@@ -3,11 +3,12 @@
 #include <string>
 #include <unordered_set>
 #include <format>
+#include <sys/stat.h>
 
-#include "DevLogger.hpp"
-#include "IMountSystem.hpp"
-#include "Exceptions.hpp"
-#include "MountMode.hpp"
+#include "services/DevLogger.hpp"
+#include "core/IMountSystem.hpp"
+#include "exceptions/Exceptions.hpp"
+#include "entities/MountMode.hpp"
 
 class MountUtils {
 private:

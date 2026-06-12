@@ -1,21 +1,23 @@
-#pragma once
-
 #include <chrono>
 #include <iostream>
 #include <optional>
 #include <thread>
 
-#include "Config.hpp"
-#include "DBInitializer.hpp"
-#include "DeviceEventNotifyManager.hpp"
-#include "EventLoop.hpp"
-#include "EventQueue.hpp"
-#include "Facade.hpp"
-#include "LinuxMountSystem.hpp"
-#include "MountRecoveryService.hpp"
-#include "UdevDeviceResolver.hpp"
-#include "Watcher.hpp"
-#include "WebSocketServer.hpp"
+#include "services/Config.hpp"
+#include "repositories/DBInitializer.hpp"
+#include "managers/DeviceEventNotifyManager.hpp"
+#include "dispatch/EventLoop.hpp"
+#include "dispatch/EventQueue.hpp"
+#include "facade/Facade.hpp"
+#include "linux/LinuxMountSystem.hpp"
+#include "core/MountRecoveryService.hpp"
+#include "linux/UdevDeviceResolver.hpp"
+#include "linux/Watcher.hpp"
+#include "transport/WebSocketServer.hpp"
+
+#ifdef BUILD_HTTP_SERVER
+#include "transport/HttpServer.hpp"
+#endif
 
 class App {
 private:

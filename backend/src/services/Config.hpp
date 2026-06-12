@@ -5,8 +5,10 @@
 #include <sstream>
 #include <unordered_map>
 #include <vector>
+#include <filesystem>
+#include <format>
 
-#include "Exceptions.hpp"
+#include "exceptions/Exceptions.hpp"
 
 class Config {
 private:
@@ -32,7 +34,7 @@ private:
 
     static std::string get(std::string_view key) {
         const auto& cache = getCache();
-        auto it = cache.find(key);
+        auto it = cache.find(std::string(key));
         if (it == cache.end()) {
             throw FileException(std::format("Missing config key: {}", key));
         }
@@ -40,12 +42,12 @@ private:
     }
 
 public:
-    static auto getSchemaPaths() {
-        auto dir = std::filesystem::directory_iterator(get("db.schema.dir"));
-        return std::vector<std::filesystem::path>(
-            dir.begin(),
-            dir.end()
-        );
+    static std::vector<std::filesystem::path> getSchemaPaths() {
+        std::vector<std::filesystem::path> result;
+        for (const auto& e :
+            std::filesystem::directory_iterator(get("db.schema.dir")))
+            result.push_back(e.path());
+        return result;
     }
     static std::string getDBPath()  { return get("db.path"); }
     static std::string getLogFile() { return get("log.file"); }

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "MountRecord.hpp"
+#include "entities/MountRecord.hpp"
 #include "RepositoryBase.hpp"
 #include "DeviceInfoRepository.hpp"
-#include "MountRecordMapper.hpp"
+#include "mappers/MountRecordMapper.hpp"
 
 #include <vector>
 #include <string>

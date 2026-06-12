@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IWebSocketServer.hpp"
-#include "MountRecord.hpp"
-#include "JsonUtils.hpp"
+#include "transport/IWebSocketServer.hpp"
+#include "entities/MountRecord.hpp"
+#include "transport/JsonUtils.hpp"
 
 #include <string>
 

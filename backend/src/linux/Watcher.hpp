@@ -2,9 +2,9 @@
 
 #include <libudev.h>
 
-#include "EventQueue.hpp"
-#include "DeviceEvent.hpp"
-#include "DevLogger.hpp"
+#include "dispatch/EventQueue.hpp"
+#include "entities/DeviceEvent.hpp"
+#include "services/DevLogger.hpp"
 
 class UdevWatcher {
 private:

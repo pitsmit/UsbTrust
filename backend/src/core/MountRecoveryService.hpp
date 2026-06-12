@@ -5,11 +5,11 @@
 #include <optional>
 #include <unordered_set>
 
-#include "MountRecord.hpp"
-#include "MountRegistry.hpp"
-#include "MountManager.hpp"
+#include "entities/MountRecord.hpp"
+#include "managers/MountRegistry.hpp"
+#include "managers/MountManager.hpp"
 #include "IDeviceResolver.hpp"
-#include "DeviceManager.hpp"
+#include "managers/DeviceManager.hpp"
 
 class MountRecoveryService {
 private:
@@ -49,10 +49,8 @@ private:
             some_changes = true;
         }
 
-        MODE desired =
-            devman.isAllowed(info)
-                ? MODE::RW
-                : MODE::RO;
+        MountMode desired =
+            MountMode::fromPresence(devman.isAllowed(info));
 
         if (rec.mode != desired) {
             rec.mode = desired;

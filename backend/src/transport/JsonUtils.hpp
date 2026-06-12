@@ -4,16 +4,12 @@
 #include <optional>
 #include <nlohmann/json.hpp>
 
-#include "DeviceInfo.hpp"
-#include "Device.hpp"
-#include "MountRecord.hpp"
+#include "entities/DeviceInfo.hpp"
+#include "entities/Device.hpp"
+#include "entities/MountRecord.hpp"
+#include "entities/MountMode.hpp"
 
 using json = nlohmann::json;
-
-NLOHMANN_JSON_SERIALIZE_ENUM(MODE, {
-    {RO, "RO"},
-    {RW, "RW"}
-})
 
 template <typename T>
 std::optional<T> get_optional(const json& j, const std::string& key)
@@ -44,18 +40,18 @@ inline void to_json(json& j, const DeviceInfo& info)
 {
     j = json::object();
 
-    set_optional(j, "vendorId", info.vendorId);
-    set_optional(j, "productId", info.productId);
-    set_optional(j, "serial", info.serial);
+    j["vendorId"] = info.vendorId;
+    j["productId"] = info.productId;
+    j["serial"] = info.serial;
     set_optional(j, "vendorName", info.vendorName);
     set_optional(j, "productName", info.productName);
 }
 
 inline void from_json(const json& j, DeviceInfo& info)
 {
-    info.vendorId = get_optional<std::string>(j, "vendorId");
-    info.productId = get_optional<std::string>(j, "productId");
-    info.serial = get_optional<std::string>(j, "serial");
+    info.vendorId = get_value<std::string>(j, "vendorId", "");
+    info.productId = get_value<std::string>(j, "productId", "");
+    info.serial = get_value<std::string>(j, "serial", "");
     info.vendorName = get_optional<std::string>(j, "vendorName");
     info.productName = get_optional<std::string>(j, "productName");
 }
@@ -80,11 +76,11 @@ inline void to_json(json& j, const MountRecord& m)
 {
     j = json::object();
 
-    j["id"] = m.id;
+    set_optional(j, "id", m.id);
     j["devNode"] = m.devNode;
     j["mountPoint"] = m.mountPoint;
     j["info"] = m.info;
-    j["mode"] = m.mode;
+    j["mode"] = m.mode.toStringUpper();
 }
 
 inline void from_json(const json& j, MountRecord& m)
@@ -93,5 +89,10 @@ inline void from_json(const json& j, MountRecord& m)
     m.devNode = get_value<std::string>(j, "devNode", "");
     m.mountPoint = get_value<std::string>(j, "mountPoint", "");
     m.info = get_value<DeviceInfo>(j, "info", DeviceInfo{});
-    m.mode = get_value<MODE>(j, "mode", MODE::RW);
+    m.mode = get_value<MountMode>(j, "mode", MountMode::ro());
+}
+
+inline void from_json(const json& j, MountMode& m)
+{
+    m = MountMode::parse(j.get<std::string>());
 }

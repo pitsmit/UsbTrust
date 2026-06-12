@@ -1,8 +1,8 @@
 #pragma once
 
 #include "EventQueue.hpp"
-#include "DeviceEvent.hpp"
-#include "DeviceControlService.hpp"
+#include "entities/DeviceEvent.hpp"
+#include "core/DeviceControlService.hpp"
 
 class EventLoop {
 private:

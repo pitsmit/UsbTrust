@@ -1,8 +1,8 @@
 #pragma once
 
-#include "DeviceRepository.hpp"
-#include "DeviceInfo.hpp"
-#include "types.hpp"
+#include "repositories/DeviceRepository.hpp"
+#include "entities/DeviceInfo.hpp"
+#include "services/types.hpp"
 
 #include <vector>
 

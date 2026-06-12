@@ -5,7 +5,7 @@
 #include <string>
 #include <filesystem>
 
-#include "Config.hpp"
+#include "services/Config.hpp"
 
 #include "../helpers/ConfigFileBuilder.hpp"
 
@@ -69,7 +69,7 @@ TEST_F(ConfigTest, MissingHttpPortKey)
 TEST_F(ConfigTest, ValidConfigReturnsHttpPort)
 {
     // ARRANGE
-    const int port = 8080;
+    constexpr auto port = 8080;
 
     ConfigFileBuilder()
         .add("http.port", std::to_string(port))

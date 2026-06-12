@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MountRecord.hpp"
+#include "entities/MountRecord.hpp"
 #include "DeviceInfoMapper.hpp"
 
 class MountRecordMapper {

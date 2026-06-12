@@ -2,19 +2,17 @@
 #include <string>
 #include <filesystem>
 
-#include "MountPointBuilder.hpp"
-
-const std::string &base = "/media/dlp/";
+#include "core/MountPointBuilder.hpp"
 
 TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
     // ARRANGE
-    const std::string &vendorId = "1234";
-    const std::string &productId = "7856";
-    const std::string &serial = "ACDC456IRHX";
-    const std::string &productName = "Galaxy";
-    const std::string &vendorName = "Samsung";
+    constexpr auto vendorId = "1234";
+    constexpr auto productId = "7856";
+    constexpr auto serial = "ACDC456IRHX";
+    constexpr auto productName = "Galaxy";
+    constexpr auto vendorName = "Samsung";
 
-    DeviceInfo dev = DeviceInfoBuilder()
+    auto dev = DeviceInfoBuilder()
                         .withVendorId(vendorId)
                         .withProductId(productId)
                         .withSerial(serial)
@@ -22,10 +20,10 @@ TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
                         .withVendorName(vendorName)
                         .build();
     
-    const std::string &expected = base + vendorId + "_" + productId + "_" + serial;
+    auto expected = std::format("/media/dlp/{}_{}_{}", vendorId, productId, serial);
 
     // ACT
-    std::string result = MountPointBuilder::build(dev);
+    auto result = MountPointBuilder::build(dev);
 
     // ASSERT
     EXPECT_EQ(result, expected);
@@ -33,7 +31,7 @@ TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
 
 TEST(MountPointBuilderTest, EnsureExists_CreatesDirectory) {
     // ARRANGE
-    std::string path = "/tmp/test_mount_point_builder_dir";
+    constexpr auto path = "/tmp/test_mount_point_builder_dir";
     std::filesystem::remove_all(path);
 
     // ACT
@@ -45,7 +43,7 @@ TEST(MountPointBuilderTest, EnsureExists_CreatesDirectory) {
 
 TEST(MountPointBuilderTest, EnsureExists_Idempotent) {
     // ARRANGE
-    std::string path = "/tmp/test_mount_point_builder_dir2";
+    constexpr auto path = "/tmp/test_mount_point_builder_dir2";
     std::filesystem::remove_all(path);
 
     // ACT

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "DBConnection.hpp"
-#include "Exceptions.hpp"
-#include "Config.hpp"
+#include "exceptions/Exceptions.hpp"
+#include "services/Config.hpp"
 
 #include <fstream>
 #include <sstream>

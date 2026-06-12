@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Device.hpp"
+#include "entities/Device.hpp"
 #include "DeviceInfoMapper.hpp"
 
 class DeviceMapper {

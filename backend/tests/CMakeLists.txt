@@ -31,18 +31,11 @@ endfunction()
 # =========================
 add_executable(unit_tests
     unit/test_mount_point_builder.cpp
-    unit/test_mount_utils.cpp
     unit/test_config.cpp
 )
 
 target_include_directories(unit_tests PUBLIC
-    ${PROJECT_SOURCE_DIR}/src/commands
-    ${PROJECT_SOURCE_DIR}/src/core
-    ${PROJECT_SOURCE_DIR}/src/essenses
-    ${PROJECT_SOURCE_DIR}/src/facade
-    ${PROJECT_SOURCE_DIR}/src/managers
-    ${PROJECT_SOURCE_DIR}/src/repositories
-    ${PROJECT_SOURCE_DIR}/src/services
+    ${PROJECT_SOURCE_DIR}/src
 )
 
 target_link_libraries(unit_tests
@@ -68,13 +61,7 @@ add_executable(integration_tests
 )
 
 target_include_directories(integration_tests PUBLIC
-    ${PROJECT_SOURCE_DIR}/src/commands
-    ${PROJECT_SOURCE_DIR}/src/core
-    ${PROJECT_SOURCE_DIR}/src/essenses
-    ${PROJECT_SOURCE_DIR}/src/facade
-    ${PROJECT_SOURCE_DIR}/src/managers
-    ${PROJECT_SOURCE_DIR}/src/repositories
-    ${PROJECT_SOURCE_DIR}/src/services
+    ${PROJECT_SOURCE_DIR}/src
 )
 
 target_link_libraries(integration_tests
@@ -115,13 +102,7 @@ add_executable(e2e_tests
 )
 
 target_include_directories(e2e_tests PUBLIC
-    ${PROJECT_SOURCE_DIR}/src/commands
-    ${PROJECT_SOURCE_DIR}/src/core
-    ${PROJECT_SOURCE_DIR}/src/essenses
-    ${PROJECT_SOURCE_DIR}/src/facade
-    ${PROJECT_SOURCE_DIR}/src/managers
-    ${PROJECT_SOURCE_DIR}/src/repositories
-    ${PROJECT_SOURCE_DIR}/src/services
+    ${PROJECT_SOURCE_DIR}/src
     ${PROJECT_SOURCE_DIR}/api-stubs/api
 )
 

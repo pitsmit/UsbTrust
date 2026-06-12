@@ -1,12 +1,11 @@
 #pragma once
 
 #include <memory>
-#include <spdlog/sinks/null_sink.h>
 #include "DevLogger.hpp"
 
 class LoggerTestHelper {
 private:
-    std::shared_ptr<spdlog::logger> oldLogger;
+    std::shared_ptr<Logger> oldLogger;
 
 public:
     void disable() {
