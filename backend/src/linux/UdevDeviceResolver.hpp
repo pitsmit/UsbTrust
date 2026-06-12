@@ -135,16 +135,16 @@ public:
     }
 
 
-    std::string getMountPoint(const std::string& devNode)
+    std::string getMountPoint(std::string_view devNode)
     {
         struct libmnt_table* tb = mnt_new_table_from_file("/proc/self/mountinfo");
         if (!tb)
-            throw MountError(("Coud not get mountpoint from devnode: " + devNode).c_str());
+            throw MountError(("Coud not get mountpoint from devnode: {}", devNode));
         struct libmnt_iter* itr = mnt_new_iter(MNT_ITER_FORWARD);
         struct libmnt_fs* fs = nullptr;
         if (!itr) {
             mnt_free_table(tb);
-            throw MountError(("Coud not get mountpoint from devnode: " + devNode).c_str());
+            throw MountError(std::format("Coud not get mountpoint from devnode: {}", devNode));
         }
         while (mnt_table_next_fs(tb, itr, &fs) == 0) {
             const char* src = mnt_fs_get_source(fs);
@@ -160,43 +160,36 @@ public:
         }
         mnt_free_iter(itr);
         mnt_free_table(tb);
-        throw MountError(("Coud not get mountpoint from devnode: " + devNode).c_str());
+        throw MountError(std::format("Coud not get mountpoint from devnode: {}", devNode));
     }
 
 
-    MountMode getMountMode(const std::string& mountpoint)
+    MountMode getMountMode(std::string_view mountpoint)
     {
         libmnt_table* tb =
             mnt_new_table_from_file("/proc/self/mountinfo");
         if (!tb)
-            throw MountError(("Coud not get mountmode from mountpoint: " + mountpoint).c_str());
+            throw MountError(std::format("Coud not get mountmode from mountpoint: {}", mountpoint));
         libmnt_fs* fs =
             mnt_table_find_target(
                 tb,
-                mountpoint.c_str(),
+                mountpoint.data(),
                 MNT_ITER_FORWARD);
-        if (!fs) {
-            mnt_free_table(tb);
-            throw MountError(("Coud not get mountmode from mountpoint: " + mountpoint).c_str());
-        }
-        const char* opts =
-            mnt_fs_get_options(fs);
-        if (!opts) {
-            mnt_free_table(tb);
-            throw MountError(("Coud not get mountmode from mountpoint: " + mountpoint).c_str());
-        }
-        char* value = nullptr;
-        size_t size = 0;
-        MountMode result;
-        if (mnt_optstr_get_option(opts, "rw", &value, &size) == 0)
-        {
-            result = MountMode(MountMode::RW);
-        }
-        else if (mnt_optstr_get_option(opts, "ro", &value, &size) == 0)
-        {
-            result = MountMode(MountMode::RO);
-        }
         mnt_free_table(tb);
-        return result;
+        if (!fs) {
+            throw MountError(std::format("Coud not get mountmode from mountpoint: {}", mountpoint));
+        }
+        const char* opts = mnt_fs_get_options(fs);
+        if (!opts) {
+            throw MountError(std::format("Coud not get mountmode from mountpoint: {}", mountpoint));
+        }
+        if (mnt_optstr_get_option(opts, "rw", nullptr, nullptr) == 0)
+        {
+            return MountMode::rw();
+        }
+        else if (mnt_optstr_get_option(opts, "ro", nullptr, nullptr) == 0)
+        {
+            return MountMode::ro();
+        }
     }
 };

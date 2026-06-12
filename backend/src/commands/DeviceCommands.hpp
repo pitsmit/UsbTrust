@@ -5,6 +5,7 @@
 #include "CommandContext.hpp"
 #include "MountRegistry.hpp"
 #include "MountManager.hpp"
+#include "types.hpp"
 
 class Command {
 public:
@@ -26,7 +27,7 @@ private:
     MountRecord record;
 
 public:
-    int id;
+    core::Id id;
 
     AddDeviceToWhiteListCommand(MountRecord& d)
         : record(d) {}
@@ -42,10 +43,10 @@ public:
 
 class DeleteDeviceFromWhiteListCommand : public Command {
 private:
-    size_t id;
+    core::Id id;
 
 public:
-    DeleteDeviceFromWhiteListCommand(size_t id)
+    DeleteDeviceFromWhiteListCommand(core::Id id)
         : id(id) {}
 
     void execute(CommandContext& ctx) override {
@@ -60,12 +61,12 @@ public:
 
 class PatchValidToDeviceCommand : public Command {
 private:
-    size_t id;
+    core::Id id;
     std::optional<std::string> validTo;
 
 public:
     PatchValidToDeviceCommand(
-        size_t id,
+        core::Id id,
         std::optional<std::string> validTo)
         : id(id), validTo(validTo) {}
 

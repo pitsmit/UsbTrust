@@ -20,7 +20,7 @@ public:
         return repo.getMountPointByDevNode(devNode);
     }
 
-    std::optional<MountRecord> getById(size_t id) { return repo.getById(id); }
+    std::optional<MountRecord> getById(core::Id id) { return repo.getById(id); }
 
     void removeByDevNode(std::string_view devNode) { repo.removeByDevNode(devNode); }
 

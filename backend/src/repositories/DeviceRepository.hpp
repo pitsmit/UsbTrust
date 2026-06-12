@@ -19,11 +19,11 @@ public:
         info_rep(connection)
     {}
 
-    Id add(const DeviceInfo& dev) {
+    core::Id add(const DeviceInfo& dev) {
         auto deviceInfoId = info_rep.ensure(dev);
         static constexpr auto sql = 
             "INSERT INTO Device (deviceInfoId, validTo) VALUES (?, NULL) RETURNING id;";
-        auto id = db.queryScalar<Id>(sql, deviceInfoId);
+        auto id = db.queryScalar<core::Id>(sql, deviceInfoId);
         return *id;
     }
 
@@ -40,18 +40,18 @@ public:
         );
     }
 
-    void remove(Id id) {
+    void remove(core::Id id) {
         static constexpr auto sql = "DELETE FROM Device WHERE id = ?";
         db.execute(sql, id);
     }
 
-    void updateValidTo(Id id, std::optional<std::string> validTo) {
+    void updateValidTo(core::Id id, std::optional<std::string> validTo) {
         static constexpr auto sql = 
             "UPDATE Device SET validTo = ? WHERE id = ?";
         db.execute(sql, validTo, id);
     }
 
-    std::optional<Id> findActiveId(const DeviceInfo& info) {
+    std::optional<core::Id> findActiveId(const DeviceInfo& info) {
         static constexpr auto sql =
             "SELECT d.id FROM Device d "
             "JOIN DeviceInfo di ON d.deviceInfoId = di.id "
@@ -62,7 +62,7 @@ public:
             "OR d.validTo >= date('now'))"
             " LIMIT 1;";
 
-        return db.queryScalar<Id>(
+        return db.queryScalar<core::Id>(
             sql,
             info.vendorId,
             info.productId,

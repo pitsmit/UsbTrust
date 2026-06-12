@@ -5,10 +5,8 @@
 #include "DeviceInfo.hpp"
 #include "MountMode.hpp"
 
-using Id = std::int64_t;
-
 struct MountRecord {
-    std::optional<Id> id; /// id таблицы Device
+    std::optional<core::Id> id; /// id таблицы Device
     std::string devNode;
     std::string mountPoint;
     DeviceInfo info;
@@ -20,7 +18,7 @@ private:
     MountRecord record_{};
 
 public:
-    MountRecordBuilder& withId(Id id)
+    MountRecordBuilder& withId(core::Id id)
     {
         record_.id = id;
         return *this;

@@ -8,14 +8,11 @@
 class MountPointBuilder {
 public:
     static std::string build(const DeviceInfo& dev) {
-        std::string base = "/media/dlp";
-        return base + "/" + 
-            dev.vendorId + "_" + 
-            dev.productId + "_" + 
-            dev.serial;
+        return std::format("/media/dlp/{}_{}_{}", 
+            dev.vendorId, dev.productId, dev.serial);
     }
 
-    static void ensureExists(const std::string& path) {
+    static void ensureExists(std::string_view path) {
         std::filesystem::create_directories(path);
     }
 };

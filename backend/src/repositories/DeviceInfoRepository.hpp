@@ -10,7 +10,7 @@ public:
         DBConnection& connection)
         : RepositoryBase(connection) {}
 
-    Id ensure(const DeviceInfo& info) {
+    core::Id ensure(const DeviceInfo& info) {
         static constexpr auto sql =
             "INSERT INTO DeviceInfo "
             "(vendorId, productId, serial, productName, vendorName) "
@@ -20,7 +20,7 @@ public:
             "vendorName = excluded.vendorName "
             "RETURNING id;";
 
-        auto id = db.queryScalar<Id>(
+        auto id = db.queryScalar<core::Id>(
             sql,
             info.vendorId,
             info.productId,

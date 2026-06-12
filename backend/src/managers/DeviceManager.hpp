@@ -2,6 +2,7 @@
 
 #include "DeviceRepository.hpp"
 #include "DeviceInfo.hpp"
+#include "types.hpp"
 
 #include <vector>
 
@@ -16,13 +17,13 @@ public:
 
     std::vector<Device> getWhitelist() { return repo.getAll(); }
 
-    void removeFromWhitelist(size_t id) { repo.remove(id); }
+    void removeFromWhitelist(core::Id id) { repo.remove(id); }
 
-    void patchValidTo(size_t id, std::optional<std::string> validTo) {
+    void patchValidTo(core::Id id, std::optional<std::string> validTo) {
         repo.updateValidTo(id, validTo);
     }
 
-    std::optional<int> isAllowed(const DeviceInfo& dev) { 
+    std::optional<core::Id> isAllowed(const DeviceInfo& dev) { 
         return repo.findActiveId(dev); 
     }
 };

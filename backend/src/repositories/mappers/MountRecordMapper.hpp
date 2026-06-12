@@ -23,8 +23,8 @@ public:
     {
         return MountRecordBuilder()
             .withId(std::stoull(v[ID]))
-            .withDevNode(v[DEV_NODE] ? v[DEV_NODE] : "")
-            .withMountPoint(v[MOUNT_POINT] ? v[MOUNT_POINT] : "")
+            .withDevNode(v[DEV_NODE])
+            .withMountPoint(v[MOUNT_POINT])
             .withMode(MountMode::parse(v[MODE]))
             .withInfo(
                 DeviceInfoMapper::fromRow(
@@ -35,7 +35,6 @@ public:
                     VENDOR_NAME,
                     PRODUCT_NAME
                 )
-            )
-            .build();
+            ).build();
     }
 };

@@ -1,100 +1,112 @@
-#include "Facade.hpp"
-#include "DBInitializer.hpp"
-#ifdef BUILD_HTTP_SERVER
-#include "HttpServer.hpp"
-#endif
-#include "EventQueue.hpp"
-#include "Watcher.hpp"
-#include "EventLoop.hpp"
-#include "Config.hpp"
-#include "LinuxMountSystem.hpp"
-#include "UdevDeviceResolver.hpp"
-#include "MountRecoveryService.hpp"
-#include "WebSocketServer.hpp"
-#include "DeviceEventNotifyManager.hpp"
+#pragma once
 
-#include <thread>
 #include <chrono>
 #include <iostream>
+#include <optional>
+#include <thread>
+
+#include "Config.hpp"
+#include "DBInitializer.hpp"
+#include "DeviceEventNotifyManager.hpp"
+#include "EventLoop.hpp"
+#include "EventQueue.hpp"
+#include "Facade.hpp"
+#include "LinuxMountSystem.hpp"
+#include "MountRecoveryService.hpp"
+#include "UdevDeviceResolver.hpp"
+#include "Watcher.hpp"
+#include "WebSocketServer.hpp"
 
 class App {
 private:
     DBConnection db;
-    Facade facade;
-    #ifdef BUILD_HTTP_SERVER
-    HttpServer http;
-    #endif
     LinuxMountSystem linms;
     UdevDeviceResolver resolver;
-    MountRecoveryService rec;
+    Facade facade;
     WebSocketServer ws;
     DeviceEventNotifyManager notifier;
     EventQueue<DeviceEvent> queue;
-    UdevWatcher watcher;
     DeviceControlService service;
     EventLoop loop;
+    UdevWatcher watcher;
+    MountRecoveryService rec;
+
+#ifdef BUILD_HTTP_SERVER
+    std::optional<std::jthread> httpThread;
+#endif
+
+    template<typename F>
+    static std::jthread makeThread(std::string_view name, F&& f)
+    {
+        return std::jthread(
+            [name, fn = std::forward<F>(f)] {
+                try {
+                    fn();
+                }
+                catch (const std::exception& e) {
+                    std::cerr << name << ": " << e.what() << '\n';
+                }
+            });
+    }
+
+    void startOptionalServices()
+    {
+#ifdef BUILD_HTTP_SERVER
+        httpThread.emplace([this] {
+            try {
+                HttpServer(facade).start();
+            }
+            catch (const std::exception& e) {
+                std::cerr << "http: " << e.what() << '\n';
+            }
+        });
+#endif
+    }
 
 public:
     App()
-        : db(Config::getDBPath()),
-          ws(Config::getWebSocketPort()),
-          notifier(ws),
-          service(facade.registry(), facade.mounts(), notifier, resolver),
-          loop(queue, service),
-          watcher(queue),
-          facade(db, linms, resolver),
-          #ifdef BUILD_HTTP_SERVER
-          http(facade),
-          #endif
-          rec(facade.registry(), resolver, facade.mounts(), facade.devices())
-        {
-            DBInitializer::init(db);
-            rec.run();
-            ws.start();
-        }
+        : db(Config::getDBPath())
+        , linms()
+        , resolver()
+        , facade(db, linms, resolver)
+        , ws(Config::getWebSocketPort())
+        , notifier(ws)
+        , queue()
+        , service(facade.registry(), facade.mounts(), notifier, resolver)
+        , loop(queue, service)
+        , watcher(queue)
+        , rec(facade.registry(), resolver, facade.mounts(), facade.devices())
+    {
+    }
+
+    void init()
+    {
+        DBInitializer::init(db);
+        rec.run();
+        ws.start();
+        startOptionalServices();
+    }
 
     void run()
     {
-        std::jthread watcherThread([&] {
-            try {
-                watcher.run();
-            }
-            catch (const std::exception& e) {
-                std::cerr << "watcher thread: "
-                        << e.what()
-                        << std::endl;
-            }
+        using namespace std::chrono_literals;
+
+        auto watcherThread = makeThread("watcher", [this] {
+            watcher.run();
         });
 
-        std::jthread loopThread([&] {
-            try {
-                loop.run();
-            }
-            catch (const std::exception& e) {
-                std::cerr << "loop thread: "
-                        << e.what()
-                        << std::endl;
-            }
+        auto loopThread = makeThread("loop", [this] {
+            loop.run();
         });
 
-    #ifdef BUILD_HTTP_SERVER
-        std::jthread httpThread([&] {
-            try {
-                http.start();
-            }
-            catch (const std::exception& e) {
-                std::cerr << "http thread: "
-                        << e.what()
-                        << std::endl;
-            }
-        });
-    #endif
-
-        for (;;) {
-            std::this_thread::sleep_for(
-                std::chrono::seconds(10));
-        }
+        for (;;)
+            std::this_thread::sleep_for(10s);
     }
 };
 
-int main() { App().run(); }
+int main()
+{
+    App app;
+    app.init();
+    app.run();
+}

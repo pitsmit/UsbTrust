@@ -17,7 +17,7 @@ private:
         static const config_map cfg = [] {
             std::ifstream file(CONFIG_PATH.data());
             if (!file)
-                throw FileException((std::string(CONFIG_PATH) + " not found").c_str());
+                throw FileException(std::format("{} not found", CONFIG_PATH));
             std::string line;
             config_map m;
             while (std::getline(file, line)) {
@@ -34,7 +34,7 @@ private:
         const auto& cache = getCache();
         auto it = cache.find(key);
         if (it == cache.end()) {
-            throw FileException(("Missing config key: " + key).c_str());
+            throw FileException(std::format("Missing config key: {}", key));
         }
         return it->second;
     }
