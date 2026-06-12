@@ -3,16 +3,16 @@
 class IMountSystem {
 public:
     virtual int mount(
-        const std::string& dev,
-        const std::string& target,
-        const std::string& fs,
+        std::string_view dev,
+        std::string_view target,
+        std::string_view fs,
         bool readOnly,
-        const std::string& opts) noexcept = 0;
+        std::string_view opts) noexcept = 0;
     virtual int remount(
-        const std::string& target,
+        std::string_view target,
         bool readOnly) noexcept = 0;
-    virtual int umount(const std::string& target) noexcept = 0;
+    virtual int umount(std::string_view target) noexcept = 0;
     virtual void sync() noexcept = 0;
-    virtual std::string getFsType(const std::string& dev) = 0;
+    virtual std::string getFsType(std::string_view dev) = 0;
     virtual ~IMountSystem() = default;
 };

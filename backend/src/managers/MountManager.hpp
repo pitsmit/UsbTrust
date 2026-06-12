@@ -1,14 +1,12 @@
 #pragma once
 
-#include <optional>
-#include <string>
+#include <string_view>
 
 #include "DeviceManager.hpp"
 #include "MountUtils.hpp"
 #include "IDeviceResolver.hpp"
 #include "MountPointBuilder.hpp"
 #include "MountRecord.hpp"
-#include "Exceptions.hpp"
 
 class MountManager {
 private:
@@ -33,10 +31,9 @@ public:
         auto mountPoint = MountPointBuilder::build(info);
         MountPointBuilder::ensureExists(mountPoint);
         auto id = deviceManager_.isAllowed(info);
-        auto mode = id ? MountMode::rw()
-                       : MountMode::ro();
+        auto mode = MountMode::fromPresence(id);
 
-        mountUtils_.mountDevice(devNode, mountPoint, mode.isReadOnly());
+        mountUtils_.mountDevice(devNode, mountPoint, mode);
 
         return MountRecordBuilder()
                 .withDevNode(devNode)
@@ -56,7 +53,7 @@ public:
     {
         mountUtils_.remountDevice(
             record.mountPoint,
-            record.mode.isReadOnly()
+            record.mode
         );
     }
 };

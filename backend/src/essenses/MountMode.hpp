@@ -22,6 +22,12 @@ public:
         return MountMode(RO);
     }
 
+    template<typename T>
+    static constexpr MountMode fromPresence(T obj) {
+        return obj ? MountMode::rw()
+                   : MountMode::ro();
+    }
+
     bool isReadOnly() const {
         return value_ == RO;
     }
@@ -30,8 +36,12 @@ public:
         return value_ == RW;
     }
 
-    std::string toString() const {
+    std::string toStringUpper() const {
         return value_ == RW ? "RW" : "RO";
+    }
+
+    std::string toStringLower() const {
+        return value_ == RW ? "rw" : "ro";
     }
 
     static MountMode parse(std::string_view value) {

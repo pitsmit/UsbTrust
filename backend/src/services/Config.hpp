@@ -13,12 +13,13 @@ private:
     static inline constexpr std::string_view CONFIG_PATH = "config.txt";
 
     static const auto& getCache() {
-        static const std::unordered_map<std::string, std::string> cfg = [] {
-            std::unordered_map<std::string, std::string> m;
+        using config_map = std::unordered_map<std::string, std::string>;
+        static const config_map cfg = [] {
             std::ifstream file(CONFIG_PATH.data());
             if (!file)
                 throw FileException((std::string(CONFIG_PATH) + " not found").c_str());
             std::string line;
+            config_map m;
             while (std::getline(file, line)) {
                 auto pos = line.find('=');
                 if (pos != std::string::npos)
@@ -29,7 +30,7 @@ private:
         return cfg;
     }
 
-    static std::string get(const std::string& key) {
+    static std::string get(std::string_view key) {
         const auto& cache = getCache();
         auto it = cache.find(key);
         if (it == cache.end()) {
@@ -39,13 +40,12 @@ private:
     }
 
 public:
-    static std::vector<std::filesystem::path> getSchemaPaths() {
-        std::vector<std::filesystem::path> result;
-        for (const auto& entry :
-            std::filesystem::directory_iterator(get("db.schema.dir"))) {
-            result.push_back(entry.path());
-        }
-        return result;
+    static auto getSchemaPaths() {
+        auto dir = std::filesystem::directory_iterator(get("db.schema.dir"));
+        return std::vector<std::filesystem::path>(
+            dir.begin(),
+            dir.end()
+        );
     }
     static std::string getDBPath()  { return get("db.path"); }
     static std::string getLogFile() { return get("log.file"); }

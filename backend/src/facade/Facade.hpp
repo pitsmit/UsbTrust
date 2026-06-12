@@ -5,7 +5,7 @@
 #include "DeviceManager.hpp"
 #include "MountRegistry.hpp"
 #include "MountUtils.hpp"
-#include "MountService.hpp"
+#include "MountManager.hpp"
 
 class IMountSystem;
 class IDeviceResolver;

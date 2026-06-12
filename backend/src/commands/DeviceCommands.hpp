@@ -4,12 +4,11 @@
 #include "DeviceManager.hpp"
 #include "CommandContext.hpp"
 #include "MountRegistry.hpp"
-#include "MountService.hpp"
+#include "MountManager.hpp"
 
 class Command {
 public:
     virtual ~Command() = default;
-
     virtual void execute(CommandContext& ctx) = 0;
 };
 

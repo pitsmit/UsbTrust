@@ -11,7 +11,7 @@
 #include "UdevDeviceResolver.hpp"
 #include "MountRecoveryService.hpp"
 #include "WebSocketServer.hpp"
-#include "DeviceEventNotifier.hpp"
+#include "DeviceEventNotifyManager.hpp"
 
 #include <thread>
 #include <chrono>

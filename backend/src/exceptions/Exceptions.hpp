@@ -2,108 +2,89 @@
 
 #include <exception>
 #include <cstring>
+#include <string_view>
+#include <algorithm>
 
-class BaseException : public std::exception{
+class BaseException : public std::exception {
 protected:
-    static const size_t sizebuff = 128;
+    static constexpr size_t sizebuff = 128;
     char errormsg[sizebuff]{};
 
 public:
     BaseException() noexcept = default;
-    BaseException(const char* msg) noexcept{strncpy(errormsg, msg, sizebuff);}
-    ~BaseException() override {}
 
-    const char* what() const noexcept override { return errormsg; }
+    explicit BaseException(std::string_view msg) noexcept {
+        const auto len = std::min(msg.size(), sizebuff - 1);
+        std::memcpy(errormsg, msg.data(), len);
+        errormsg[len] = '\0';
+    }
+
+    ~BaseException() override = default;
+
+    const char* what() const noexcept override {
+        return errormsg;
+    }
 };
 
-
-class FileException : public BaseException{
-private:
-    const char* errIndexMsg = "LoadError";
-
+class FileException : public BaseException {
 public:
-    FileException() noexcept {snprintf(errormsg, sizebuff, "%s", errIndexMsg);}
-    FileException(const char* msg) noexcept
-        : BaseException(msg) {}
-    ~FileException() override = default;
+    FileException() noexcept
+        : BaseException("LoadError") {}
 
-    const char* what() const noexcept override { return errormsg; }
+    explicit FileException(std::string_view msg) noexcept
+        : BaseException(msg) {}
 };
 
-class HttpServerError : public BaseException{
-private:
-    const char* errIndexMsg = "HttpServerError";
-
+class HttpServerError : public BaseException {
 public:
-    HttpServerError() noexcept {snprintf(errormsg, sizebuff, "%s", errIndexMsg);}
-    HttpServerError(const char* msg) noexcept
-        : BaseException(msg) {}
-    ~HttpServerError() override = default;
+    HttpServerError() noexcept
+        : BaseException("HttpServerError") {}
 
-    const char* what() const noexcept override { return errormsg; }
+    explicit HttpServerError(std::string_view msg) noexcept
+        : BaseException(msg) {}
 };
 
-class SqlDataBaseError : public BaseException{
-private:
-    const char* errIndexMsg = "SqlDataBaseError";
-
+class SqlDataBaseError : public BaseException {
 public:
-    SqlDataBaseError() noexcept {snprintf(errormsg, sizebuff, "%s", errIndexMsg);}
-    SqlDataBaseError(const char* msg) noexcept
-        : BaseException(msg) {}
-    ~SqlDataBaseError() override = default;
+    SqlDataBaseError() noexcept
+        : BaseException("SqlDataBaseError") {}
 
-    const char* what() const noexcept override { return errormsg; }
+    explicit SqlDataBaseError(std::string_view msg) noexcept
+        : BaseException(msg) {}
 };
 
-class ResolveInfoError : public BaseException{
-private:
-    const char* errIndexMsg = "ResolveInfoError";
-
+class ResolveInfoError : public BaseException {
 public:
-    ResolveInfoError() noexcept {snprintf(errormsg, sizebuff, "%s", errIndexMsg);}
-    ResolveInfoError(const char* msg) noexcept
-        : BaseException(msg) {}
-    ~ResolveInfoError() override = default;
+    ResolveInfoError() noexcept
+        : BaseException("ResolveInfoError") {}
 
-    const char* what() const noexcept override { return errormsg; }
+    explicit ResolveInfoError(std::string_view msg) noexcept
+        : BaseException(msg) {}
 };
 
-class UnknownFsError : public BaseException{
-private:
-    const char* errIndexMsg = "UnknownFsError";
-
+class UnknownFsError : public BaseException {
 public:
-    UnknownFsError() noexcept {snprintf(errormsg, sizebuff, "%s", errIndexMsg);}
-    UnknownFsError(const char* msg) noexcept
-        : BaseException(msg) {}
-    ~UnknownFsError() override = default;
+    UnknownFsError() noexcept
+        : BaseException("UnknownFsError") {}
 
-    const char* what() const noexcept override { return errormsg; }
+    explicit UnknownFsError(std::string_view msg) noexcept
+        : BaseException(msg) {}
 };
 
-class MountError : public BaseException{
-private:
-    const char* errIndexMsg = "MountError";
-
+class MountError : public BaseException {
 public:
-    MountError() noexcept {snprintf(errormsg, sizebuff, "%s", errIndexMsg);}
-    MountError(const char* msg) noexcept
-        : BaseException(msg) {}
-    ~MountError() override = default;
+    MountError() noexcept
+        : BaseException("MountError") {}
 
-    const char* what() const noexcept override { return errormsg; }
+    explicit MountError(std::string_view msg) noexcept
+        : BaseException(msg) {}
 };
 
-class UnMountError : public BaseException{
-private:
-    const char* errIndexMsg = "UnMountError";
-
+class UnMountError : public BaseException {
 public:
-    UnMountError() noexcept {snprintf(errormsg, sizebuff, "%s", errIndexMsg);}
-    UnMountError(const char* msg) noexcept
-        : BaseException(msg) {}
-    ~UnMountError() override = default;
+    UnMountError() noexcept
+        : BaseException("UnMountError") {}
 
-    const char* what() const noexcept override { return errormsg; }
+    explicit UnMountError(std::string_view msg) noexcept
+        : BaseException(msg) {}
 };

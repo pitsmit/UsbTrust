@@ -9,50 +9,49 @@
 class LinuxMountSystem : public IMountSystem {
 public:
     int mount(
-        const std::string& dev,
-        const std::string& target,
-        const std::string& fs,
+        std::string_view dev,
+        std::string_view target,
+        std::string_view fs,
         bool readOnly,
-        const std::string& opts) noexcept override
+        std::string_view opts) noexcept override
     {
         return ::mount(
-            dev.c_str(),
-            target.c_str(),
-            fs.c_str(),
+            dev.data(),
+            target.data(),
+            fs.data(),
             readOnly ? (MS_RDONLY | MS_NOEXEC) : 0,
-            opts.empty() ? nullptr : opts.c_str()
+            opts.empty() ? nullptr : opts.data()
         );
     }
 
     int remount(
-        const std::string& target,
+        std::string_view target,
         bool readOnly) noexcept override
     {
         return ::mount(
             nullptr,
-            target.c_str(),
+            target.data(),
             nullptr,
             readOnly ? (MS_REMOUNT | MS_RDONLY | MS_NOEXEC) : MS_REMOUNT,
             nullptr
         );
     }
 
-    int umount(const std::string& target) noexcept override {
-        return ::umount2(target.c_str(), MNT_DETACH);
+    int umount(std::string_view target) noexcept override {
+        return ::umount2(target.data(), MNT_DETACH);
     }
 
     void sync() noexcept override {
         ::sync();
     }
 
-    std::string getFsType(const std::string& devnode) override {
+    std::string getFsType(std::string_view devnode) override {
         blkid_cache cache = nullptr;
         if (blkid_get_cache(&cache, nullptr) != 0) {
             return "";
         }
-        char* type = blkid_get_tag_value(cache, "TYPE", devnode.c_str());
-        std::string result = type ? type : "";
+        char* type = blkid_get_tag_value(cache, "TYPE", devnode.data());
         blkid_put_cache(cache);
-        return result;
+        return type ? type : "";
     }
 };
