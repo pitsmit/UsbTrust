@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "IDeviceResolver.hpp"
-#include "DeviceInfo.hpp"
-#include "MountRecord.hpp"
+#include "core/IDeviceResolver.hpp"
+#include "entities/DeviceInfo.hpp"
+#include "entities/MountRecord.hpp"
 
 class MockDeviceResolver : public IDeviceResolver {
 private:
@@ -31,24 +31,23 @@ public:
         shouldReturn_ = false;
     }
 
-    std::optional<DeviceInfo>
-    resolve(const char* /*devNode*/) override
+    DeviceInfo
+    resolve(std::string_view /*devNode*/) override
     {
         if (!shouldReturn_) {
-            return std::nullopt;
+            return DeviceInfoBuilder().build();
         }
         return info_;
     }
 
-    std::optional<std::string> getMountPoint(const std::string& devNode)
+    std::string getMountPoint(std::string_view devNode)
     {
         return mountpoint_;
     }
 
-    std::optional<MODE> getMountMode(const std::string& mountpoint)
+    MountMode getMountMode(std::string_view mountpoint)
     {
-        std::optional<MODE> a = MODE::RO;
-        return a;
+        return MountMode::ro();
     }
 
     std::vector<std::string> getUsbDevNodes()

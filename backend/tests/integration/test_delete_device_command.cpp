@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
-#include "Facade.hpp"
-#include "DeviceCommands.hpp"
-#include "MountRecord.hpp"
-#include "DeviceInfo.hpp"
-#include "UdevDeviceResolver.hpp"
+#include "facade/Facade.hpp"
+#include "commands/DeviceCommands.hpp"
+#include "entities/MountRecord.hpp"
+#include "entities/DeviceInfo.hpp"
+#include "linux/UdevDeviceResolver.hpp"
 
 #include "../helpers/LoggerTestHelper.hpp"
 #include "../helpers/DataBaseTestHelper.hpp"
@@ -58,7 +58,7 @@ TEST_F(DeleteDeviceCommandTest, DeleteOk) {
         
     d.id = facade->devices().addToWhitelist(info);
     facade->registry().add(d);
-    DeleteDeviceFromWhiteListCommand cmd(d.id);
+    DeleteDeviceFromWhiteListCommand cmd(*d.id);
 
     // ACT
     facade->execute(cmd);
@@ -70,5 +70,5 @@ TEST_F(DeleteDeviceCommandTest, DeleteOk) {
             return dev.id == d.id;
         });
     EXPECT_EQ(it, devices.end());
-    EXPECT_FALSE(facade->registry().getById(d.id).has_value());
+    EXPECT_FALSE(facade->registry().getById(*d.id).has_value());
 }

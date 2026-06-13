@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "exceptions/Exceptions.hpp"
+#include "services/DevLogger.hpp"
 
 class DBConnection {
 private:
@@ -129,15 +130,19 @@ public:
             (bind(stmt, idx++, args), ...);
             std::optional<T> result;
             if (sqlite3_step(stmt) == SQLITE_ROW) {
-                if constexpr (std::is_same_v<T, int>) {
-                    result = sqlite3_column_int(stmt, 0);
+                mylog->info("row received");
+                if constexpr (std::integral<T>) {
+                    result = static_cast<T>(
+                        sqlite3_column_int64(stmt, 0)
+                    );
                 }
-                else if constexpr (std::is_same_v<T, std::string>) {
+                else if constexpr (std::same_as<T, std::string>) {
                     auto* txt =
                         reinterpret_cast<const char*>(
                             sqlite3_column_text(stmt, 0));
+
                     if (txt)
-                        result = std::string(txt);
+                        result = txt;
                 }
             }
             sqlite3_finalize(stmt);

@@ -5,6 +5,7 @@
 #include "RepositoryBase.hpp"
 #include "DeviceInfoRepository.hpp"
 #include "mappers/DeviceMapper.hpp"
+#include "services/DevLogger.hpp"
 
 #include <vector>
 

@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "Facade.hpp"
-#include "DeviceCommands.hpp"
-#include "UdevDeviceResolver.hpp"
+#include "facade/Facade.hpp"
+#include "commands/DeviceCommands.hpp"
+#include "linux/UdevDeviceResolver.hpp"
 
 #include "../helpers/LoggerTestHelper.hpp"
 #include "../helpers/DataBaseTestHelper.hpp"
@@ -51,7 +51,7 @@ TEST_F(WhiteListDeviceCommandTest, ReturnsWhitelistFill) {
 
     // ASSERT
     ASSERT_EQ(cmd.list.size(), 1);
-    EXPECT_EQ(*cmd.list[0].info.vendorId, vendorId);
+    EXPECT_EQ(cmd.list[0].info.vendorId, vendorId);
 }
 
 TEST_F(WhiteListDeviceCommandTest, ReturnsEmptyWhiteList) {

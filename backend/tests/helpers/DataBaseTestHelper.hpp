@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include "DBInitializer.hpp"
-#include "DBConnection.hpp"
-#include "DeviceRepository.hpp"
+#include "repositories/DBInitializer.hpp"
+#include "repositories/DBConnection.hpp"
+#include "repositories/DeviceRepository.hpp"
 
 
 class DataBaseTestHelper {

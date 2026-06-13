@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "MountRegistry.hpp"
-#include "MountRecord.hpp"
-#include "DevLogger.hpp"
-#include "DeviceInfo.hpp"
+#include "managers/MountRegistry.hpp"
+#include "entities/MountRecord.hpp"
+#include "services/DevLogger.hpp"
+#include "entities/DeviceInfo.hpp"
 
 #include "../helpers/LoggerTestHelper.hpp"
 #include "../helpers/DataBaseTestHelper.hpp"
@@ -52,7 +52,7 @@ TEST_F(MountRegistryTest, AddAndGet_ReturnsValue) {
             .withDevNode(devNode)
             .withMountPoint(mountPoint)
             .withInfo(info)
-            .withMode(MODE::RO)
+            .withMode(MountMode::ro())
             .build()
     );
 
@@ -97,7 +97,7 @@ TEST_F(MountRegistryTest, Add_OverwriteExistingValue) {
             .withDevNode(devNode)
             .withMountPoint(firstMount)
             .withInfo(info)
-            .withMode(MODE::RO)
+            .withMode(MountMode::ro())
             .build()
     );
 
@@ -107,7 +107,7 @@ TEST_F(MountRegistryTest, Add_OverwriteExistingValue) {
             .withDevNode(devNode)
             .withMountPoint(secondMount)
             .withInfo(info)
-            .withMode(MODE::RO)
+            .withMode(MountMode::ro())
             .build()
     );
 
@@ -140,7 +140,7 @@ TEST_F(MountRegistryTest, Remove_DeletesEntry) {
             .withDevNode(devNode)
             .withMountPoint(mountPoint)
             .withInfo(info)
-            .withMode(MODE::RO)
+            .withMode(MountMode::ro())
             .build()
     );
 
@@ -187,7 +187,7 @@ TEST_F(MountRegistryTest, GetAll_ReturnsAllRecords) {
             .withDevNode(devNode1)
             .withMountPoint("m1")
             .withInfo(info1)
-            .withMode(MODE::RO)
+            .withMode(MountMode::ro())
             .build()
     );
 
@@ -197,7 +197,7 @@ TEST_F(MountRegistryTest, GetAll_ReturnsAllRecords) {
             .withDevNode(devNode2)
             .withMountPoint("m2")
             .withInfo(info2)
-            .withMode(MODE::RO)
+            .withMode(MountMode::ro())
             .build()
     );
 
@@ -207,7 +207,7 @@ TEST_F(MountRegistryTest, GetAll_ReturnsAllRecords) {
             .withDevNode(devNode3)
             .withMountPoint("m3")
             .withInfo(info3)
-            .withMode(MODE::RO)
+            .withMode(MountMode::ro())
             .build()
     );
 

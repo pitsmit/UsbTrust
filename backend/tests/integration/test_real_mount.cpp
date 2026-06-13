@@ -7,16 +7,16 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "DeviceControlService.hpp"
-#include "LinuxMountSystem.hpp"
-#include "DeviceInfo.hpp"
-#include "DeviceManager.hpp"
-#include "DeviceEvent.hpp"
-#include "MountRegistry.hpp"
-#include "MountUtils.hpp"
-#include "UdevDeviceResolver.hpp"
-#include "MountService.hpp"
-#include "DeviceEventNotifier.hpp"
+#include "core/DeviceControlService.hpp"
+#include "linux/LinuxMountSystem.hpp"
+#include "entities/DeviceInfo.hpp"
+#include "managers/DeviceManager.hpp"
+#include "entities/DeviceEvent.hpp"
+#include "managers/MountRegistry.hpp"
+#include "linux/MountUtils.hpp"
+#include "linux/UdevDeviceResolver.hpp"
+#include "managers/MountManager.hpp"
+#include "managers/DeviceEventNotifyManager.hpp"
 
 #include "../helpers/DataBaseTestHelper.hpp"
 #include "../helpers/LoggerTestHelper.hpp"

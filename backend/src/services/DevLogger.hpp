@@ -21,8 +21,13 @@ public:
         Error,
         Critical
     };
-
+    void setEnabled(bool value)
+    {
+        enabled = value;
+    }
+    
 private:
+    bool enabled = true;
     std::ofstream file;
     std::mutex mutex;
     Level currentLevel = Level::Info;
@@ -53,6 +58,7 @@ private:
 
     void write(Level level, const std::string& message)
     {
+        if (!enabled) return;
         if (static_cast<int>(level) < static_cast<int>(currentLevel))
             return;
 

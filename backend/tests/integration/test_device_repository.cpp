@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <format>
 
 #include "entities/Device.hpp"
 #include "entities/DeviceInfo.hpp"
@@ -12,12 +13,12 @@ protected:
     DataBaseTestHelper dbHelper;
 
     void SetUp() override {
-        logger.disable();
+        logger.restore();
         dbHelper.create();
     }
 
     void TearDown() override {
-        logger.restore();
+        //logger.restore();
         dbHelper.reset();
     }
 };
@@ -25,20 +26,21 @@ protected:
 
 TEST_F(DeviceRepositoryTest, AddAndGetAll) {
     // ARRANGE
+    constexpr auto vendorId = "1234";
     auto info = 
             DeviceInfoBuilder()
-            .withVendorId("1234")
+            .withVendorId(vendorId)
             .withProductId("ABCD")
             .withSerial("ABCDEF123456")
             .build();
     dbHelper.get_repo().add(info);
-
+    
     // ACT
     auto all = dbHelper.get_repo().getAll();
 
     // ASSERT
     ASSERT_EQ(all.size(), 1);
-    EXPECT_EQ(*all[0].info.vendorId, "1234");
+    EXPECT_EQ(all[0].info.vendorId, vendorId);
 }
 
 TEST_F(DeviceRepositoryTest, Exists_ReturnsTrue) {

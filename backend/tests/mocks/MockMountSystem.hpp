@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "IMountSystem.hpp"
+#include "core/IMountSystem.hpp"
 
 class MockMountSystem : public IMountSystem {
 public:
@@ -21,42 +21,42 @@ public:
     int mountResult = 0;
     int umountResult = 0;
 
-    void sync() override {
+    void sync() noexcept override {
         syncCalled = true;
     }
 
-    std::string getFsType(const std::string& devnode) override {
-        lastDev = devnode;
+    std::string getFsType(std::string_view dev) override {
+        lastDev = dev;
         return fsType;
     }
 
     int mount(
-        const std::string& dev,
-        const std::string& target,
-        const std::string& fs,
-        bool flags,
-        const std::string& opts) override
+        std::string_view dev,
+        std::string_view target,
+        std::string_view fs,
+        bool readOnly,
+        std::string_view opts) noexcept override
     {
         mountCalled = true;
         lastDev = dev;
         lastTarget = target;
         lastFs = fs;
-        lastFlags = flags;
+        lastFlags = readOnly;
         lastOpts = opts;
         return mountResult;
     }
 
     int remount(
-        const std::string& target,
-        bool flags) override
+        std::string_view target,
+        bool readOnly) noexcept override
     {
         mountCalled = true;
         lastTarget = target;
-        lastFlags = flags;
+        lastFlags = readOnly;
         return mountResult;
     }
 
-    int umount(const std::string& target) override {
+    int umount(std::string_view target) noexcept override {
         umountCalled = true;
         lastTarget = target;
         return umountResult;
