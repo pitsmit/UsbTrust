@@ -4,9 +4,10 @@
 #include <optional>
 
 #include "DeviceInfo.hpp"
+#include "services/types.hpp"
 
 struct Device {
-    size_t id;
+    core::Id id;
     DeviceInfo info;
     std::optional<std::string> validTo;
 };
@@ -16,17 +17,17 @@ private:
     Device device_{};
 
 public:
-    DeviceBuilder& withId(size_t id) {
+    DeviceBuilder& withId(core::Id id) noexcept {
         device_.id = id;
         return *this;
     }
 
-    DeviceBuilder& withInfo(const DeviceInfo& info) {
+    DeviceBuilder& withInfo(const DeviceInfo& info) noexcept {
         device_.info = info;
         return *this;
     }
 
-    DeviceBuilder& withValidTo(const std::string& validTo) {
+    DeviceBuilder& withValidTo(std::string_view validTo) noexcept {
         device_.validTo = validTo;
         return *this;
     }

@@ -18,53 +18,43 @@ DefaultApi::DefaultApi(
       facade(f)
 {}
 
-void DefaultApi::init()
-{
+void DefaultApi::init() {
     setupRoutes();
 }
 
-void DefaultApi::setupRoutes()
-{
+void DefaultApi::setupRoutes() {
     using namespace Pistache::Rest;
 
     Routes::Post(*router, "/api/v1/whitelist",
         Routes::bind(&DefaultApi::add_device_to_white_list_handler, this));
-
     Routes::Delete(*router, "/api/v1/whitelist/:id",
         Routes::bind(&DefaultApi::delete_device_from_white_list_handler, this));
-
     Routes::Patch(*router, "/api/v1/whitelist/:id",
         Routes::bind(&DefaultApi::patch_valid_to_device_handler, this));
-
     Routes::Get(*router, "/api/v1/whitelist",
         Routes::bind(&DefaultApi::get_usb_white_list_handler, this));
-
     Routes::Get(*router, "/api/v1/list",
         Routes::bind(&DefaultApi::get_current_connected_devices_list_handler, this));
 
-    #ifdef ENABLE_TEST_API
+#ifdef ENABLE_TEST_API
     Routes::Post(*router, "/api/test/seed/whitelist",
         Routes::bind(&DefaultApi::seed_whitelist_handler, this));
-    #endif
+#endif
 }
 
 void DefaultApi::add_device_to_white_list_handler(
     const Pistache::Rest::Request& request,
-    Pistache::Http::ResponseWriter response)
-{
+    Pistache::Http::ResponseWriter response) {
     try {
         json body = json::parse(request.body());
-
         MountRecord record = body.get<MountRecord>();
 
         AddDeviceToWhiteListCommand command(record);
-
         facade.execute(command);
 
         json result = {
             { "id", command.id }
         };
-
         response.send(
             Pistache::Http::Code::Created,
             result.dump(),
@@ -78,13 +68,11 @@ void DefaultApi::add_device_to_white_list_handler(
 
 void DefaultApi::delete_device_from_white_list_handler(
     const Pistache::Rest::Request& request,
-    Pistache::Http::ResponseWriter response)
-{
+    Pistache::Http::ResponseWriter response) {
     try {
         size_t id = std::stoul(request.param(":id").as<std::string>());
 
         DeleteDeviceFromWhiteListCommand command(id);
-
         facade.execute(command);
 
         response.send(Pistache::Http::Code::No_Content);
@@ -96,21 +84,16 @@ void DefaultApi::delete_device_from_white_list_handler(
 
 void DefaultApi::patch_valid_to_device_handler(
     const Pistache::Rest::Request& request,
-    Pistache::Http::ResponseWriter response)
-{
+    Pistache::Http::ResponseWriter response) {
     try {
         size_t id = std::stoul(request.param(":id").as<std::string>());
-
         json body = json::parse(request.body());
-
         std::optional<std::string> validTo;
-
         if (body.contains("validTo") && !body["validTo"].is_null()) {
             validTo = body["validTo"].get<std::string>();
         }
 
         PatchValidToDeviceCommand command(id, validTo);
-
         facade.execute(command);
 
         response.send(Pistache::Http::Code::Ok);
@@ -122,15 +105,12 @@ void DefaultApi::patch_valid_to_device_handler(
 
 void DefaultApi::get_usb_white_list_handler(
     const Pistache::Rest::Request& request,
-    Pistache::Http::ResponseWriter response)
-{
+    Pistache::Http::ResponseWriter response) {
     try {
         GetWhiteListDeviceCommand command;
-
         facade.execute(command);
 
         json j = command.list;
-
         response.send(Pistache::Http::Code::Ok, j.dump());
     }
     catch (const std::exception& e) {
@@ -140,15 +120,12 @@ void DefaultApi::get_usb_white_list_handler(
 
 void DefaultApi::get_current_connected_devices_list_handler(
     const Pistache::Rest::Request& request,
-    Pistache::Http::ResponseWriter response)
-{
+    Pistache::Http::ResponseWriter response) {
     try {
         GetCurrentConnectedDevicesCommand command;
-
         facade.execute(command);
 
         json j = command.records;
-
         response.send(Pistache::Http::Code::Ok, j.dump());
     }
     catch (const std::exception& e) {
@@ -159,21 +136,16 @@ void DefaultApi::get_current_connected_devices_list_handler(
 #ifdef ENABLE_TEST_API
 void DefaultApi::seed_whitelist_handler(
     const Pistache::Rest::Request& request,
-    Pistache::Http::ResponseWriter response)
-{
+    Pistache::Http::ResponseWriter response) {
     try {
         json body = json::parse(request.body());
-
         DeviceInfo info = body.get<DeviceInfo>();
-
         std::optional<std::string> validTo;
-
         if (body.contains("validTo") && !body["validTo"].is_null()) {
             validTo = body["validTo"].get<std::string>();
         }
 
-        facade.devices()
-              .addToWhitelist(info);
+        facade.devices().addToWhitelist(info);
 
         response.send(Pistache::Http::Code::Created, "seeded");
     }

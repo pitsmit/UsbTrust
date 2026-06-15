@@ -6,11 +6,11 @@ public:
         std::string_view dev,
         std::string_view target,
         std::string_view fs,
-        bool readOnly,
+        MountMode mode,
         std::string_view opts) noexcept = 0;
     virtual int remount(
         std::string_view target,
-        bool readOnly) noexcept = 0;
+        MountMode mode) noexcept = 0;
     virtual int umount(std::string_view target) noexcept = 0;
     virtual void sync() noexcept = 0;
     virtual std::string getFsType(std::string_view dev) = 0;

@@ -1,4 +1,6 @@
+#pragma once
 #include "core/IMountSystem.hpp"
+#include "linux/MountFlagsBuilder.hpp"
 
 #include <sys/mount.h>
 #include <libudev.h>
@@ -12,27 +14,27 @@ public:
         std::string_view dev,
         std::string_view target,
         std::string_view fs,
-        bool readOnly,
+        MountMode mode,
         std::string_view opts) noexcept override
     {
         return ::mount(
             dev.data(),
             target.data(),
             fs.data(),
-            readOnly ? (MS_RDONLY | MS_NOEXEC) : 0,
+            MountFlagsBuilder::from(mode),
             opts.empty() ? nullptr : opts.data()
         );
     }
 
     int remount(
         std::string_view target,
-        bool readOnly) noexcept override
+        MountMode mode) noexcept override
     {
         return ::mount(
             nullptr,
             target.data(),
             nullptr,
-            readOnly ? (MS_REMOUNT | MS_RDONLY | MS_NOEXEC) : MS_REMOUNT,
+            MountFlagsBuilder::remount_from(mode),
             nullptr
         );
     }

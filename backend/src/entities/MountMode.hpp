@@ -28,23 +28,23 @@ public:
                    : MountMode::ro();
     }
 
-    bool isReadOnly() const {
+    bool isReadOnly() const noexcept {
         return value_ == RO;
     }
 
-    bool isReadWrite() const {
+    bool isReadWrite() const noexcept {
         return value_ == RW;
     }
 
-    bool operator==(const MountMode& mode) const {
+    bool operator==(const MountMode& mode) const noexcept {
         return isReadWrite() == mode.isReadWrite();
     }
 
-    std::string toStringUpper() const {
+    std::string toStringUpper() const noexcept {
         return value_ == RW ? "RW" : "RO";
     }
 
-    std::string toStringLower() const {
+    std::string toStringLower() const noexcept {
         return value_ == RW ? "rw" : "ro";
     }
 

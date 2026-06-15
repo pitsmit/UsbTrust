@@ -19,8 +19,7 @@ public:
     };
 
 public:
-    static MountRecord fromRow(char** v)
-    {
+    static MountRecord fromRow(char** v) noexcept {
         return MountRecordBuilder()
             .withId(std::stoull(v[ID]))
             .withDevNode(v[DEV_NODE])

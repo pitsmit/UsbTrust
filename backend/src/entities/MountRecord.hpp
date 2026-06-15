@@ -19,35 +19,35 @@ private:
     MountRecord record_{};
 
 public:
-    MountRecordBuilder& withId(std::optional<core::Id> id)
+    MountRecordBuilder& withId(std::optional<core::Id> id) noexcept
     {
         record_.id = id ? id : std::nullopt;
         return *this;
     }
 
     MountRecordBuilder& withDevNode(
-        std::string_view devNode)
+        std::string_view devNode) noexcept
     {
         record_.devNode = devNode;
         return *this;
     }
 
     MountRecordBuilder& withMountPoint(
-        const std::string& mountPoint)
+        const std::string& mountPoint) noexcept
     {
         record_.mountPoint = mountPoint;
         return *this;
     }
 
     MountRecordBuilder& withInfo(
-        const DeviceInfo& info)
+        const DeviceInfo& info) noexcept
     {
         record_.info = info;
         return *this;
     }
 
     MountRecordBuilder& withMode(
-        const MountMode& mode)
+        const MountMode& mode) noexcept
     {
         record_.mode = mode;
         return *this;

@@ -68,6 +68,7 @@ target_link_libraries(app
     pthread
     udev
     blkid
+    systemd
     mount
     ixwebsocket
 )

@@ -30,27 +30,27 @@ private:
     DeviceInfo info_;
 
 public:
-    DeviceInfoBuilder& withVendorId(const std::string& v) {
+    DeviceInfoBuilder& withVendorId(std::string_view v) noexcept {
         info_.vendorId = v;
         return *this;
     }
 
-    DeviceInfoBuilder& withProductId(const std::string& v) {
+    DeviceInfoBuilder& withProductId(std::string_view v) noexcept {
         info_.productId = v;
         return *this;
     }
 
-    DeviceInfoBuilder& withSerial(const std::string& v) {
+    DeviceInfoBuilder& withSerial(std::string_view v) noexcept {
         info_.serial = v;
         return *this;
     }
 
-    DeviceInfoBuilder& withVendorName(const std::string& v) {
+    DeviceInfoBuilder& withVendorName(std::string_view v) noexcept {
         info_.vendorName = v;
         return *this;
     }
 
-    DeviceInfoBuilder& withProductName(const std::string& v) {
+    DeviceInfoBuilder& withProductName(std::string_view v) noexcept {
         info_.productName = v;
         return *this;
     }

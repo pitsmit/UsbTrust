@@ -9,7 +9,7 @@ public:
         int productIdIdx,
         int serialIdx,
         int vendorNameIdx,
-        int productNameIdx)
+        int productNameIdx) noexcept
     {
         DeviceInfoBuilder builder;
         if (v[vendorIdIdx]) builder.withVendorId(v[vendorIdIdx]);

@@ -15,8 +15,7 @@ public:
         VALID_TO
     };
 
-    static Device fromRow(char** v)
-    {
+    static Device fromRow(char** v) noexcept {
         DeviceInfoBuilder info;
         if (v[VENDOR_ID]) info.withVendorId(v[VENDOR_ID]);
         if (v[PRODUCT_ID]) info.withProductId(v[PRODUCT_ID]);

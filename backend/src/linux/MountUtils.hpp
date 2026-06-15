@@ -52,7 +52,7 @@ public:
             }
         }
 
-        if (sys.mount(devnode, mountPoint, fs, mode.isReadOnly(), opts) < 0) {
+        if (sys.mount(devnode, mountPoint, fs, mode, opts) < 0) {
             throw MountError(
                 std::format("mount failed for devnode: {}, mountPoint: \
                     {}, error: {}, opts: {}, fs: {}",
@@ -80,7 +80,7 @@ public:
     }
 
     void remountDevice(std::string_view mountPoint, MountMode mode) {
-        if (sys.remount(mountPoint, mode.isReadOnly()) < 0) {
+        if (sys.remount(mountPoint, mode) < 0) {
             throw MountError(
                 std::format("remount failed for mountPoint: {}, error: {}",
                 mountPoint, strerror(errno)));

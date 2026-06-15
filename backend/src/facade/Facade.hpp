@@ -33,8 +33,8 @@ public:
         command.execute(ctx);
     }
 
-    DeviceManager& devices() { return deviceManager; }
-    MountManager& mounts() { return mountManager; }
-    MountRegistryManager& registry() { return mountRegistry; }
-    MountUtils& utils() { return mountUtils; }
+    DeviceManager& devices() noexcept { return deviceManager; }
+    MountManager& mounts() noexcept { return mountManager; }
+    MountRegistryManager& registry() noexcept { return mountRegistry; }
+    MountUtils& utils() noexcept { return mountUtils; }
 };

@@ -18,12 +18,12 @@ private:
     DeviceEvent event_;
 
 public:
-    DeviceEventBuilder& withType(EventType type) {
+    DeviceEventBuilder& withType(EventType type) noexcept {
         event_.type = type;
         return *this;
     }
 
-    DeviceEventBuilder& withDevNode(const char *node) {
+    DeviceEventBuilder& withDevNode(std::string_view node) noexcept {
         event_.devNode = node;
         return *this;
     }
