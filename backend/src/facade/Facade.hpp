@@ -4,19 +4,18 @@
 #include "commands/CommandContext.hpp"
 #include "managers/DeviceManager.hpp"
 #include "managers/MountRegistry.hpp"
-#include "linux/MountUtils.hpp"
+#include "services/MountService.hpp"
 #include "managers/MountManager.hpp"
 
 class IMountSystem;
 class IDeviceResolver;
 class DBConnection;
 
-
 class Facade {
 private: 
     DeviceManager deviceManager;
     MountRegistryManager mountRegistry;
-    MountUtils mountUtils;
+    MountService mountService;
     MountManager mountManager;
     CommandContext ctx;
 
@@ -24,8 +23,8 @@ public:
     Facade(DBConnection &db, IMountSystem &sys, IDeviceResolver &res)
         : deviceManager(db),
           mountRegistry(db),
-          mountUtils(sys),
-          mountManager(deviceManager, mountUtils, res),
+          mountService(sys),
+          mountManager(deviceManager, mountService, res),
           ctx {deviceManager, mountRegistry, mountManager}
     {}
 
@@ -36,5 +35,4 @@ public:
     DeviceManager& devices() noexcept { return deviceManager; }
     MountManager& mounts() noexcept { return mountManager; }
     MountRegistryManager& registry() noexcept { return mountRegistry; }
-    MountUtils& utils() noexcept { return mountUtils; }
 };

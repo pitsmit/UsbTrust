@@ -4,7 +4,7 @@
 #include <optional>
 
 #include "DeviceInfo.hpp"
-#include "services/types.hpp"
+#include "types/types.hpp"
 
 struct Device {
     core::Id id;

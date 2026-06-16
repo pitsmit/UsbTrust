@@ -1,13 +1,14 @@
 #pragma once
 
+#include <string.h>
+
 #include <libmount/libmount.h>
 #include <systemd/sd-device.h>
 #include <sys/stat.h>
-#include <string.h>
 
 #include "entities/MountRecord.hpp"
 #include "entities/DeviceInfo.hpp"
-#include "core/IDeviceResolver.hpp"
+#include "ports/IDeviceResolver.hpp"
 
 class UdevDeviceResolver : public IDeviceResolver {
 private:

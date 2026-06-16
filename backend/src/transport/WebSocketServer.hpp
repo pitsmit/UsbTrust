@@ -1,13 +1,13 @@
 #pragma once
 
-#include "IWebSocketServer.hpp"
+#include <mutex>
+#include <set>
+#include <string>
 
 #include <ixwebsocket/IXWebSocketServer.h>
 #include <ixwebsocket/IXConnectionState.h>
 
-#include <mutex>
-#include <set>
-#include <string>
+#include "ports/IWebSocketServer.hpp"
 
 class WebSocketServer: public IWebSocketServer {
 private:
@@ -52,7 +52,7 @@ public:
         server_.start();
     }
 
-    void broadcast(const std::string& message)
+    void broadcast(std::string_view message)
     {
         std::lock_guard lock(mutex_);
 

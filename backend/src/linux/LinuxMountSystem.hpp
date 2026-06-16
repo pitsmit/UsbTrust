@@ -1,12 +1,13 @@
 #pragma once
-#include "core/IMountSystem.hpp"
-#include "linux/MountFlagsBuilder.hpp"
 
 #include <sys/mount.h>
 #include <libudev.h>
 #include <unistd.h>
 #include <blkid/blkid.h>
 #include <string>
+
+#include "ports/IMountSystem.hpp"
+#include "MountFlagsBuilder.hpp"
 
 class LinuxMountSystem : public IMountSystem {
 public:
@@ -45,6 +46,14 @@ public:
 
     void sync() noexcept override {
         ::sync();
+    }
+
+    void chown(std::string_view target, int uid, int gid) noexcept override {
+        ::chown(target.data(), uid, gid);
+    }
+    
+    void chmod(std::string_view target, int perms) noexcept override {
+        ::chmod(target.data(), 0775);
     }
 
     std::string getFsType(std::string_view devnode) override {

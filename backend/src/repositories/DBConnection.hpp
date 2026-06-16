@@ -1,12 +1,11 @@
 #pragma once
 
 #include <string>
-#include <sqlite3.h>
-#include <stdexcept>
 #include <functional>
 
+#include <sqlite3.h>
+
 #include "exceptions/Exceptions.hpp"
-#include "services/DevLogger.hpp"
 
 class DBConnection {
 private:
@@ -130,7 +129,6 @@ public:
             (bind(stmt, idx++, args), ...);
             std::optional<T> result;
             if (sqlite3_step(stmt) == SQLITE_ROW) {
-                mylog->info("row received");
                 if constexpr (std::integral<T>) {
                     result = static_cast<T>(
                         sqlite3_column_int64(stmt, 0)

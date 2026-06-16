@@ -2,6 +2,7 @@
 
 #include <string>
 #include <optional>
+
 #include <nlohmann/json.hpp>
 
 #include "entities/DeviceInfo.hpp"

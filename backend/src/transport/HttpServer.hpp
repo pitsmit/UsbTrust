@@ -6,7 +6,7 @@
 #include <pistache/router.h>
 
 #include "DefaultApi.h"
-#include "services/Config.hpp"
+#include "infrastructure/config/Config.hpp"
 #include "exceptions/Exceptions.hpp"
 
 class HttpServer {

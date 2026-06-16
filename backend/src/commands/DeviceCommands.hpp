@@ -5,7 +5,7 @@
 #include "CommandContext.hpp"
 #include "managers/MountRegistry.hpp"
 #include "managers/MountManager.hpp"
-#include "services/types.hpp"
+#include "types/types.hpp"
 
 class Command {
 public:

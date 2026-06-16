@@ -1,11 +1,11 @@
 #pragma once
 
-#include "DBConnection.hpp"
-#include "exceptions/Exceptions.hpp"
-#include "services/Config.hpp"
-
 #include <fstream>
 #include <sstream>
+
+#include "DBConnection.hpp"
+#include "exceptions/Exceptions.hpp"
+#include "infrastructure/config/Config.hpp"
 
 class DBInitializer {
 private:

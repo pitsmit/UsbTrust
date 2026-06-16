@@ -3,7 +3,7 @@
 #include "DBConnection.hpp"
 #include "entities/DeviceInfo.hpp"
 #include "RepositoryBase.hpp"
-#include "services/types.hpp"
+#include "types/types.hpp"
 
 class DeviceInfoRepository : RepositoryBase {
 public:

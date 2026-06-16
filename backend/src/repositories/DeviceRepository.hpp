@@ -1,13 +1,13 @@
 #pragma once
 
+#include <vector>
+
 #include "entities/Device.hpp"
 #include "entities/DeviceInfo.hpp"
 #include "RepositoryBase.hpp"
 #include "DeviceInfoRepository.hpp"
 #include "mappers/DeviceMapper.hpp"
-#include "services/DevLogger.hpp"
-
-#include <vector>
+#include "infrastructure/logging/DevLogger.hpp"
 
 class DeviceRepository : public RepositoryBase {
 private:

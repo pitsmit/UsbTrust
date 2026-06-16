@@ -2,7 +2,7 @@
 
 #include "EventQueue.hpp"
 #include "entities/DeviceEvent.hpp"
-#include "core/DeviceControlService.hpp"
+#include "services/DeviceControlService.hpp"
 
 class EventLoop {
 private:

@@ -3,21 +3,22 @@
 #include <string_view>
 
 #include "DeviceManager.hpp"
-#include "linux/MountUtils.hpp"
-#include "core/IDeviceResolver.hpp"
-#include "core/MountPointBuilder.hpp"
+#include "services/MountService.hpp"
+#include "ports/IDeviceResolver.hpp"
+#include "services/MountPointBuilder.hpp"
 #include "entities/MountRecord.hpp"
+#include "infrastructure/logging/DevLogger.hpp"
 
 class MountManager {
 private:
     DeviceManager& deviceManager_;
-    MountUtils& mountUtils_;
+    MountService& mountUtils_;
     IDeviceResolver& resolver_;
 
 public:
     MountManager(
         DeviceManager& deviceManager,
-        MountUtils& mountUtils,
+        MountService& mountUtils,
         IDeviceResolver& resolver
     ) :
         deviceManager_(deviceManager),
@@ -34,6 +35,7 @@ public:
         auto mode = MountMode::fromPresence(id);
 
         mountUtils_.mountDevice(devNode, mountPoint, mode);
+        mylog->info("Mounted: {}", mountPoint);
 
         return MountRecordBuilder()
                 .withDevNode(devNode)
@@ -47,6 +49,7 @@ public:
     void unmount(std::string_view mountPoint)
     {
         mountUtils_.handleUnmount(mountPoint);
+        mylog->info("Unmounted: {}", mountPoint);
     }
 
     void remount(const MountRecord &record)
@@ -55,5 +58,6 @@ public:
             record.mountPoint,
             record.mode
         );
+        mylog->info("Remounted: {}", record.mountPoint);
     }
 };

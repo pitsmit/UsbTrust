@@ -10,7 +10,7 @@
 #include <sstream>
 #include <string>
 
-#include "Config.hpp"
+#include "infrastructure/config/Config.hpp"
 
 class Logger {
 public:

@@ -4,7 +4,7 @@
 
 #include "dispatch/EventQueue.hpp"
 #include "entities/DeviceEvent.hpp"
-#include "services/DevLogger.hpp"
+#include "infrastructure/logging/DevLogger.hpp"
 
 class UdevWatcher {
 private:

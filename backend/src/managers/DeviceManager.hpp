@@ -1,10 +1,10 @@
 #pragma once
 
+#include <vector>
+
 #include "repositories/DeviceRepository.hpp"
 #include "entities/DeviceInfo.hpp"
-#include "services/types.hpp"
-
-#include <vector>
+#include "types/types.hpp"
 
 class DeviceManager {
 private:

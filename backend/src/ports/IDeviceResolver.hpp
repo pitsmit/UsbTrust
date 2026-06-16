@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string_view>
+#include <vector>
+
 class DeviceInfo;
 class MountMode;
 

@@ -8,10 +8,10 @@
 #include "entities/MountRecord.hpp"
 #include "managers/MountRegistry.hpp"
 #include "managers/MountManager.hpp"
-#include "IDeviceResolver.hpp"
+#include "ports/IDeviceResolver.hpp"
 #include "managers/DeviceManager.hpp"
 
-class MountRecoveryService {
+class RecoveryService {
 private:
     MountRegistryManager &registry;
     IDeviceResolver &resolver;
@@ -77,7 +77,7 @@ private:
     }
 
 public:
-    explicit MountRecoveryService(
+    explicit RecoveryService(
         MountRegistryManager& mr, 
         IDeviceResolver &rs,
         MountManager& man,

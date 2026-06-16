@@ -4,7 +4,7 @@
 
 #include "DeviceInfo.hpp"
 #include "MountMode.hpp"
-#include "services/types.hpp"
+#include "types/types.hpp"
 
 struct MountRecord {
     std::optional<core::Id> id; /// id таблицы Device

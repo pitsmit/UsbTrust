@@ -3,14 +3,14 @@
 #include <optional>
 #include <thread>
 
-#include "services/Config.hpp"
+#include "infrastructure/config/Config.hpp"
 #include "repositories/DBInitializer.hpp"
 #include "managers/DeviceEventNotifyManager.hpp"
 #include "dispatch/EventLoop.hpp"
 #include "dispatch/EventQueue.hpp"
 #include "facade/Facade.hpp"
 #include "linux/LinuxMountSystem.hpp"
-#include "core/MountRecoveryService.hpp"
+#include "services/RecoveryService.hpp"
 #include "linux/UdevDeviceResolver.hpp"
 #include "linux/Watcher.hpp"
 #include "transport/WebSocketServer.hpp"
@@ -31,7 +31,7 @@ private:
     DeviceControlService service;
     EventLoop loop;
     UdevWatcher watcher;
-    MountRecoveryService rec;
+    RecoveryService rec;
 
 #ifdef BUILD_HTTP_SERVER
     std::optional<std::jthread> httpThread;
