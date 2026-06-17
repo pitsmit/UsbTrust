@@ -1,10 +1,8 @@
 #pragma once
 
-#include <string>
-
 #include "ports/IWebSocketServer.hpp"
-#include "entities/MountRecord.hpp"
-#include "transport/JsonUtils.hpp"
+
+class MountRecord;
 
 class DeviceEventNotifyManager {
 private:
@@ -15,28 +13,6 @@ public:
         : ws_(ws)
     {}
 
-    void notifyInsert(const MountRecord& record)
-    {
-        json payload = {
-            { "type", "insert" },
-            { "data", record }
-        };
-
-        ws_.broadcast(payload.dump());
-    }
-
-    void notifyRemove(std::string_view mountPoint)
-    {
-        json payload = {
-            { "type", "remove" },
-            {
-                "data",
-                {
-                    { "mountPoint", mountPoint }
-                }
-            }
-        };
-
-        ws_.broadcast(payload.dump());
-    }
+    void notifyInsert(const MountRecord& record);
+    void notifyRemove(std::string_view mountPoint);
 };

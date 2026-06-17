@@ -1,10 +1,6 @@
 #pragma once
 
-#include <vector>
-
 #include "repositories/DeviceRepository.hpp"
-#include "entities/DeviceInfo.hpp"
-#include "types/types.hpp"
 
 class DeviceManager {
 private:
@@ -13,17 +9,9 @@ private:
 public:
     explicit DeviceManager(DBConnection& db) : repo(db) {}
 
-    int addToWhitelist(const DeviceInfo& dev) { return repo.add(dev); }
-
-    std::vector<Device> getWhitelist() { return repo.getAll(); }
-
-    void removeFromWhitelist(core::Id id) { repo.remove(id); }
-
-    void patchValidTo(core::Id id, std::optional<std::string> validTo) {
-        repo.updateValidTo(id, validTo);
-    }
-
-    std::optional<core::Id> isAllowed(const DeviceInfo& dev) { 
-        return repo.findActiveId(dev); 
-    }
+    int addToWhitelist(const DeviceInfo& dev);
+    std::vector<Device> getWhitelist();
+    void removeFromWhitelist(core::Id id);
+    void patchValidTo(core::Id id, std::optional<std::string> validTo);
+    std::optional<core::Id> isAllowed(const DeviceInfo& dev);
 };

@@ -16,8 +16,8 @@ option(ENABLE_TEST_API "Enable test-only HTTP endpoints" OFF)
 # Sources
 # =========================
 
-set(APP_SOURCES
-    src/main.cpp
+file(GLOB_RECURSE APP_SOURCES CONFIGURE_DEPENDS
+    src/*.cpp
 )
 
 if(BUILD_HTTP_SERVER)

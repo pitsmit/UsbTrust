@@ -1,11 +1,12 @@
 #pragma once
 
+#include <vector>
+
+#include "entities/MountRecord.hpp"
 #include "entities/Device.hpp"
-#include "managers/DeviceManager.hpp"
-#include "CommandContext.hpp"
-#include "managers/MountRegistry.hpp"
-#include "managers/MountManager.hpp"
 #include "types/types.hpp"
+
+class CommandContext;
 
 class Command {
 public:
@@ -17,9 +18,7 @@ class GetWhiteListDeviceCommand : public Command {
 public:
     std::vector<Device> list;
 
-    void execute(CommandContext& ctx) override {
-        list = ctx.deviceManager.getWhitelist();
-    }
+    void execute(CommandContext& ctx) override;
 };
 
 class AddDeviceToWhiteListCommand : public Command {
@@ -32,13 +31,7 @@ public:
     AddDeviceToWhiteListCommand(MountRecord& d)
         : record(d) {}
 
-    void execute(CommandContext& ctx) override {
-        id = ctx.deviceManager.addToWhitelist(record.info);
-        record.mode = MountMode::rw();
-        record.id = id;
-        ctx.mountService.remount(record);
-        ctx.mountRegistry.refresh(record);
-    }
+    void execute(CommandContext& ctx) override;
 };
 
 class DeleteDeviceFromWhiteListCommand : public Command {
@@ -49,14 +42,7 @@ public:
     DeleteDeviceFromWhiteListCommand(core::Id id)
         : id(id) {}
 
-    void execute(CommandContext& ctx) override {
-        if (auto record = ctx.mountRegistry.getById(id)) {
-            record->mode = MountMode::ro();
-            ctx.mountService.remount(*record);
-            ctx.mountRegistry.refresh(*record);
-        }
-        ctx.deviceManager.removeFromWhitelist(id);
-    }
+    void execute(CommandContext& ctx) override;
 };
 
 class PatchValidToDeviceCommand : public Command {
@@ -70,16 +56,12 @@ public:
         std::optional<std::string> validTo)
         : id(id), validTo(validTo) {}
 
-    void execute(CommandContext& ctx) override {
-        ctx.deviceManager.patchValidTo(id, validTo);
-    }
+    void execute(CommandContext& ctx) override;
 };
 
 class GetCurrentConnectedDevicesCommand : public Command {
 public:
     std::vector<MountRecord> records;
 
-    void execute(CommandContext& ctx) override {
-        records = ctx.mountRegistry.getAll();
-    }
+    void execute(CommandContext& ctx) override;
 };

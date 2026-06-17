@@ -97,7 +97,7 @@ TEST_F(RealMountTest, MountLoopDeviceReadOnlyVFAT)
                 .build());
 
     // ACT
-    svc->handleEvent(*event);
+    svc->handle(*event);
 
     // ASSERT
     auto mount_path = registry->getMountPointByDevNode(devNode);
@@ -111,7 +111,7 @@ TEST_F(RealMountTest, MountLoopDeviceReadOnlyVFAT)
 
     resolver->setmountpoint(*mount_path);
 
-    svc->handleEvent(DeviceEvent{EventType::REMOVE, devNode.c_str()});
+    svc->handle(DeviceEvent{EventType::REMOVE, devNode.c_str()});
 }
 
 TEST_F(RealMountTest, MountLoopDeviceReadWriteVFAT)
@@ -127,7 +127,7 @@ TEST_F(RealMountTest, MountLoopDeviceReadWriteVFAT)
                 .build());
 
     // ACT
-    svc->handleEvent(*event);
+    svc->handle(*event);
 
     // ASSERT
     auto mount_path = registry->getMountPointByDevNode(devNode);
@@ -140,7 +140,7 @@ TEST_F(RealMountTest, MountLoopDeviceReadWriteVFAT)
 
     resolver->setmountpoint(*mount_path);
 
-    svc->handleEvent(DeviceEvent{EventType::REMOVE, devNode.c_str()});
+    svc->handle(DeviceEvent{EventType::REMOVE, devNode.c_str()});
 }
 
 TEST_F(RealMountTest, MountLoopDeviceReadOnlyEXT4)
@@ -155,7 +155,7 @@ TEST_F(RealMountTest, MountLoopDeviceReadOnlyEXT4)
                 .build());
 
     // ACT
-    svc->handleEvent(*event);
+    svc->handle(*event);
 
     // ASSERT
     auto mount_path = registry->getMountPointByDevNode(devNode);
@@ -169,7 +169,7 @@ TEST_F(RealMountTest, MountLoopDeviceReadOnlyEXT4)
 
     resolver->setmountpoint(*mount_path);
 
-    svc->handleEvent(DeviceEvent{EventType::REMOVE, devNode.c_str()});
+    svc->handle(DeviceEvent{EventType::REMOVE, devNode.c_str()});
 }
 
 TEST_F(RealMountTest, MountLoopDeviceReadWriteEXT4)
@@ -185,7 +185,7 @@ TEST_F(RealMountTest, MountLoopDeviceReadWriteEXT4)
                 .build());
 
     // ACT
-    svc->handleEvent(*event);
+    svc->handle(*event);
 
     // ASSERT
     auto mount_path = registry->getMountPointByDevNode(devNode);
@@ -198,5 +198,5 @@ TEST_F(RealMountTest, MountLoopDeviceReadWriteEXT4)
 
     resolver->setmountpoint(*mount_path);
     
-    svc->handleEvent(DeviceEvent{EventType::REMOVE, devNode.c_str()});
+    svc->handle(DeviceEvent{EventType::REMOVE, devNode.c_str()});
 }

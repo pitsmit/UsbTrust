@@ -57,7 +57,7 @@ public:
         std::lock_guard lock(mutex_);
 
         for (auto* client : clients_) {
-            client->send(message);
+            client->send(std::string(message));
         }
     }
 };

@@ -1,18 +1,19 @@
 #pragma once
 
 #include "EventQueue.hpp"
+#include "services/DeviceEventService.hpp"
+#include "infrastructure/logging/DevLogger.hpp"
 #include "entities/DeviceEvent.hpp"
-#include "services/DeviceControlService.hpp"
 
 class EventLoop {
 private:
     EventQueue<DeviceEvent>& queue_;
-    DeviceControlService& service_;
+    DeviceEventService& service_;
 
 public:
     EventLoop(
         EventQueue<DeviceEvent>& queue,
-        DeviceControlService& service) :
+        DeviceEventService& service) :
         queue_(queue),
         service_(service) {}
 
@@ -20,7 +21,7 @@ public:
     {
         while (auto event = queue_.pop()) {
             try {
-                service_.handleEvent(*event);
+                service_.handle(*event);
             } catch (const std::exception& ex) {
                 mylog->error(
                     "Failed to handle event for {}: {}",

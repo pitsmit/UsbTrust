@@ -28,7 +28,7 @@ private:
     WebSocketServer ws;
     DeviceEventNotifyManager notifier;
     EventQueue<DeviceEvent> queue;
-    DeviceControlService service;
+    DeviceEventService service;
     EventLoop loop;
     UdevWatcher watcher;
     RecoveryService rec;
