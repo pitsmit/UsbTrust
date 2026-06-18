@@ -47,7 +47,7 @@ class DeviceInfoBuilder {
         return *this;
     }
 
-    DeviceInfo build() {
+    DeviceInfo build() const {
         return info_;
     }
 };

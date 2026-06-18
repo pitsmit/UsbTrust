@@ -15,7 +15,7 @@ public:
         return *this;
     }
 
-    void build(const std::string& path = "config.txt")
+    void build(const std::string& path = "config.txt") const
     {
         std::ofstream f(path, std::ios::trunc);
 

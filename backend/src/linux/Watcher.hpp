@@ -90,7 +90,7 @@ class UdevWatcher {
     }
 
   private:
-    bool isUsbDevice(struct udev_device *dev) {
+    bool static isUsbDevice(struct udev_device *dev) {
         struct udev_device *parent =
             udev_device_get_parent_with_subsystem_devtype(dev, "usb", "usb_device");
 

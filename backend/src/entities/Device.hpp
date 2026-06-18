@@ -32,7 +32,7 @@ class DeviceBuilder {
         return *this;
     }
 
-    Device build() {
+    Device build() const {
         return device_;
     }
 };

@@ -136,3 +136,25 @@ add_custom_target(build-containers
     COMMAND docker compose build
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
+find_program(CPPCHECK cppcheck)
+
+if(CPPCHECK)
+    add_custom_target(cppcheck
+        COMMAND cppcheck
+            --enable=all
+            --inconclusive
+            --std=c++23
+            --project=${CMAKE_BINARY_DIR}/compile_commands.json
+            --suppress=missingIncludeSystem
+            --suppress=unmatchedSuppression
+            --quiet
+            --inline-suppr
+            -i ${CMAKE_BINARY_DIR}/_deps
+            -i ${CMAKE_SOURCE_DIR}/external
+            -i ${CMAKE_BINARY_DIR}/external
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    )
+else()
+    message(WARNING "cppcheck not found")
+endif()

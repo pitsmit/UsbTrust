@@ -24,7 +24,7 @@ class DeviceEventBuilder {
         return *this;
     }
 
-    DeviceEvent build() {
+    DeviceEvent build() const {
         return event_;
     }
 };

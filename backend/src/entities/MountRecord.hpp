@@ -44,7 +44,7 @@ class MountRecordBuilder {
         return *this;
     }
 
-    MountRecord build() {
+    MountRecord build() const {
         return record_;
     }
 };

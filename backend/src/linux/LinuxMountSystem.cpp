@@ -39,12 +39,12 @@ void LinuxMountSystem::chmod(std::string_view target, int perms) noexcept {
     ::chmod(target.data(), perms);
 }
 
-std::string LinuxMountSystem::getFsType(std::string_view devnode) {
+std::string LinuxMountSystem::getFsType(std::string_view dev) {
     blkid_cache cache = nullptr;
     if (blkid_get_cache(&cache, nullptr) != 0) {
         return "";
     }
-    char *type = blkid_get_tag_value(cache, "TYPE", devnode.data());
+    char *type = blkid_get_tag_value(cache, "TYPE", dev.data());
     blkid_put_cache(cache);
     return type ? type : "";
 }
