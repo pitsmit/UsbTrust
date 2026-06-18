@@ -7,23 +7,20 @@
 #include "infrastructure/logging/DevLogger.hpp"
 
 class UdevWatcher {
-private:
-    EventQueue<DeviceEvent>& queue_;
+  private:
+    EventQueue<DeviceEvent> &queue_;
 
-public:
-    explicit UdevWatcher(EventQueue<DeviceEvent>& queue)
-        : queue_(queue) {}
+  public:
+    explicit UdevWatcher(EventQueue<DeviceEvent> &queue) : queue_(queue) {}
 
-    void run()
-    {
-        struct udev* udev = udev_new();
+    void run() {
+        struct udev *udev = udev_new();
         if (!udev) {
             mylog->error("Failed to init udev");
             return;
         }
 
-        struct udev_monitor* mon =
-            udev_monitor_new_from_netlink(udev, "udev");
+        struct udev_monitor *mon = udev_monitor_new_from_netlink(udev, "udev");
 
         if (!mon) {
             mylog->error("Failed to create udev monitor");
@@ -31,8 +28,7 @@ public:
             return;
         }
 
-        udev_monitor_filter_add_match_subsystem_devtype(
-            mon, "block", "partition");
+        udev_monitor_filter_add_match_subsystem_devtype(mon, "block", "partition");
         udev_monitor_enable_receiving(mon);
 
         int fd = udev_monitor_get_fd(mon);
@@ -52,13 +48,12 @@ public:
             if (!FD_ISSET(fd, &fds))
                 continue;
 
-            struct udev_device* dev =
-                udev_monitor_receive_device(mon);
+            struct udev_device *dev = udev_monitor_receive_device(mon);
 
             if (!dev)
                 continue;
 
-            const char* action = udev_device_get_action(dev);
+            const char *action = udev_device_get_action(dev);
             if (!action) {
                 udev_device_unref(dev);
                 continue;
@@ -72,21 +67,16 @@ public:
                     continue;
                 }
 
-                char *devNode = (char *) udev_device_get_devnode(dev);
-                auto event = DeviceEventBuilder()
-                                .withType(EventType::INSERT)
-                                .withDevNode(devNode)
-                                .build();
+                char *devNode = (char *)udev_device_get_devnode(dev);
+                auto event =
+                    DeviceEventBuilder().withType(EventType::INSERT).withDevNode(devNode).build();
 
                 if (!event.devNode.empty())
                     queue_.push(event);
-            }
-            else if (act == "remove") {
-                char *devNode = (char *) udev_device_get_devnode(dev);
-                auto event = DeviceEventBuilder()
-                                .withType(EventType::REMOVE)
-                                .withDevNode(devNode)
-                                .build();
+            } else if (act == "remove") {
+                char *devNode = (char *)udev_device_get_devnode(dev);
+                auto event =
+                    DeviceEventBuilder().withType(EventType::REMOVE).withDevNode(devNode).build();
 
                 if (!event.devNode.empty())
                     queue_.push(event);
@@ -99,12 +89,10 @@ public:
         udev_unref(udev);
     }
 
-private:
-    bool isUsbDevice(struct udev_device* dev)
-    {
-        struct udev_device* parent =
-            udev_device_get_parent_with_subsystem_devtype(
-                dev, "usb", "usb_device");
+  private:
+    bool isUsbDevice(struct udev_device *dev) {
+        struct udev_device *parent =
+            udev_device_get_parent_with_subsystem_devtype(dev, "usb", "usb_device");
 
         return parent != nullptr;
     }

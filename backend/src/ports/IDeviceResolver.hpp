@@ -7,7 +7,7 @@ class DeviceInfo;
 class MountMode;
 
 class IDeviceResolver {
-public:
+  public:
     virtual ~IDeviceResolver() = default;
     virtual DeviceInfo resolve(std::string_view devNode) = 0;
     virtual std::vector<std::string> getUsbDevNodes() = 0;

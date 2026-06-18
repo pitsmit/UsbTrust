@@ -4,44 +4,36 @@
 #include <set>
 #include <string>
 
-#include <ixwebsocket/IXWebSocketServer.h>
 #include <ixwebsocket/IXConnectionState.h>
+#include <ixwebsocket/IXWebSocketServer.h>
 
 #include "ports/IWebSocketServer.hpp"
 
-class WebSocketServer: public IWebSocketServer {
-private:
+class WebSocketServer : public IWebSocketServer {
+  private:
     ix::WebSocketServer server_;
 
     std::mutex mutex_;
 
-    std::set<ix::WebSocket*> clients_;
+    std::set<ix::WebSocket *> clients_;
 
-public:
-    explicit WebSocketServer(int port)
-        : server_(port)
-    {}
+  public:
+    explicit WebSocketServer(int port) : server_(port) {}
 
-    void start()
-    {
-        server_.setOnClientMessageCallback(
-            [this](
-                std::shared_ptr<ix::ConnectionState>,
-                ix::WebSocket& webSocket,
-                const ix::WebSocketMessagePtr& msg
-            )
-            {
-                if (msg->type == ix::WebSocketMessageType::Open) {
-                    std::lock_guard lock(mutex_);
+    void start() {
+        server_.setOnClientMessageCallback([this](std::shared_ptr<ix::ConnectionState>,
+                                                  ix::WebSocket &webSocket,
+                                                  const ix::WebSocketMessagePtr &msg) {
+            if (msg->type == ix::WebSocketMessageType::Open) {
+                std::lock_guard lock(mutex_);
 
-                    clients_.insert(&webSocket);
-                }
-                else if (msg->type == ix::WebSocketMessageType::Close) {
-                    std::lock_guard lock(mutex_);
+                clients_.insert(&webSocket);
+            } else if (msg->type == ix::WebSocketMessageType::Close) {
+                std::lock_guard lock(mutex_);
 
-                    clients_.erase(&webSocket);
-                }
-            });
+                clients_.erase(&webSocket);
+            }
+        });
 
         auto result = server_.listen();
 
@@ -52,11 +44,10 @@ public:
         server_.start();
     }
 
-    void broadcast(std::string_view message)
-    {
+    void broadcast(std::string_view message) {
         std::lock_guard lock(mutex_);
 
-        for (auto* client : clients_) {
+        for (auto *client : clients_) {
             client->send(std::string(message));
         }
     }

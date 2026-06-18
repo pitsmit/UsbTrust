@@ -1,0 +1,30 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ninja-build \
+    build-essential \
+    cmake
+
+WORKDIR /app
+
+COPY CMakeLists.txt ./
+COPY src ./src
+COPY tests ./tests
+COPY sql ./sql
+COPY config.txt ./
+
+RUN cp config.txt config.base.txt
+
+RUN cmake -S . -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=Coverage \
+    -DBUILD_APP=OFF \
+    -DENABLE_TESTS=ON
+
+RUN cmake --build build --target unit_tests
+
+COPY scripts/run-tests.sh /run-tests.sh
+RUN chmod +x /run-tests.sh
+
+CMD ["/run-tests.sh"]

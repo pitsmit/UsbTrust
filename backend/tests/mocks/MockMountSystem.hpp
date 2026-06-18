@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "core/IMountSystem.hpp"
+#include "ports/IMountSystem.hpp"
 
 class MockMountSystem : public IMountSystem {
 public:
@@ -34,25 +34,25 @@ public:
         std::string_view dev,
         std::string_view target,
         std::string_view fs,
-        bool readOnly,
+        MountMode mode,
         std::string_view opts) noexcept override
     {
         mountCalled = true;
         lastDev = dev;
         lastTarget = target;
         lastFs = fs;
-        lastFlags = readOnly;
+        lastFlags = 1;
         lastOpts = opts;
         return mountResult;
     }
 
     int remount(
         std::string_view target,
-        bool readOnly) noexcept override
+        MountMode mode) noexcept override
     {
         mountCalled = true;
         lastTarget = target;
-        lastFlags = readOnly;
+        lastFlags = 1;
         return mountResult;
     }
 
@@ -60,5 +60,13 @@ public:
         umountCalled = true;
         lastTarget = target;
         return umountResult;
+    }
+
+    void chown(std::string_view target, int uid, int gid) noexcept override {
+
+    }
+
+    void chmod(std::string_view target, int perms) noexcept override {
+
     }
 };

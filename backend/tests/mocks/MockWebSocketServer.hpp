@@ -1,6 +1,6 @@
 #pragma once
 
-#include "transport/IWebSocketServer.hpp"
+#include "ports/IWebSocketServer.hpp"
 
 #include <string>
 
@@ -15,7 +15,7 @@ public:
 
     }
 
-    void broadcast(const std::string& message)
+    void broadcast(std::string_view message)
     {
 
     }

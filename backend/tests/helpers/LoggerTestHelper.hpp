@@ -1,6 +1,6 @@
 #pragma once
 
-#include "services/DevLogger.hpp"
+#include "infrastructure/logging/DevLogger.hpp"
 
 class LoggerTestHelper {
 public:

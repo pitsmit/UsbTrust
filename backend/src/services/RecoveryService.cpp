@@ -5,21 +5,17 @@
 #include "infrastructure/logging/DevLogger.hpp"
 
 void RecoveryService::actualize(MountRecord &rec) {
-    const auto& devNode = rec.devNode;
+    const auto &devNode = rec.devNode;
 
     std::string mountPoint;
 
-    try
-    {
+    try {
         mountPoint = resolver.getMountPoint(devNode);
-    }
-    catch(const std::exception& e)
-    {
+    } catch (const std::exception &e) {
         try {
             auto newrec = manager.mount(devNode);
             registry.recreate(newrec);
-        }
-        catch(const MountError& e) {
+        } catch (const MountError &e) {
             return;
         }
     }
@@ -34,8 +30,7 @@ void RecoveryService::actualize(MountRecord &rec) {
         some_changes = true;
     }
 
-    MountMode desired =
-        MountMode::fromPresence(devman.isAllowed(info));
+    MountMode desired = MountMode::fromPresence(devman.isAllowed(info));
 
     if (rec.mode != desired) {
         rec.mode = desired;
@@ -50,8 +45,7 @@ void RecoveryService::actualize(MountRecord &rec) {
     if (md != desired) {
         try {
             manager.remount(rec);
-        }
-        catch(const MountError& e) {
+        } catch (const MountError &e) {
             mylog->error("Failed remount for {}", rec.devNode);
         }
     }
@@ -61,44 +55,37 @@ void RecoveryService::actualize(MountRecord &rec) {
     }
 }
 
-
-void RecoveryService::run()
-{
+void RecoveryService::run() {
     auto regs = registry.getAll();
     auto devNodes = resolver.getUsbDevNodes();
 
     std::unordered_map<std::string, MountRecord> regMap;
-    for (const auto& reg : regs)
+    for (const auto &reg : regs)
         regMap[reg.devNode] = reg;
-    std::unordered_set<std::string> devSet(
-        devNodes.begin(),
-        devNodes.end());
+    std::unordered_set<std::string> devSet(devNodes.begin(), devNodes.end());
 
     // удаление отсутствующих устройств
-    for (const auto& reg : regs) {
+    for (const auto &reg : regs) {
         if (!devSet.contains(reg.devNode)) {
             try {
                 registry.removeByDevNode(reg.devNode);
                 manager.unmount(reg.mountPoint);
-            }
-            catch(const UnMountError& e) {
+            } catch (const UnMountError &e) {
                 mylog->error("Failed unmount for {}", reg.mountPoint);
             }
         }
     }
 
     // актуализизация существующих и создание новых
-    for (const auto& node : devNodes) {
+    for (const auto &node : devNodes) {
         auto it = regMap.find(node);
         if (it != regMap.end()) {
             actualize(it->second);
-        }
-        else {
+        } else {
             try {
                 auto rec = manager.mount(node);
                 registry.add(rec);
-            }
-            catch(const MountError& e) {
+            } catch (const MountError &e) {
                 mylog->error("Failed mount for {}", node);
             }
         }

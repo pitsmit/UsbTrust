@@ -1,10 +1,10 @@
 #pragma once
 
-#include "entities/MountRecord.hpp"
 #include "DeviceInfoMapper.hpp"
+#include "entities/MountRecord.hpp"
 
 class MountRecordMapper {
-public:
+  public:
     enum Columns {
         ID = 0,
         DEVICE_INFO_ID,
@@ -18,22 +18,15 @@ public:
         PRODUCT_NAME
     };
 
-public:
-    static MountRecord fromRow(char** v) noexcept {
+  public:
+    static MountRecord fromRow(char **v) noexcept {
         return MountRecordBuilder()
             .withId(std::stoull(v[ID]))
             .withDevNode(v[DEV_NODE])
             .withMountPoint(v[MOUNT_POINT])
             .withMode(MountMode::parse(v[MODE]))
-            .withInfo(
-                DeviceInfoMapper::fromRow(
-                    v,
-                    VENDOR_ID,
-                    PRODUCT_ID,
-                    SERIAL,
-                    VENDOR_NAME,
-                    PRODUCT_NAME
-                )
-            ).build();
+            .withInfo(DeviceInfoMapper::fromRow(
+                v, VENDOR_ID, PRODUCT_ID, SERIAL, VENDOR_NAME, PRODUCT_NAME))
+            .build();
     }
 };

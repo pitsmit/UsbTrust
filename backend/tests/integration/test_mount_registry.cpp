@@ -2,7 +2,7 @@
 
 #include "managers/MountRegistry.hpp"
 #include "entities/MountRecord.hpp"
-#include "services/DevLogger.hpp"
+#include "infrastructure/logging/DevLogger.hpp"
 #include "entities/DeviceInfo.hpp"
 
 #include "../helpers/LoggerTestHelper.hpp"

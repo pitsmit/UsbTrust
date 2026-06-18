@@ -7,13 +7,13 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "core/DeviceControlService.hpp"
+#include "services/DeviceEventService.hpp"
 #include "linux/LinuxMountSystem.hpp"
 #include "entities/DeviceInfo.hpp"
 #include "managers/DeviceManager.hpp"
 #include "entities/DeviceEvent.hpp"
 #include "managers/MountRegistry.hpp"
-#include "linux/MountUtils.hpp"
+#include "services/MountService.hpp"
 #include "linux/UdevDeviceResolver.hpp"
 #include "managers/MountManager.hpp"
 #include "managers/DeviceEventNotifyManager.hpp"
@@ -30,8 +30,8 @@ protected:
     DataBaseTestHelper dbHelper;
     LinuxMountSystem sys;
     std::unique_ptr<MountRegistryManager> registry;
-    std::unique_ptr<DeviceControlService> svc;
-    std::unique_ptr<MountUtils> utils;
+    std::unique_ptr<DeviceEventService> svc;
+    std::unique_ptr<MountService> utils;
     std::unique_ptr<DeviceManager> devicemanager;
     std::unique_ptr<MockDeviceResolver> resolver;
     std::unique_ptr<MountManager> mntser;
@@ -44,7 +44,7 @@ protected:
         logger.disable();
         dbHelper.create();
 
-        utils = std::make_unique<MountUtils>(sys);
+        utils = std::make_unique<MountService>(sys);
         devicemanager = std::make_unique<DeviceManager>(dbHelper.get_db());
         resolver = std::make_unique<MockDeviceResolver>();
         mntser = std::make_unique<MountManager>(*devicemanager, *utils, *resolver);
@@ -52,7 +52,7 @@ protected:
         sct_server = std::make_unique<MockWebSocketServer>(1);
         notifier = std::make_unique<DeviceEventNotifyManager>(*sct_server);
 
-        svc = std::make_unique<DeviceControlService>(
+        svc = std::make_unique<DeviceEventService>(
             *registry,
             *mntser,
             *notifier,

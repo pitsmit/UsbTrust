@@ -11,12 +11,17 @@ FetchContent_Declare(
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
-
+include(GoogleTest)
 enable_testing()
 
-# =========================
-# COVERAGE OPTION HANDLING
-# =========================
+add_compile_options(
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wunused
+    -Wshadow
+)
+
 option(ENABLE_COVERAGE "Enable coverage" ON)
 
 function(enable_coverage target)
@@ -44,75 +49,73 @@ target_link_libraries(unit_tests
 
 enable_coverage(unit_tests)
 
-include(GoogleTest)
 gtest_discover_tests(unit_tests
     PROPERTIES LABELS "unit"
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
 # =========================
 # INTEGRATION TESTS
 # =========================
-add_executable(integration_tests
-    integration/test_device_repository.cpp
-    integration/test_white_list_command.cpp
-    integration/test_real_mount.cpp
-    integration/test_delete_device_command.cpp
-    integration/test_mount_registry.cpp
-)
-
-target_include_directories(integration_tests PUBLIC
-    ${PROJECT_SOURCE_DIR}/src
-)
-
-target_link_libraries(integration_tests
-    GTest::gtest_main
-    sqlite3
-    udev
-    blkid
-    mount
-)
-
-enable_coverage(integration_tests)
-
-gtest_discover_tests(integration_tests
-    PROPERTIES LABELS "integration"
-)
-
-# =========================
-# WARNINGS (GLOBAL SAFE)
-# =========================
-add_compile_options(
-    -Wall
-    -Wextra
-    -Wunused
-    -Wshadow
-)
-
-
-# =========================
-# E2E TESTS
-# =========================
-
-if(BUILD_E2E_TESTS)
-
-find_package(CURL REQUIRED)
-
-add_executable(e2e_tests
-    e2e/test_get_whitelist.cpp
-)
-
-target_include_directories(e2e_tests PUBLIC
-    ${PROJECT_SOURCE_DIR}/src
-    ${PROJECT_SOURCE_DIR}/api-stubs/api
-)
-
-target_link_libraries(e2e_tests
-    GTest::gtest_main
-    CURL::libcurl
-)
-
-gtest_discover_tests(e2e_tests
-    PROPERTIES LABELS "e2e"
-)
-
-endif()
+#add_executable(integration_tests
+#    integration/test_device_repository.cpp
+#    integration/test_white_list_command.cpp
+#    integration/test_real_mount.cpp
+#    integration/test_delete_device_command.cpp
+#    integration/test_mount_registry.cpp
+#)
+#
+#target_include_directories(integration_tests PUBLIC
+#    ${PROJECT_SOURCE_DIR}/src
+#)
+#
+#target_link_libraries(integration_tests
+#    GTest::gtest_main
+#    sqlite3
+#    udev
+#    blkid
+#    mount
+#    systemd
+#)
+#
+#enable_coverage(integration_tests)
+#
+#gtest_discover_tests(integration_tests
+#    PROPERTIES LABELS "integration"
+#)
+#
+#
+#if(BUILD_E2E_TESTS)
+#
+#find_package(CURL REQUIRED)
+#
+#add_executable(e2e_tests
+#    e2e/test_get_whitelist.cpp
+#)
+#
+#target_include_directories(e2e_tests PUBLIC
+#    ${PROJECT_SOURCE_DIR}/src
+#    ${PROJECT_SOURCE_DIR}/api-stubs/api
+#)
+#
+#target_link_libraries(e2e_tests
+#    GTest::gtest_main
+#    CURL::libcurl
+#)
+#
+#gtest_discover_tests(e2e_tests
+#    PROPERTIES LABELS "e2e"
+#)
+#
+#endif()

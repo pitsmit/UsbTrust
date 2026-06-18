@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "core/IDeviceResolver.hpp"
+#include "ports/IDeviceResolver.hpp"
 #include "entities/DeviceInfo.hpp"
 #include "entities/MountRecord.hpp"
 

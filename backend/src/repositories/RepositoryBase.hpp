@@ -3,9 +3,8 @@
 #include "DBConnection.hpp"
 
 class RepositoryBase {
-protected:   
-    DBConnection& db;
+  protected:
+    DBConnection &db;
 
-    explicit RepositoryBase(DBConnection& connection)
-        : db(connection) {}
+    explicit RepositoryBase(DBConnection &connection) : db(connection) {}
 };

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <chrono>
-#include <fstream>
 #include <format>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <memory>
@@ -13,16 +13,10 @@
 #include "infrastructure/config/Config.hpp"
 
 class Logger {
-public:
-    enum class Level {
-        Debug = 0,
-        Info,
-        Warn,
-        Error,
-        Critical
-    };
-    
-private:
+  public:
+    enum class Level { Debug = 0, Info, Warn, Error, Critical };
+
+  private:
     bool enabled = true;
     std::ofstream file;
     std::mutex mutex;
@@ -36,31 +30,32 @@ private:
         return ss.str();
     }
 
-    static const char* levelName(Level level) {
+    static const char *levelName(Level level) {
         switch (level) {
-            case Level::Debug: return "DEBUG";
-            case Level::Info: return "INFO";
-            case Level::Warn: return "WARN";
-            case Level::Error: return "ERROR";
-            case Level::Critical: return "CRITICAL";
+        case Level::Debug:
+            return "DEBUG";
+        case Level::Info:
+            return "INFO";
+        case Level::Warn:
+            return "WARN";
+        case Level::Error:
+            return "ERROR";
+        case Level::Critical:
+            return "CRITICAL";
         }
 
         return "INFO";
     }
 
     void write(Level level, std::string_view message) {
-        if (!enabled) return;
+        if (!enabled)
+            return;
         if (static_cast<int>(level) < static_cast<int>(currentLevel))
             return;
 
         std::lock_guard lock(mutex);
 
-        std::string line = std::format(
-            "[{}] [{}] {}",
-            timestamp(),
-            levelName(level),
-            message
-        );
+        std::string line = std::format("[{}] [{}] {}", timestamp(), levelName(level), message);
 
         std::cout << line << '\n';
         if (file.is_open()) {
@@ -69,7 +64,7 @@ private:
         }
     }
 
-public:
+  public:
     Logger() {
         file.open(Config::getLogFile(), std::ios::app);
         const auto lvl = Config::getLogLevel();
@@ -90,49 +85,39 @@ public:
         enabled = value;
     }
 
-    template<typename... Args>
-    void debug(std::format_string<Args...> fmt, Args&&... args) {
-        write(Level::Debug,
-              std::format(fmt, std::forward<Args>(args)...));
+    template <typename... Args> void debug(std::format_string<Args...> fmt, Args &&...args) {
+        write(Level::Debug, std::format(fmt, std::forward<Args>(args)...));
     }
 
-    template<typename... Args>
-    void info(std::format_string<Args...> fmt, Args&&... args) {
-        write(Level::Info,
-              std::format(fmt, std::forward<Args>(args)...));
+    template <typename... Args> void info(std::format_string<Args...> fmt, Args &&...args) {
+        write(Level::Info, std::format(fmt, std::forward<Args>(args)...));
     }
 
-    template<typename... Args>
-    void warn(std::format_string<Args...> fmt, Args&&... args) {
-        write(Level::Warn,
-              std::format(fmt, std::forward<Args>(args)...));
+    template <typename... Args> void warn(std::format_string<Args...> fmt, Args &&...args) {
+        write(Level::Warn, std::format(fmt, std::forward<Args>(args)...));
     }
 
-    template<typename... Args>
-    void error(std::format_string<Args...> fmt, Args&&... args) {
-        write(Level::Error,
-              std::format(fmt, std::forward<Args>(args)...));
+    template <typename... Args> void error(std::format_string<Args...> fmt, Args &&...args) {
+        write(Level::Error, std::format(fmt, std::forward<Args>(args)...));
     }
 
-    template<typename... Args>
-    void critical(std::format_string<Args...> fmt, Args&&... args) {
-        write(Level::Critical,
-              std::format(fmt, std::forward<Args>(args)...));
+    template <typename... Args> void critical(std::format_string<Args...> fmt, Args &&...args) {
+        write(Level::Critical, std::format(fmt, std::forward<Args>(args)...));
     }
 };
 
 class DevLogger {
-private:
+  private:
     std::shared_ptr<Logger> logger;
     DevLogger() : logger(std::make_shared<Logger>()) {}
 
-public:
-    static DevLogger& instance() noexcept {
+  public:
+    static DevLogger &instance() noexcept {
         static DevLogger inst;
         return inst;
     }
 
-    std::shared_ptr<Logger>& get() noexcept {
+    std::shared_ptr<Logger> &get() noexcept {
         return logger;
     }
 };

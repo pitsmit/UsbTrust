@@ -4,37 +4,40 @@
 #include "facade/Facade.hpp"
 #include "transport/JsonUtils.hpp"
 
-#include <pistache/router.h>
-#include <pistache/http.h>
 #include <memory>
+#include <pistache/http.h>
+#include <pistache/router.h>
 
-namespace api
-{
+namespace api {
 
 class DefaultApi : public ApiBase {
-public:
-    explicit DefaultApi(const std::shared_ptr<Pistache::Rest::Router>& rtr, Facade& f);
+  public:
+    explicit DefaultApi(const std::shared_ptr<Pistache::Rest::Router> &rtr, Facade &f);
     void init() override;
 
     static const std::string base;
 
-private:
+  private:
     void setupRoutes();
-    Facade& facade;
+    Facade &facade;
 
-    void add_device_to_white_list_handler(const Pistache::Rest::Request&, Pistache::Http::ResponseWriter response);
-    void delete_device_from_white_list_handler(const Pistache::Rest::Request&, Pistache::Http::ResponseWriter response);
-    void patch_valid_to_device_handler(const Pistache::Rest::Request&, Pistache::Http::ResponseWriter response);
-    void get_usb_white_list_handler(const Pistache::Rest::Request&, Pistache::Http::ResponseWriter response);
-    void get_current_connected_devices_list_handler(const Pistache::Rest::Request&, Pistache::Http::ResponseWriter response);
+    void add_device_to_white_list_handler(const Pistache::Rest::Request &,
+                                          Pistache::Http::ResponseWriter response);
+    void delete_device_from_white_list_handler(const Pistache::Rest::Request &,
+                                               Pistache::Http::ResponseWriter response);
+    void patch_valid_to_device_handler(const Pistache::Rest::Request &,
+                                       Pistache::Http::ResponseWriter response);
+    void get_usb_white_list_handler(const Pistache::Rest::Request &,
+                                    Pistache::Http::ResponseWriter response);
+    void get_current_connected_devices_list_handler(const Pistache::Rest::Request &,
+                                                    Pistache::Http::ResponseWriter response);
 
-    void options_handler(const Pistache::Rest::Request& request, Pistache::Http::ResponseWriter response);
+    void options_handler(const Pistache::Rest::Request &request,
+                         Pistache::Http::ResponseWriter response);
 
-    #ifdef ENABLE_TEST_API
-    void seed_whitelist_handler(
-        const Pistache::Rest::Request&,
-        Pistache::Http::ResponseWriter);
-    #endif
+#ifdef ENABLE_TEST_API
+    void seed_whitelist_handler(const Pistache::Rest::Request &, Pistache::Http::ResponseWriter);
+#endif
 };
 
-}
+} // namespace api

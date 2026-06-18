@@ -3,7 +3,7 @@
 #include <string_view>
 
 class IWebSocketServer {
-public:
+  public:
     virtual void start() = 0;
     virtual void broadcast(std::string_view message) = 0;
 };

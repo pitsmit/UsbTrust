@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <optional>
+#include <string>
 
 struct DeviceInfo {
     std::string vendorId;
@@ -10,50 +10,44 @@ struct DeviceInfo {
     std::optional<std::string> vendorName;
     std::optional<std::string> productName;
 
-    bool operator==(const DeviceInfo& other) const
-    {
-        return vendorId    == other.vendorId &&
-               productId   == other.productId &&
-               serial      == other.serial &&
-               vendorName  == other.vendorName &&
-               productName == other.productName;
-    }
+    bool operator==(const DeviceInfo &) const = default;
 
-    bool operator!=(const DeviceInfo& other) const
-    {
+    bool operator!=(const DeviceInfo &other) const {
         return !(*this == other);
     }
 };
 
 class DeviceInfoBuilder {
-private:
+  private:
     DeviceInfo info_;
 
-public:
-    DeviceInfoBuilder& withVendorId(std::string_view v) noexcept {
+  public:
+    DeviceInfoBuilder &withVendorId(std::string_view v) noexcept {
         info_.vendorId = v;
         return *this;
     }
 
-    DeviceInfoBuilder& withProductId(std::string_view v) noexcept {
+    DeviceInfoBuilder &withProductId(std::string_view v) noexcept {
         info_.productId = v;
         return *this;
     }
 
-    DeviceInfoBuilder& withSerial(std::string_view v) noexcept {
+    DeviceInfoBuilder &withSerial(std::string_view v) noexcept {
         info_.serial = v;
         return *this;
     }
 
-    DeviceInfoBuilder& withVendorName(std::string_view v) noexcept {
+    DeviceInfoBuilder &withVendorName(std::string_view v) noexcept {
         info_.vendorName = v;
         return *this;
     }
 
-    DeviceInfoBuilder& withProductName(std::string_view v) noexcept {
+    DeviceInfoBuilder &withProductName(std::string_view v) noexcept {
         info_.productName = v;
         return *this;
     }
 
-    DeviceInfo build() { return info_; }
+    DeviceInfo build() {
+        return info_;
+    }
 };

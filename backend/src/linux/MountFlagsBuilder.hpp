@@ -5,7 +5,7 @@
 #include "entities/MountMode.hpp"
 
 class MountFlagsBuilder {
-private:
+  private:
     static constexpr auto ZeroFlags() noexcept {
         return 0;
     }
@@ -13,11 +13,10 @@ private:
     static constexpr auto ReadOnly() noexcept {
         return MS_RDONLY | MS_NOEXEC;
     }
-public:
+
+  public:
     static auto from(MountMode md) noexcept {
-        return md.isReadOnly() 
-            ? ReadOnly() 
-            : ZeroFlags();
+        return md.isReadOnly() ? ReadOnly() : ZeroFlags();
     }
 
     static auto remount_from(MountMode md) noexcept {

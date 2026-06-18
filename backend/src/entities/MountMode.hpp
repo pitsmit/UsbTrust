@@ -3,14 +3,10 @@
 #include <string>
 
 class MountMode {
-public:
-    enum Value {
-        RO,
-        RW
-    };
+  public:
+    enum Value { RO, RW };
 
-    explicit constexpr MountMode(Value value)
-        : value_(value) {}
+    explicit constexpr MountMode(Value value) : value_(value) {}
 
     constexpr MountMode() : value_(RO) {}
 
@@ -22,10 +18,8 @@ public:
         return MountMode(RO);
     }
 
-    template<typename T>
-    static constexpr MountMode fromPresence(T obj) {
-        return obj ? MountMode::rw()
-                   : MountMode::ro();
+    template <typename T> static constexpr MountMode fromPresence(T obj) {
+        return obj ? MountMode::rw() : MountMode::ro();
     }
 
     bool isReadOnly() const noexcept {
@@ -36,7 +30,7 @@ public:
         return value_ == RW;
     }
 
-    bool operator==(const MountMode& mode) const noexcept {
+    bool operator==(const MountMode &mode) const noexcept {
         return isReadWrite() == mode.isReadWrite();
     }
 
@@ -49,11 +43,9 @@ public:
     }
 
     static MountMode parse(std::string_view value) {
-        return value == "RW"
-            ? MountMode(RW)
-            : MountMode(RO);
+        return value == "RW" ? MountMode(RW) : MountMode(RO);
     }
 
-private:
+  private:
     Value value_;
 };

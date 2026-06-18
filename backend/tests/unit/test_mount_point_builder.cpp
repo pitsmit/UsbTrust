@@ -1,8 +1,8 @@
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <string>
-#include <filesystem>
 
-#include "core/MountPointBuilder.hpp"
+#include "services/MountPointBuilder.hpp"
 
 TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
     // ARRANGE
@@ -13,13 +13,13 @@ TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
     constexpr auto vendorName = "Samsung";
 
     auto dev = DeviceInfoBuilder()
-                        .withVendorId(vendorId)
-                        .withProductId(productId)
-                        .withSerial(serial)
-                        .withProductName(productName)
-                        .withVendorName(vendorName)
-                        .build();
-    
+                   .withVendorId(vendorId)
+                   .withProductId(productId)
+                   .withSerial(serial)
+                   .withProductName(productName)
+                   .withVendorName(vendorName)
+                   .build();
+
     auto expected = std::format("/media/dlp/{}_{}_{}", vendorId, productId, serial);
 
     // ACT

@@ -1,16 +1,15 @@
 #pragma once
 
-#include <string>
 #include <filesystem>
 #include <format>
+#include <string>
 
 #include "entities/DeviceInfo.hpp"
 
 class MountPointBuilder {
-public:
-    static std::string build(const DeviceInfo& dev) {
-        return std::format("/media/dlp/{}_{}_{}", 
-            dev.vendorId, dev.productId, dev.serial);
+  public:
+    static std::string build(const DeviceInfo &dev) {
+        return std::format("/media/dlp/{}_{}_{}", dev.vendorId, dev.productId, dev.serial);
     }
 
     static void ensureExists(std::string_view path) {
