@@ -5,28 +5,13 @@
 
 class MountRecordMapper {
   public:
-    enum Columns {
-        ID = 0,
-        DEVICE_INFO_ID,
-        DEV_NODE,
-        MOUNT_POINT,
-        MODE,
-        VENDOR_ID,
-        PRODUCT_ID,
-        SERIAL,
-        VENDOR_NAME,
-        PRODUCT_NAME
-    };
-
-  public:
-    static MountRecord fromRow(char **v) noexcept {
+    static MountRecord fromRow(const Row& r) noexcept {
         return MountRecordBuilder()
-            .withId(std::stoull(v[ID]))
-            .withDevNode(v[DEV_NODE])
-            .withMountPoint(v[MOUNT_POINT])
-            .withMode(MountMode::parse(v[MODE]))
-            .withInfo(DeviceInfoMapper::fromRow(
-                v, VENDOR_ID, PRODUCT_ID, SERIAL, VENDOR_NAME, PRODUCT_NAME))
+            .withId(r.get<std::uint64_t>("id"))
+            .withDevNode(r.get<std::string>("dev_node"))
+            .withMountPoint(r.get<std::string>("mount_point"))
+            .withMode(MountMode::parse(r.get<std::string>("mode")))
+            .withInfo(DeviceInfoMapper::fromRow(r))
             .build();
     }
 };

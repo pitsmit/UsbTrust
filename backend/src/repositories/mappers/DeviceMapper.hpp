@@ -1,29 +1,24 @@
 #pragma once
 
-#include "DeviceInfoMapper.hpp"
 #include "entities/Device.hpp"
+#include "repositories/Row.hpp"
 
 class DeviceMapper {
   public:
-    enum Columns { ID = 0, VENDOR_ID, PRODUCT_ID, SERIAL, PRODUCT_NAME, VENDOR_NAME, VALID_TO };
-
-    static Device fromRow(char **v) noexcept {
+    static Device fromRow(const Row& r) noexcept {
         DeviceInfoBuilder info;
-        if (v[VENDOR_ID])
-            info.withVendorId(v[VENDOR_ID]);
-        if (v[PRODUCT_ID])
-            info.withProductId(v[PRODUCT_ID]);
-        if (v[SERIAL])
-            info.withSerial(v[SERIAL]);
-        if (v[PRODUCT_NAME])
-            info.withProductName(v[PRODUCT_NAME]);
-        if (v[VENDOR_NAME])
-            info.withVendorName(v[VENDOR_NAME]);
+        info.withVendorId(r.get<std::string>("vendor_id"));
+        info.withProductId(r.get<std::string>("product_id"));
+        info.withSerial(r.get<std::string>("serial"));
+        info.withProductName(r.get<std::string>("product_name"));
+        info.withVendorName(r.get<std::string>("vendor_name"));
 
         DeviceBuilder device;
-        if (v[VALID_TO])
-            device.withValidTo(v[VALID_TO]);
+        device.withValidTo(r.get<std::string>("valid_to"));
 
-        return device.withId(std::stoull(v[ID])).withInfo(info.build()).build();
+        return device
+            .withId(r.get<std::uint64_t>("id"))
+            .withInfo(info.build())
+            .build();
     }
 };

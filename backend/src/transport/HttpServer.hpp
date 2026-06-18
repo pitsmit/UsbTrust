@@ -8,6 +8,7 @@
 #include "DefaultApi.h"
 #include "exceptions/Exceptions.hpp"
 #include "infrastructure/config/Config.hpp"
+#include "infrastructure/logging/DevLogger.hpp"
 
 class HttpServer {
   public:

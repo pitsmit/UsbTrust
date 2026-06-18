@@ -1,26 +1,19 @@
 #pragma once
 
+#include <sqlite3.h>
+
 #include "entities/DeviceInfo.hpp"
+#include "repositories/Row.hpp"
 
 class DeviceInfoMapper {
-  public:
-    static DeviceInfo fromRow(char **v,
-                              int vendorIdIdx,
-                              int productIdIdx,
-                              int serialIdx,
-                              int vendorNameIdx,
-                              int productNameIdx) noexcept {
+public:
+    static DeviceInfo fromRow(const Row& r) noexcept {
         DeviceInfoBuilder builder;
-        if (v[vendorIdIdx])
-            builder.withVendorId(v[vendorIdIdx]);
-        if (v[productIdIdx])
-            builder.withProductId(v[productIdIdx]);
-        if (v[serialIdx])
-            builder.withSerial(v[serialIdx]);
-        if (v[vendorNameIdx])
-            builder.withVendorName(v[vendorNameIdx]);
-        if (v[productNameIdx])
-            builder.withProductName(v[productNameIdx]);
+        builder.withVendorId(r.get<std::string>("vendor_id"));
+        builder.withProductId(r.get<std::string>("product_id"));
+        builder.withSerial(r.get<std::string>("serial"));
+        builder.withVendorName(r.get<std::string>("vendor_name"));
+        builder.withProductName(r.get<std::string>("product_name"));
         return builder.build();
     }
 };
