@@ -1,10 +1,10 @@
 #pragma once
 
-#include "DBConnection.hpp"
+#include "storage/executor/SqlExecutor.hpp"
 
 class RepositoryBase {
   protected:
-    DBConnection &db;
+    SqlExecutor &executor;
 
-    explicit RepositoryBase(DBConnection &connection) : db(connection) {}
+    explicit RepositoryBase(SqlExecutor &exec) : executor(exec) {}
 };

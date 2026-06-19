@@ -3,12 +3,12 @@
 #include "RepositoryBase.hpp"
 #include "types/types.hpp"
 
-class DBConnection;
 class DeviceInfo;
+class SqlExecutor;
 
 class DeviceInfoRepository : RepositoryBase {
   public:
-    explicit DeviceInfoRepository(DBConnection &connection) : RepositoryBase(connection) {}
+    explicit DeviceInfoRepository(SqlExecutor &exec) : RepositoryBase(exec) {}
 
     core::Id ensure(const DeviceInfo &info);
 };

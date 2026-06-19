@@ -43,7 +43,7 @@ class MountMode {
     }
 
     static MountMode parse(std::string_view value) {
-        return value == "RW" ? MountMode(RW) : MountMode(RO);
+        return value == "RW" ? rw() : ro();
     }
 
   private:

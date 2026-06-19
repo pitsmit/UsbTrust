@@ -9,7 +9,7 @@
 
 class IMountSystem;
 class IDeviceResolver;
-class DBConnection;
+class SqlExecutor;
 
 class Facade {
   private:
@@ -20,8 +20,8 @@ class Facade {
     CommandContext ctx;
 
   public:
-    Facade(DBConnection &db, IMountSystem &sys, IDeviceResolver &res)
-        : deviceManager(db), mountRegistry(db), mountService(sys),
+    Facade(SqlExecutor &ex, IMountSystem &sys, IDeviceResolver &res)
+        : deviceManager(ex), mountRegistry(ex), mountService(sys),
           mountManager(deviceManager, mountService, res),
           ctx{deviceManager, mountRegistry, mountManager} {}
 

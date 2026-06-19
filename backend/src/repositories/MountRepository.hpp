@@ -4,14 +4,14 @@
 #include "RepositoryBase.hpp"
 
 class MountRecord;
+class SqlExecutor;
 
 class MountRepository : public RepositoryBase {
   private:
     DeviceInfoRepository info_rep;
 
   public:
-    explicit MountRepository(DBConnection &connection)
-        : RepositoryBase(connection), info_rep(connection) {}
+    explicit MountRepository(SqlExecutor &exec) : RepositoryBase(exec), info_rep(exec) {}
 
     void add(const MountRecord &record);
     void update(const MountRecord &record);

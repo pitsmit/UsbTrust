@@ -1,7 +1,6 @@
 #include "MountRepository.hpp"
 
 #include "entities/MountRecord.hpp"
-#include "mappers/MountRecordMapper.hpp"
 
 void MountRepository::add(const MountRecord &record) {
     auto deviceInfoId = info_rep.ensure(record.info);
@@ -9,7 +8,8 @@ void MountRepository::add(const MountRecord &record) {
     static constexpr auto sql =
         "INSERT INTO MountRecord (deviceInfoId, devNode, mountPoint, mode) VALUES (?, ?, ?, ?);";
 
-    db.exec(sql, deviceInfoId, record.devNode, record.mountPoint, record.mode.toStringUpper());
+    executor.exec(
+        sql, deviceInfoId, record.devNode, record.mountPoint, record.mode.toStringUpper());
 }
 
 void MountRepository::update(const MountRecord &record) {
@@ -18,13 +18,14 @@ void MountRepository::update(const MountRecord &record) {
     static constexpr auto sql =
         "UPDATE MountRecord SET deviceInfoId = ?, mountPoint = ?, mode = ? WHERE devNode = ?;";
 
-    db.exec(sql, deviceInfoId, record.mountPoint, record.mode.toStringUpper(), record.devNode);
+    executor.exec(
+        sql, deviceInfoId, record.mountPoint, record.mode.toStringUpper(), record.devNode);
 }
 
 std::optional<std::string> MountRepository::getMountPointByDevNode(std::string_view devNode) {
     static constexpr auto sql = "SELECT mountPoint FROM MountRecord WHERE devNode = ? LIMIT 1;";
 
-    return db.query<std::string>(sql, devNode);
+    return executor.scalar<std::string>(sql, devNode);
 }
 
 std::optional<MountRecord> MountRepository::getById(core::Id id) {
@@ -36,12 +37,12 @@ std::optional<MountRecord> MountRepository::getById(core::Id id) {
         "JOIN DeviceInfo di ON mr.deviceInfoId = di.id "
         "WHERE d.id = ? LIMIT 1;";
 
-    return db.query<MountRecord>(sql, MountRecordMapper::fromRow, id);
+    return executor.query<MountRecord>(sql, id).front();
 }
 
 void MountRepository::removeByDevNode(std::string_view devNode) {
     static constexpr auto sql = "DELETE FROM MountRecord WHERE devNode = ?;";
-    db.exec(sql, devNode);
+    executor.exec(sql, devNode);
 }
 
 std::vector<MountRecord> MountRepository::getAll() {
@@ -51,5 +52,5 @@ std::vector<MountRecord> MountRepository::getAll() {
         "FROM MountRecord mr "
         "JOIN DeviceInfo di ON mr.deviceInfoId = di.id;";
 
-    return db.query<MountRecord>(sql, MountRecordMapper::fromRow);
+    return executor.query<MountRecord>(sql);
 }

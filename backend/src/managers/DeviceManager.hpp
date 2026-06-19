@@ -7,7 +7,7 @@ class DeviceManager {
     DeviceRepository repo;
 
   public:
-    explicit DeviceManager(DBConnection &db) : repo(db) {}
+    explicit DeviceManager(SqlExecutor &ex) : repo(ex) {}
 
     int addToWhitelist(const DeviceInfo &dev);
     std::vector<Device> getWhitelist();

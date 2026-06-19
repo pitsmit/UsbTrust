@@ -1,4 +1,3 @@
-#include <chrono>
 #include <iostream>
 #include <optional>
 #include <thread>
@@ -11,8 +10,9 @@
 #include "linux/UdevDeviceResolver.hpp"
 #include "linux/Watcher.hpp"
 #include "managers/DeviceEventNotifyManager.hpp"
-#include "repositories/DBInitializer.hpp"
 #include "services/RecoveryService.hpp"
+#include "storage/executor/SqlExecutor.hpp"
+#include "storage/init/DBInitializer.hpp"
 #include "transport/WebSocketServer.hpp"
 
 #ifdef BUILD_HTTP_SERVER
@@ -21,7 +21,8 @@
 
 class App {
   private:
-    DBConnection db;
+    DataBase db;
+    SqlExecutor exec;
     LinuxMountSystem linms;
     UdevDeviceResolver resolver;
     Facade facade;
@@ -61,13 +62,13 @@ class App {
 
   public:
     App()
-        : db(Config::getDBPath()), linms(), resolver(), facade(db, linms, resolver),
+        : db(Config::getDBPath()), exec(db), linms(), resolver(), facade(exec, linms, resolver),
           ws(Config::getWebSocketPort()), notifier(ws), queue(),
           service(facade.registry(), facade.mounts(), notifier, resolver), loop(queue, service),
           watcher(queue), rec(facade.registry(), resolver, facade.mounts(), facade.devices()) {}
 
     void init() {
-        DBInitializer::init(db);
+        DBInitializer::init(exec);
         rec.run();
         ws.start();
         startOptionalServices();

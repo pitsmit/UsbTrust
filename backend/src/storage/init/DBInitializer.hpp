@@ -3,12 +3,12 @@
 #include <filesystem>
 #include <string>
 
-class DBConnection;
+class SqlExecutor;
 
 class DBInitializer {
   private:
     static std::string loadSQL(const std::filesystem::path &path);
 
   public:
-    static void init(DBConnection &db);
+    static void init(SqlExecutor &executor);
 };

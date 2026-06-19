@@ -8,7 +8,7 @@ class MountRegistryManager {
     MountRepository repo;
 
   public:
-    explicit MountRegistryManager(DBConnection &db) : repo(db) {}
+    explicit MountRegistryManager(SqlExecutor &ex) : repo(ex) {}
 
     void add(const MountRecord &record);
     std::optional<std::string> getMountPointByDevNode(std::string_view devNode);

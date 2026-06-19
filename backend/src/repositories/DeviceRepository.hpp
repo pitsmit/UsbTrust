@@ -4,13 +4,14 @@
 #include "RepositoryBase.hpp"
 #include "entities/Device.hpp"
 
+class SqlExecutor;
+
 class DeviceRepository : public RepositoryBase {
   private:
     DeviceInfoRepository info_rep;
 
   public:
-    explicit DeviceRepository(DBConnection &connection)
-        : RepositoryBase(connection), info_rep(connection) {}
+    explicit DeviceRepository(SqlExecutor &exec) : RepositoryBase(exec), info_rep(exec) {}
 
     core::Id add(const DeviceInfo &dev);
     std::vector<Device> getAll();

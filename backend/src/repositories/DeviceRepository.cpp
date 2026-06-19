@@ -1,14 +1,13 @@
 #include "DeviceRepository.hpp"
 
 #include "entities/DeviceInfo.hpp"
-#include "mappers/DeviceMapper.hpp"
 
 core::Id DeviceRepository::add(const DeviceInfo &dev) {
     auto deviceInfoId = info_rep.ensure(dev);
     static constexpr auto sql =
         "INSERT INTO Device (deviceInfoId, validTo) VALUES (?, NULL) RETURNING id;";
-    auto id = db.query<core::Id>(sql, deviceInfoId);
-    return *id;
+    auto id = executor.query<core::Id>(sql, deviceInfoId);
+    return id.front();
 }
 
 std::vector<Device> DeviceRepository::getAll() {
@@ -17,17 +16,17 @@ std::vector<Device> DeviceRepository::getAll() {
                                 "FROM Device d "
                                 "JOIN DeviceInfo di ON d.deviceInfoId = di.id;";
 
-    return db.query<Device>(sql, DeviceMapper::fromRow);
+    return executor.query<Device>(sql);
 }
 
 void DeviceRepository::remove(core::Id id) {
     static constexpr auto sql = "DELETE FROM Device WHERE id = ?";
-    db.exec(sql, id);
+    executor.exec(sql, id);
 }
 
 void DeviceRepository::updateValidTo(core::Id id, std::optional<std::string> validTo) {
     static constexpr auto sql = "UPDATE Device SET validTo = ? WHERE id = ?";
-    db.exec(sql, validTo, id);
+    executor.exec(sql, validTo, id);
 }
 
 std::optional<core::Id> DeviceRepository::findActiveId(const DeviceInfo &info) {
@@ -40,5 +39,5 @@ std::optional<core::Id> DeviceRepository::findActiveId(const DeviceInfo &info) {
                                 "OR d.validTo >= date('now'))"
                                 " LIMIT 1;";
 
-    return db.query<core::Id>(sql, info.vendorId, info.productId, info.serial);
+    return executor.scalar<core::Id>(sql, info.vendorId, info.productId, info.serial);
 }
