@@ -67,14 +67,14 @@ class UdevWatcher {
                     continue;
                 }
 
-                char *devNode = (char *)udev_device_get_devnode(dev);
+                auto devNode = udev_device_get_devnode(dev);
                 auto event =
                     DeviceEventBuilder().withType(EventType::INSERT).withDevNode(devNode).build();
 
                 if (!event.devNode.empty())
                     queue_.push(event);
             } else if (act == "remove") {
-                char *devNode = (char *)udev_device_get_devnode(dev);
+                auto devNode = udev_device_get_devnode(dev);
                 auto event =
                     DeviceEventBuilder().withType(EventType::REMOVE).withDevNode(devNode).build();
 
@@ -91,9 +91,6 @@ class UdevWatcher {
 
   private:
     bool static isUsbDevice(struct udev_device *dev) {
-        struct udev_device *parent =
-            udev_device_get_parent_with_subsystem_devtype(dev, "usb", "usb_device");
-
-        return parent != nullptr;
+        return udev_device_get_parent_with_subsystem_devtype(dev, "usb", "usb_device") != nullptr;
     }
 };

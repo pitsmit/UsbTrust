@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <format>
 #include <fstream>
-#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -44,8 +43,10 @@ class Config {
   public:
     static std::vector<std::filesystem::path> getSchemaPaths() {
         std::vector<std::filesystem::path> result;
-        for (const auto &e : std::filesystem::directory_iterator(get("db.schema.dir")))
-            result.push_back(e.path());
+        auto iter = std::filesystem::directory_iterator(get("db.schema.dir"));
+        std::transform(begin(iter), end(iter), std::back_inserter(result), [](const auto &entry) {
+            return entry.path();
+        });
         return result;
     }
     static std::string getDBPath() {

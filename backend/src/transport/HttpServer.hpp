@@ -12,7 +12,7 @@
 
 class HttpServer {
   public:
-    HttpServer(Facade &facade) : facade(facade) {}
+    explicit HttpServer(Facade &facade) : facade(facade) {}
 
     void start() {
         int port = Config::getHttpPort();

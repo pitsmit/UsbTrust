@@ -10,7 +10,6 @@ template <typename T> class EventQueue {
     std::queue<T> queue_;
     std::mutex mutex_;
     std::condition_variable cv_;
-    bool stopped_ = false;
 
   public:
     void push(T value) {
@@ -23,20 +22,12 @@ template <typename T> class EventQueue {
 
     std::optional<T> pop() {
         std::unique_lock lock(mutex_);
-        cv_.wait(lock, [&] { return stopped_ || !queue_.empty(); });
-        if (stopped_ && queue_.empty()) {
+        cv_.wait(lock, [&] { return !queue_.empty(); });
+        if (queue_.empty()) {
             return std::nullopt;
         }
         T value = std::move(queue_.front());
         queue_.pop();
         return value;
-    }
-
-    void stop() noexcept {
-        {
-            std::lock_guard lock(mutex_);
-            stopped_ = true;
-        }
-        cv_.notify_all();
     }
 };

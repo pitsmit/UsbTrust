@@ -24,8 +24,8 @@ class UdevDeviceResolver : public IDeviceResolver {
     using SdUniquePtr = std::unique_ptr<T, SdDeleter<T, UnrefFn>>;
 
   public:
-    DeviceInfo resolve(std::string_view devNode) {
-        struct stat st{};
+    DeviceInfo resolve(std::string_view devNode) override {
+        struct stat st {};
         if (stat(devNode.data(), &st) < 0)
             throw ResolveInfoError(
                 std::format("Could not extract deviceInfo from devnode: {}", devNode));
@@ -64,7 +64,7 @@ class UdevDeviceResolver : public IDeviceResolver {
         return builder.build();
     }
 
-    std::vector<std::string> getUsbDevNodes() {
+    std::vector<std::string> getUsbDevNodes() override {
         using SdDeviceEnumeratorPtr = SdUniquePtr<sd_device_enumerator, sd_device_enumerator_unref>;
         std::vector<std::string> result;
         sd_device_enumerator *rawEnumerator = nullptr;
@@ -88,7 +88,7 @@ class UdevDeviceResolver : public IDeviceResolver {
         return result;
     }
 
-    std::string getMountPoint(std::string_view devNode) {
+    std::string getMountPoint(std::string_view devNode) override {
         struct libmnt_table *tb = mnt_new_table_from_file("/proc/self/mountinfo");
         if (!tb)
             throw MountError(std::format("Coud not get mountpoint from devnode: {}", devNode));
@@ -115,7 +115,7 @@ class UdevDeviceResolver : public IDeviceResolver {
         throw MountError(std::format("Coud not get mountpoint from devnode: {}", devNode));
     }
 
-    MountMode getMountMode(std::string_view mountpoint) {
+    MountMode getMountMode(std::string_view mountpoint) override {
         libmnt_table *tb = mnt_new_table_from_file("/proc/self/mountinfo");
         if (!tb)
             throw MountError(std::format("Coud not get mountmode from mountpoint: {}", mountpoint));

@@ -20,7 +20,7 @@ class WebSocketServer : public IWebSocketServer {
   public:
     explicit WebSocketServer(int port) : server_(port) {}
 
-    void start() {
+    void start() override {
         server_.setOnClientMessageCallback([this](std::shared_ptr<ix::ConnectionState>,
                                                   ix::WebSocket &webSocket,
                                                   const ix::WebSocketMessagePtr &msg) {
@@ -44,7 +44,7 @@ class WebSocketServer : public IWebSocketServer {
         server_.start();
     }
 
-    void broadcast(std::string_view message) {
+    void broadcast(std::string_view message) override {
         std::lock_guard lock(mutex_);
 
         for (auto *client : clients_) {

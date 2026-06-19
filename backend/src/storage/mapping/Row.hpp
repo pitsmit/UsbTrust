@@ -13,7 +13,7 @@ class Row {
     std::unordered_map<std::string, int> indexMap;
 
   public:
-    Row(sqlite3_stmt *stmt);
+    explicit Row(sqlite3_stmt *stmt);
 
     template <typename T> T get(std::string_view col) const;
 

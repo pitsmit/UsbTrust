@@ -15,7 +15,7 @@ void RecoveryService::actualize(MountRecord &rec) {
         try {
             auto newrec = manager.mount(devNode);
             registry.recreate(newrec);
-        } catch (const MountError &e) {
+        } catch (const MountError &ee) {
             return;
         }
     }

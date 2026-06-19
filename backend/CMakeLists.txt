@@ -150,6 +150,7 @@ if(CPPCHECK)
             --suppress=unmatchedSuppression
             --quiet
             --inline-suppr
+            --checkers-report=errs.txt
             -i ${CMAKE_BINARY_DIR}/_deps
             -i ${CMAKE_SOURCE_DIR}/external
             -i ${CMAKE_BINARY_DIR}/external
