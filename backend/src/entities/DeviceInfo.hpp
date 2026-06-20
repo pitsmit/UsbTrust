@@ -2,6 +2,9 @@
 
 #include <optional>
 #include <string>
+#include <unordered_map>
+
+#include "linux/SDdevView.hpp"
 
 struct DeviceInfo {
     std::string vendorId;
@@ -49,5 +52,23 @@ class DeviceInfoBuilder {
 
     DeviceInfo build() const {
         return info_;
+    }
+
+    DeviceInfo buildFrom(const SDdevView &usb) {
+        static constexpr std::array mappings{
+            std::pair{"idVendor", &DeviceInfoBuilder::withVendorId},
+            std::pair{"idProduct", &DeviceInfoBuilder::withProductId},
+            std::pair{"serial", &DeviceInfoBuilder::withSerial},
+            std::pair{"manufacturer", &DeviceInfoBuilder::withVendorName},
+            std::pair{"product", &DeviceInfoBuilder::withProductName},
+        };
+
+        for (const auto &[attr, setter] : mappings) {
+            auto value = usb.getSysAttr(attr);
+            if (!value)
+                throw value.error();
+            (this->*setter)(*value);
+        }
+        return build();
     }
 };

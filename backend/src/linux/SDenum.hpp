@@ -3,7 +3,7 @@
 #include <systemd/sd-device.h>
 
 #include "exceptions/Exceptions.hpp"
-#include "linux/SDdev.hpp"
+#include "linux/SDdevView.hpp"
 
 class SDenum {
     sd_device_enumerator *enumerator = nullptr;
@@ -23,11 +23,11 @@ class SDenum {
         sd_device_enumerator_add_match_property(enumerator, "DEVTYPE", "partition");
     }
 
-    SDdev first() const {
-        return SDdev(sd_device_enumerator_get_device_first(enumerator));
+    SDdevView first() const {
+        return SDdevView(sd_device_enumerator_get_device_first(enumerator));
     }
 
-    SDdev next() const {
-        return SDdev(sd_device_enumerator_get_device_next(enumerator));
+    SDdevView next() const {
+        return SDdevView(sd_device_enumerator_get_device_next(enumerator));
     }
 };

@@ -1,7 +1,7 @@
 #include "Watcher.hpp"
 
 #include "exceptions/Exceptions.hpp"
-#include "linux/SDdev.hpp"
+#include "linux/SDdevView.hpp"
 #include "linux/SDmon.hpp"
 
 void Watcher::run() {
@@ -20,7 +20,7 @@ int Watcher::monitorCallback(sd_device_monitor *, sd_device *dev, void *userdata
     if (sd_device_get_action(dev, &action) < 0)
         return 0;
     if (action == SD_DEVICE_ADD || action == SD_DEVICE_CHANGE) {
-        SDdev device(dev);
+        SDdevView device(dev);
         if (device.isUsbDevice()) {
             if (auto node = device.getDevNode()) {
                 auto event =
@@ -29,7 +29,7 @@ int Watcher::monitorCallback(sd_device_monitor *, sd_device *dev, void *userdata
             }
         }
     } else if (action == SD_DEVICE_REMOVE) {
-        SDdev device(dev);
+        SDdevView device(dev);
         if (auto node = device.getDevNode()) {
             auto event =
                 DeviceEventBuilder().withType(EventType::REMOVE).withDevNode(*node).build();
