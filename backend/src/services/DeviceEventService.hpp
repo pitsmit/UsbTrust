@@ -12,13 +12,13 @@ class DeviceEventService {
     MountRegistryManager &mountRegistry_;
     MountManager &mountManager_;
     DeviceEventNotifyManager &notifier_;
-    IDeviceResolver &resolver_;
+    IUsbDeviceContextProvider &resolver_;
 
   public:
     DeviceEventService(MountRegistryManager &mountRegistry,
                        MountManager &mountManager,
                        DeviceEventNotifyManager &notifier,
-                       IDeviceResolver &resolver)
+                       IUsbDeviceContextProvider &resolver)
         : mountRegistry_(mountRegistry), mountManager_(mountManager), notifier_(notifier),
           resolver_(resolver) {}
 

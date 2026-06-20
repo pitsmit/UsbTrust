@@ -9,7 +9,7 @@
 class RecoveryService {
   private:
     MountRegistryManager &registry;
-    IDeviceResolver &resolver;
+    IUsbDeviceContextProvider &resolver;
     MountManager &manager;
     DeviceManager &devman;
 
@@ -17,7 +17,7 @@ class RecoveryService {
 
   public:
     explicit RecoveryService(MountRegistryManager &mr,
-                             IDeviceResolver &rs,
+                             IUsbDeviceContextProvider &rs,
                              MountManager &man,
                              DeviceManager &devman_)
         : registry(mr), resolver(rs), manager(man), devman(devman_) {}

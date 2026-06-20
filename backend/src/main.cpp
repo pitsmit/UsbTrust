@@ -6,11 +6,11 @@
 #include "dispatch/EventQueue.hpp"
 #include "facade/Facade.hpp"
 #include "infrastructure/config/Config.hpp"
-#include "linux/LinuxMountSystem.hpp"
-#include "linux/UdevDeviceResolver.hpp"
-#include "linux/Watcher.hpp"
+#include "linux/LinuxMountSystem/LinuxMountSystem.hpp"
+#include "linux/Watcher/Watcher.hpp"
 #include "managers/DeviceEventNotifyManager.hpp"
 #include "services/RecoveryService.hpp"
+#include "services/UsbDeviceContextProvider.hpp"
 #include "storage/executor/SqlExecutor.hpp"
 #include "storage/init/DBInitializer.hpp"
 #include "transport/WebSocketServer.hpp"
@@ -24,7 +24,7 @@ class App {
     DataBase db;
     SqlExecutor exec;
     LinuxMountSystem linms;
-    UdevDeviceResolver resolver;
+    UsbDeviceContextProvider resolver;
     Facade facade;
     WebSocketServer ws;
     DeviceEventNotifyManager notifier;

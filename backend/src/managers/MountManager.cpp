@@ -4,7 +4,7 @@
 #include "services/MountPointBuilder.hpp"
 
 MountRecord MountManager::mount(std::string_view devNode) {
-    auto info = resolver.resolve(devNode);
+    auto info = resolver.getDeviceInfo(devNode);
     auto mountPoint = MountPointBuilder::build(info);
     MountPointBuilder::ensureExists(mountPoint);
     auto id = deviceManager.isAllowed(info);

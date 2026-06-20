@@ -8,7 +8,7 @@
 #include "services/MountService.hpp"
 
 class IMountSystem;
-class IDeviceResolver;
+class IUsbDeviceContextProvider;
 class SqlExecutor;
 
 class Facade {
@@ -20,7 +20,7 @@ class Facade {
     CommandContext ctx;
 
   public:
-    Facade(SqlExecutor &ex, IMountSystem &sys, IDeviceResolver &res)
+    Facade(SqlExecutor &ex, IMountSystem &sys, IUsbDeviceContextProvider &res)
         : deviceManager(ex), mountRegistry(ex), mountService(sys),
           mountManager(deviceManager, mountService, res),
           ctx{deviceManager, mountRegistry, mountManager} {}

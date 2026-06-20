@@ -9,10 +9,10 @@ class MountManager {
   private:
     DeviceManager &deviceManager;
     MountService &mountService;
-    IDeviceResolver &resolver;
+    IUsbDeviceContextProvider &resolver;
 
   public:
-    MountManager(DeviceManager &dm, MountService &ms, IDeviceResolver &rs)
+    MountManager(DeviceManager &dm, MountService &ms, IUsbDeviceContextProvider &rs)
         : deviceManager(dm), mountService(ms), resolver(rs) {}
 
     MountRecord mount(std::string_view devNode);

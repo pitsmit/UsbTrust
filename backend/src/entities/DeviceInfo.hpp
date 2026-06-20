@@ -2,9 +2,6 @@
 
 #include <optional>
 #include <string>
-#include <unordered_map>
-
-#include "linux/SDdevView.hpp"
 
 struct DeviceInfo {
     std::string vendorId;
@@ -19,6 +16,9 @@ struct DeviceInfo {
         return !(*this == other);
     }
 };
+
+template <typename T>
+concept hasGetAttrMethod = requires(T v, std::string_view s) { v.getSysAttr(s); };
 
 class DeviceInfoBuilder {
   private:
@@ -54,21 +54,30 @@ class DeviceInfoBuilder {
         return info_;
     }
 
-    DeviceInfo buildFrom(const SDdevView &usb) {
-        static constexpr std::array mappings{
-            std::pair{"idVendor", &DeviceInfoBuilder::withVendorId},
-            std::pair{"idProduct", &DeviceInfoBuilder::withProductId},
-            std::pair{"serial", &DeviceInfoBuilder::withSerial},
-            std::pair{"manufacturer", &DeviceInfoBuilder::withVendorName},
-            std::pair{"product", &DeviceInfoBuilder::withProductName},
-        };
+  private:
+    using Setter = DeviceInfoBuilder &(DeviceInfoBuilder::*)(std::string_view);
+    struct Mapping {
+        std::string_view attr;
+        Setter setter;
+    };
 
+    inline static const Mapping mappings[] = {
+        {"idVendor", &DeviceInfoBuilder::withVendorId},
+        {"idProduct", &DeviceInfoBuilder::withProductId},
+        {"serial", &DeviceInfoBuilder::withSerial},
+        {"manufacturer", &DeviceInfoBuilder::withVendorName},
+        {"product", &DeviceInfoBuilder::withProductName},
+    };
+
+  public:
+    template <hasGetAttrMethod T> static DeviceInfo buildFrom(const T &usb) {
+        DeviceInfoBuilder builder;
         for (const auto &[attr, setter] : mappings) {
             auto value = usb.getSysAttr(attr);
             if (!value)
                 throw value.error();
-            (this->*setter)(*value);
+            (builder.*setter)(*value);
         }
-        return build();
+        return builder.build();
     }
 };

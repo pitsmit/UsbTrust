@@ -1,10 +1,10 @@
+#include "LinuxMountSystem.hpp"
+
 #include <blkid/blkid.h>
-#include <libudev.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "LinuxMountSystem.hpp"
 #include "MountFlagsBuilder.hpp"
 
 int LinuxMountSystem::mount(std::string_view dev,

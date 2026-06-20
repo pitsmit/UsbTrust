@@ -57,7 +57,6 @@ if(BUILD_APP)
         PRIVATE
         sqlite3
         pthread
-        udev
         blkid
         systemd
         mount

@@ -21,7 +21,7 @@ void RecoveryService::actualize(MountRecord &rec) {
     }
 
     auto md = resolver.getMountMode(mountPoint);
-    auto info = resolver.resolve(devNode.c_str());
+    auto info = resolver.getDeviceInfo(devNode.c_str());
 
     bool some_changes = false;
 
