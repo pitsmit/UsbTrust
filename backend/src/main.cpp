@@ -31,7 +31,7 @@ class App {
     EventQueue<DeviceEvent> queue;
     DeviceEventService service;
     EventLoop loop;
-    UdevWatcher watcher;
+    Watcher watcher;
     RecoveryService rec;
 
 #ifdef BUILD_HTTP_SERVER

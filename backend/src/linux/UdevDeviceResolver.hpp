@@ -1,14 +1,16 @@
 #pragma once
 
 #include <format>
-#include <string.h>
+#include <memory>
 
 #include <libmount/libmount.h>
 #include <sys/stat.h>
 #include <systemd/sd-device.h>
 
 #include "entities/DeviceInfo.hpp"
-#include "entities/MountRecord.hpp"
+#include "entities/MountMode.hpp"
+#include "exceptions/Exceptions.hpp"
+#include "linux/LibMountTab.hpp"
 #include "ports/IDeviceResolver.hpp"
 
 class UdevDeviceResolver : public IDeviceResolver {
@@ -89,50 +91,20 @@ class UdevDeviceResolver : public IDeviceResolver {
     }
 
     std::string getMountPoint(std::string_view devNode) override {
-        struct libmnt_table *tb = mnt_new_table_from_file("/proc/self/mountinfo");
-        if (!tb)
-            throw MountError(std::format("Coud not get mountpoint from devnode: {}", devNode));
-        struct libmnt_iter *itr = mnt_new_iter(MNT_ITER_FORWARD);
-        struct libmnt_fs *fs = nullptr;
-        if (!itr) {
-            mnt_free_table(tb);
-            throw MountError(std::format("Coud not get mountpoint from devnode: {}", devNode));
-        }
-        while (mnt_table_next_fs(tb, itr, &fs) == 0) {
-            const char *src = mnt_fs_get_source(fs);
-            const char *target = mnt_fs_get_target(fs);
-            if (!src || !target)
-                continue;
-            if (devNode == src) {
-                std::string mountpoint(target);
-                mnt_free_iter(itr);
-                mnt_free_table(tb);
-                return mountpoint;
-            }
-        }
-        mnt_free_iter(itr);
-        mnt_free_table(tb);
-        throw MountError(std::format("Coud not get mountpoint from devnode: {}", devNode));
+        auto mp =
+            LibMountTab().findRecordFromDevNode(devNode).and_then(LibMountTab::extractMountPoint);
+        if (!mp)
+            throw mp.error();
+        return *mp;
     }
 
     MountMode getMountMode(std::string_view mountpoint) override {
-        libmnt_table *tb = mnt_new_table_from_file("/proc/self/mountinfo");
-        if (!tb)
-            throw MountError(std::format("Coud not get mountmode from mountpoint: {}", mountpoint));
-        libmnt_fs *fs = mnt_table_find_target(tb, mountpoint.data(), MNT_ITER_FORWARD);
-        mnt_free_table(tb);
-        if (!fs) {
-            throw MountError(std::format("Coud not get mountmode from mountpoint: {}", mountpoint));
-        }
-        const char *opts = mnt_fs_get_options(fs);
-        if (!opts) {
-            throw MountError(std::format("Coud not get mountmode from mountpoint: {}", mountpoint));
-        }
-        if (mnt_optstr_get_option(opts, "rw", nullptr, nullptr) == 0) {
-            return MountMode::rw();
-        } else if (mnt_optstr_get_option(opts, "ro", nullptr, nullptr) == 0) {
-            return MountMode::ro();
-        }
-        return MountMode::ro();
+        auto mode = LibMountTab()
+                        .findRecordFromMountPoint(mountpoint)
+                        .and_then(LibMountTab::getFSopts)
+                        .and_then(LibMountTab::extractMode);
+        if (!mode)
+            throw mode.error();
+        return *mode;
     }
 };

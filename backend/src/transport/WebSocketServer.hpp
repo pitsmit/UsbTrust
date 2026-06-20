@@ -2,7 +2,6 @@
 
 #include <mutex>
 #include <set>
-#include <string>
 
 #include <ixwebsocket/IXConnectionState.h>
 #include <ixwebsocket/IXWebSocketServer.h>
@@ -12,43 +11,12 @@
 class WebSocketServer : public IWebSocketServer {
   private:
     ix::WebSocketServer server_;
-
     std::mutex mutex_;
-
     std::set<ix::WebSocket *> clients_;
 
   public:
     explicit WebSocketServer(int port) : server_(port) {}
 
-    void start() override {
-        server_.setOnClientMessageCallback([this](std::shared_ptr<ix::ConnectionState>,
-                                                  ix::WebSocket &webSocket,
-                                                  const ix::WebSocketMessagePtr &msg) {
-            if (msg->type == ix::WebSocketMessageType::Open) {
-                std::lock_guard lock(mutex_);
-
-                clients_.insert(&webSocket);
-            } else if (msg->type == ix::WebSocketMessageType::Close) {
-                std::lock_guard lock(mutex_);
-
-                clients_.erase(&webSocket);
-            }
-        });
-
-        auto result = server_.listen();
-
-        if (!result.first) {
-            throw std::runtime_error(result.second);
-        }
-
-        server_.start();
-    }
-
-    void broadcast(std::string_view message) override {
-        std::lock_guard lock(mutex_);
-
-        for (auto *client : clients_) {
-            client->send(std::string(message));
-        }
-    }
+    void start() override;
+    void broadcast(std::string_view message) override;
 };

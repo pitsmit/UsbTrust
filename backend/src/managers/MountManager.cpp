@@ -4,12 +4,12 @@
 #include "services/MountPointBuilder.hpp"
 
 MountRecord MountManager::mount(std::string_view devNode) {
-    auto info = resolver_.resolve(devNode);
+    auto info = resolver.resolve(devNode);
     auto mountPoint = MountPointBuilder::build(info);
     MountPointBuilder::ensureExists(mountPoint);
-    auto id = deviceManager_.isAllowed(info);
+    auto id = deviceManager.isAllowed(info);
     auto mode = MountMode::fromPresence(id);
-    mountUtils_.mountDevice(devNode, mountPoint, mode);
+    mountService.mount(devNode, mountPoint, mode);
     mylog->info("Mounted: {}", mountPoint);
     return MountRecordBuilder()
         .withDevNode(devNode)
@@ -21,11 +21,11 @@ MountRecord MountManager::mount(std::string_view devNode) {
 }
 
 void MountManager::unmount(std::string_view mountPoint) {
-    mountUtils_.handleUnmount(mountPoint);
+    mountService.unmount(mountPoint);
     mylog->info("Unmounted: {}", mountPoint);
 }
 
 void MountManager::remount(const MountRecord &record) {
-    mountUtils_.remountDevice(record.mountPoint, record.mode);
+    mountService.remount(record.mountPoint, record.mode);
     mylog->info("Remounted: {}", record.mountPoint);
 }

@@ -74,3 +74,17 @@ class UnMountError : public BaseException {
 
     explicit UnMountError(std::string_view msg) noexcept : BaseException(msg) {}
 };
+
+class DeviceMonitorError : public BaseException {
+  public:
+    DeviceMonitorError() noexcept : BaseException("DeviceMonitorError") {}
+
+    explicit DeviceMonitorError(std::string_view msg) noexcept : BaseException(msg) {}
+};
+
+class LibMountError : public BaseException {
+  public:
+    LibMountError() noexcept : BaseException("LibMountError") {}
+
+    explicit LibMountError(std::string_view msg) noexcept : BaseException(msg) {}
+};

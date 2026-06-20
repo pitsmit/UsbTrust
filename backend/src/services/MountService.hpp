@@ -13,7 +13,7 @@ class MountService {
   public:
     explicit MountService(IMountSystem &s) : sys(s) {}
 
-    void mountDevice(std::string_view devnode, std::string_view mountPoint, MountMode mode);
-    void handleUnmount(std::string_view mountPoint);
-    void remountDevice(std::string_view mountPoint, MountMode mode);
+    void mount(std::string_view devnode, std::string_view mountPoint, MountMode mode);
+    void unmount(std::string_view mountPoint);
+    void remount(std::string_view mountPoint, MountMode mode);
 };

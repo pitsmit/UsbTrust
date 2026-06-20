@@ -7,13 +7,13 @@
 
 class MountManager {
   private:
-    DeviceManager &deviceManager_;
-    MountService &mountUtils_;
-    IDeviceResolver &resolver_;
+    DeviceManager &deviceManager;
+    MountService &mountService;
+    IDeviceResolver &resolver;
 
   public:
-    MountManager(DeviceManager &deviceManager, MountService &mountUtils, IDeviceResolver &resolver)
-        : deviceManager_(deviceManager), mountUtils_(mountUtils), resolver_(resolver) {}
+    MountManager(DeviceManager &dm, MountService &ms, IDeviceResolver &rs)
+        : deviceManager(dm), mountService(ms), resolver(rs) {}
 
     MountRecord mount(std::string_view devNode);
     void unmount(std::string_view mountPoint);

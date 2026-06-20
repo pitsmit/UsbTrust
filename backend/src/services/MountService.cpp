@@ -12,9 +12,7 @@ MountService::FsPermModel MountService::classifyPermModel(const std::string &fs)
     return nativePosix.contains(fs) ? FsPermModel::NativePosix : FsPermModel::Emulated;
 }
 
-void MountService::mountDevice(std::string_view devnode,
-                               std::string_view mountPoint,
-                               MountMode mode) {
+void MountService::mount(std::string_view devnode, std::string_view mountPoint, MountMode mode) {
 
     const auto fs = sys.getFsType(devnode);
     const auto permModel = classifyPermModel(fs);
@@ -45,14 +43,14 @@ void MountService::mountDevice(std::string_view devnode,
     }
 }
 
-void MountService::handleUnmount(std::string_view mountPoint) {
+void MountService::unmount(std::string_view mountPoint) {
     if (sys.umount(mountPoint) < 0) {
         throw UnMountError(std::format(
             "unmount failed for mountPoint: {}, error: {}", mountPoint, strerror(errno)));
     }
 }
 
-void MountService::remountDevice(std::string_view mountPoint, MountMode mode) {
+void MountService::remount(std::string_view mountPoint, MountMode mode) {
     if (sys.remount(mountPoint, mode) < 0) {
         throw MountError(std::format(
             "remount failed for mountPoint: {}, error: {}", mountPoint, strerror(errno)));
