@@ -82,6 +82,20 @@ class DeviceMonitorError : public BaseException {
     explicit DeviceMonitorError(std::string_view msg) noexcept : BaseException(msg) {}
 };
 
+class DeviceEnumeratorError : public BaseException {
+  public:
+    DeviceEnumeratorError() noexcept : BaseException("DeviceEnumeratorError") {}
+
+    explicit DeviceEnumeratorError(std::string_view msg) noexcept : BaseException(msg) {}
+};
+
+class SDdeviceError : public BaseException {
+  public:
+    SDdeviceError() noexcept : BaseException("SDdeviceError") {}
+
+    explicit SDdeviceError(std::string_view msg) noexcept : BaseException(msg) {}
+};
+
 class LibMountError : public BaseException {
   public:
     LibMountError() noexcept : BaseException("LibMountError") {}

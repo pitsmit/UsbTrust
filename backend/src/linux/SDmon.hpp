@@ -20,4 +20,11 @@ class SDmon {
     sd_device_monitor *get() const {
         return mon;
     }
+
+    void applyFilter() {
+        if (sd_device_monitor_filter_add_match_subsystem_devtype(mon, "block", "partition") < 0) {
+            throw DeviceMonitorError("Failed to add monitor filter");
+        }
+        sd_device_monitor_filter_update(mon);
+    }
 };

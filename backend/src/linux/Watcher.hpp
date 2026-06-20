@@ -8,8 +8,6 @@
 class Watcher {
     EventQueue<DeviceEvent> &queue_;
 
-    static bool isUsbDevice(sd_device *dev);
-
   public:
     explicit Watcher(EventQueue<DeviceEvent> &queue) : queue_(queue) {}
 

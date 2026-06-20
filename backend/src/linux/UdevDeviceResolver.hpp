@@ -1,90 +1,82 @@
 #pragma once
 
 #include <format>
-#include <memory>
 
-#include <libmount/libmount.h>
 #include <sys/stat.h>
 #include <systemd/sd-device.h>
 
 #include "entities/DeviceInfo.hpp"
 #include "entities/MountMode.hpp"
 #include "exceptions/Exceptions.hpp"
-#include "linux/LibMountTab.hpp"
+#include "linux/SDdev.hpp"
+#include "linux/SDenum.hpp"
+#include "linux/libmount/LibMountTab.hpp"
 #include "ports/IDeviceResolver.hpp"
 
 class UdevDeviceResolver : public IDeviceResolver {
-  private:
-    template <typename T, auto UnrefFn> struct SdDeleter {
-        void operator()(T *p) const noexcept {
-            if (p)
-                UnrefFn(p);
-        }
-    };
-
-    template <typename T, auto UnrefFn>
-    using SdUniquePtr = std::unique_ptr<T, SdDeleter<T, UnrefFn>>;
-
   public:
     DeviceInfo resolve(std::string_view devNode) override {
         struct stat st {};
         if (stat(devNode.data(), &st) < 0)
             throw ResolveInfoError(
                 std::format("Could not extract deviceInfo from devnode: {}", devNode));
-        sd_device *rawDevice = nullptr;
-        if (sd_device_new_from_devnum(&rawDevice, 'b', st.st_rdev) < 0) {
+
+        sd_device *device = nullptr;
+
+        if (sd_device_new_from_devnum(&device, 'b', st.st_rdev) < 0 || !device) {
             throw ResolveInfoError(
                 std::format("Could not extract deviceInfo from devnode: {}", devNode));
         }
-        using SdDevicePtr = SdUniquePtr<sd_device, sd_device_unref>;
-        SdDevicePtr device(rawDevice);
+
         sd_device *usb = nullptr;
-        if (sd_device_get_parent_with_subsystem_devtype(device.get(), "usb", "usb_device", &usb) <
-            0) {
+
+        if (sd_device_get_parent_with_subsystem_devtype(device, "usb", "usb_device", &usb) < 0 ||
+            !usb) {
+
             sd_device *disk = nullptr;
-            if (sd_device_get_parent_with_subsystem_devtype(device.get(), "block", "disk", &disk) >=
-                0) {
+
+            if (sd_device_get_parent_with_subsystem_devtype(device, "block", "disk", &disk) >= 0 &&
+                disk) {
+
                 sd_device_get_parent_with_subsystem_devtype(disk, "usb", "usb_device", &usb);
             }
         }
+
         if (!usb) {
+            sd_device_unref(device);
             throw ResolveInfoError(
                 std::format("Could not extract deviceInfo from devnode: {}", devNode));
         }
-        auto setIfPresent = [usb](const char *attr, auto setter) {
+
+        auto setIfPresent = [&](const char *attr, auto setter) {
             const char *value = nullptr;
             if (sd_device_get_sysattr_value(usb, attr, &value) >= 0 && value) {
                 setter(value);
             }
         };
+
         DeviceInfoBuilder builder;
-        setIfPresent("idVendor", [&](auto v) { builder.withVendorId(v); });
-        setIfPresent("idProduct", [&](auto v) { builder.withProductId(v); });
-        setIfPresent("serial", [&](auto v) { builder.withSerial(v); });
-        setIfPresent("manufacturer", [&](auto v) { builder.withVendorName(v); });
-        setIfPresent("product", [&](auto v) { builder.withProductName(v); });
+
+        setIfPresent("idVendor", [&](const char *v) { builder.withVendorId(v); });
+        setIfPresent("idProduct", [&](const char *v) { builder.withProductId(v); });
+        setIfPresent("serial", [&](const char *v) { builder.withSerial(v); });
+        setIfPresent("manufacturer", [&](const char *v) { builder.withVendorName(v); });
+        setIfPresent("product", [&](const char *v) { builder.withProductName(v); });
+
+        sd_device_unref(device);
+
         return builder.build();
     }
 
     std::vector<std::string> getUsbDevNodes() override {
-        using SdDeviceEnumeratorPtr = SdUniquePtr<sd_device_enumerator, sd_device_enumerator_unref>;
+        SDenum enumerator;
+        enumerator.applyFilter();
+
         std::vector<std::string> result;
-        sd_device_enumerator *rawEnumerator = nullptr;
-        if (sd_device_enumerator_new(&rawEnumerator) < 0)
-            return result;
-        SdDeviceEnumeratorPtr enumerator(rawEnumerator);
-        sd_device_enumerator_add_match_subsystem(enumerator.get(), "block", true);
-        sd_device_enumerator_add_match_property(enumerator.get(), "DEVTYPE", "partition");
-        for (sd_device *dev = sd_device_enumerator_get_device_first(enumerator.get()); dev;
-             dev = sd_device_enumerator_get_device_next(enumerator.get())) {
-            sd_device *parent = nullptr;
-            if (sd_device_get_parent_with_subsystem_devtype(dev, "usb", "usb_device", &parent) <
-                0) {
-                continue;
-            }
-            const char *devNode = nullptr;
-            if (sd_device_get_devname(dev, &devNode) >= 0 && devNode != nullptr) {
-                result.emplace_back(devNode);
+        for (auto dev = enumerator.first(); dev; dev = enumerator.next()) {
+            if (dev.isUsbDevice()) {
+                if (auto devNode = dev.getDevNode())
+                    result.emplace_back(*devNode);
             }
         }
         return result;
