@@ -6,7 +6,7 @@
 
 #include "exceptions/Exceptions.hpp"
 #include "infrastructure/config/Config.hpp"
-#include "storage/executor/SqlExecutor.hpp"
+#include "storage/SqlExecutor/SqlExecutor.hpp"
 
 std::string DBInitializer::loadSQL(const std::filesystem::path &path) {
     std::ifstream file(path);

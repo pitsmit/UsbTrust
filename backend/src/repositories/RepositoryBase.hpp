@@ -1,6 +1,6 @@
 #pragma once
 
-#include "storage/executor/SqlExecutor.hpp"
+#include "storage/SqlExecutor/SqlExecutor.hpp"
 
 class RepositoryBase {
   protected:

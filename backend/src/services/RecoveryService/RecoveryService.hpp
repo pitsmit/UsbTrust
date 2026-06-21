@@ -1,9 +1,9 @@
 #pragma once
 
 #include "entities/MountRecord.hpp"
-#include "managers/DeviceManager.hpp"
-#include "managers/MountManager.hpp"
-#include "managers/MountRegistry.hpp"
+#include "managers/DeviceManager/DeviceManager.hpp"
+#include "managers/MountManager/MountManager.hpp"
+#include "managers/MountRegistryManager/MountRegistryManager.hpp"
 #include "ports/IDeviceResolver.hpp"
 
 class RecoveryService {

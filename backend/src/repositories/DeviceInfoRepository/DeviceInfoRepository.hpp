@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RepositoryBase.hpp"
+#include "repositories/RepositoryBase.hpp"
 #include "types/types.hpp"
 
 class DeviceInfo;

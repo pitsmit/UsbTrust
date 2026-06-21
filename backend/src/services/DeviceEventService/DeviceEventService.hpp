@@ -1,8 +1,8 @@
 #pragma once
 
-#include "managers/DeviceEventNotifyManager.hpp"
-#include "managers/MountManager.hpp"
-#include "managers/MountRegistry.hpp"
+#include "managers/DeviceEventNotifyManager/DeviceEventNotifyManager.hpp"
+#include "managers/MountManager/MountManager.hpp"
+#include "managers/MountRegistryManager/MountRegistryManager.hpp"
 #include "ports/IDeviceResolver.hpp"
 
 class DeviceEvent;

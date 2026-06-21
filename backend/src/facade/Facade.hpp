@@ -2,10 +2,10 @@
 
 #include "commands/CommandContext.hpp"
 #include "commands/DeviceCommands.hpp"
-#include "managers/DeviceManager.hpp"
-#include "managers/MountManager.hpp"
-#include "managers/MountRegistry.hpp"
-#include "services/MountService.hpp"
+#include "managers/DeviceManager/DeviceManager.hpp"
+#include "managers/MountManager/MountManager.hpp"
+#include "managers/MountRegistryManager/MountRegistryManager.hpp"
+#include "services/MountService/MountService.hpp"
 
 class IMountSystem;
 class IUsbDeviceContextProvider;

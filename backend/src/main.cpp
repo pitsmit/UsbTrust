@@ -8,15 +8,15 @@
 #include "infrastructure/config/Config.hpp"
 #include "linux/LinuxMountSystem/LinuxMountSystem.hpp"
 #include "linux/Watcher/Watcher.hpp"
-#include "managers/DeviceEventNotifyManager.hpp"
-#include "services/RecoveryService.hpp"
-#include "services/UsbDeviceContextProvider.hpp"
-#include "storage/executor/SqlExecutor.hpp"
-#include "storage/init/DBInitializer.hpp"
-#include "transport/WebSocketServer.hpp"
+#include "managers/DeviceEventNotifyManager/DeviceEventNotifyManager.hpp"
+#include "services/RecoveryService/RecoveryService.hpp"
+#include "services/UsbDeviceContextProvider/UsbDeviceContextProvider.hpp"
+#include "storage/DBInitializer/DBInitializer.hpp"
+#include "storage/SqlExecutor/SqlExecutor.hpp"
+#include "transport/WebSocketServer/WebSocketServer.hpp"
 
 #ifdef BUILD_HTTP_SERVER
-#include "transport/HttpServer.hpp"
+#include "transport/HttpServer/HttpServer.hpp"
 #endif
 
 class App {

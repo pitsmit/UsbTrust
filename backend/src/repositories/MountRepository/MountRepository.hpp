@@ -1,7 +1,7 @@
 #pragma once
 
-#include "DeviceInfoRepository.hpp"
-#include "RepositoryBase.hpp"
+#include "repositories/DeviceInfoRepository/DeviceInfoRepository.hpp"
+#include "repositories/RepositoryBase.hpp"
 
 class MountRecord;
 class SqlExecutor;

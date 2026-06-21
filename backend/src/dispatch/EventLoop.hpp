@@ -3,7 +3,7 @@
 #include "EventQueue.hpp"
 #include "entities/DeviceEvent.hpp"
 #include "infrastructure/logging/DevLogger.hpp"
-#include "services/DeviceEventService.hpp"
+#include "services/DeviceEventService/DeviceEventService.hpp"
 
 class EventLoop {
   private:

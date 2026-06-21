@@ -1,9 +1,9 @@
 #include "DeviceCommands.hpp"
 
 #include "CommandContext.hpp"
-#include "managers/DeviceManager.hpp"
-#include "managers/MountManager.hpp"
-#include "managers/MountRegistry.hpp"
+#include "managers/DeviceManager/DeviceManager.hpp"
+#include "managers/MountManager/MountManager.hpp"
+#include "managers/MountRegistryManager/MountRegistryManager.hpp"
 
 void GetWhiteListDeviceCommand::execute(CommandContext &ctx) {
     list = ctx.deviceManager.getWhitelist();

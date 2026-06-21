@@ -1,9 +1,9 @@
 #pragma once
 
-#include "DeviceManager.hpp"
 #include "entities/MountRecord.hpp"
+#include "managers/DeviceManager/DeviceManager.hpp"
 #include "ports/IDeviceResolver.hpp"
-#include "services/MountService.hpp"
+#include "services/MountService/MountService.hpp"
 
 class MountManager {
   private:

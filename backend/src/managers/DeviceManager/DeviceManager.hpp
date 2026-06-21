@@ -1,6 +1,6 @@
 #pragma once
 
-#include "repositories/DeviceRepository.hpp"
+#include "repositories/DeviceRepository/DeviceRepository.hpp"
 
 class DeviceManager {
   private:
