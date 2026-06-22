@@ -37,6 +37,7 @@ endfunction()
 add_executable(unit_tests
     unit/test_mount_point_builder.cpp
     unit/test_config.cpp
+    ../src/infrastructure/config/Config.cpp
 )
 
 target_include_directories(unit_tests PUBLIC

@@ -10,7 +10,7 @@ MountRecord MountManager::mount(std::string_view devNode) {
     auto id = deviceManager.isAllowed(info);
     auto mode = MountMode::fromPresence(id);
     mountService.mount(devNode, mountPoint, mode);
-    mylog->info("Mounted: {}", mountPoint);
+    mylog->info("Mounted: {}", mountPoint.c_str());
     return MountRecordBuilder()
         .withDevNode(devNode)
         .withId(id)

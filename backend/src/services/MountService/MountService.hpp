@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+
 #include "ports/IMountSystem.hpp"
 
 class MountService {
@@ -13,7 +15,7 @@ class MountService {
   public:
     explicit MountService(IMountSystem &s) : sys(s) {}
 
-    void mount(std::string_view devnode, std::string_view mountPoint, MountMode mode);
+    void mount(std::string_view devnode, std::filesystem::path mountPoint, MountMode mode);
     void unmount(std::string_view mountPoint);
     void remount(std::string_view mountPoint, MountMode mode);
 };

@@ -1,18 +1,16 @@
 #pragma once
 
 #include <filesystem>
-#include <format>
-#include <string>
 
 #include "entities/DeviceInfo.hpp"
 
 class MountPointBuilder {
   public:
-    static std::string build(const DeviceInfo &dev) {
-        return std::format("/media/dlp/{}_{}_{}", dev.vendorId, dev.productId, dev.serial);
+    static auto build(const DeviceInfo &dev) {
+        return std::filesystem::path("/media/dlp") / dev.vendorId / dev.productId / dev.serial;
     }
 
-    static void ensureExists(std::string_view path) {
+    static void ensureExists(const std::filesystem::path &path) {
         std::filesystem::create_directories(path);
     }
 };

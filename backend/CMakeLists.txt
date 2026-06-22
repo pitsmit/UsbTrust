@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_program(IWYU_PATH include-what-you-use)
-set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
+#find_program(IWYU_PATH include-what-you-use)
+#set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
 
 option(BUILD_APP "Build application" ON)
 option(BUILD_HTTP_SERVER "Build HTTP server" ON)
@@ -76,7 +76,6 @@ if(BUILD_APP)
 endif()
 
 if(ENABLE_TESTS)
-
     file(COPY ${CMAKE_SOURCE_DIR}/sql
         DESTINATION ${CMAKE_BINARY_DIR}/tests)
 

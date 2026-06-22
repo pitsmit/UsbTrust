@@ -20,7 +20,7 @@ TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
                    .withVendorName(vendorName)
                    .build();
 
-    auto expected = std::format("/media/dlp/{}_{}_{}", vendorId, productId, serial);
+    auto expected = std::filesystem::path("/media/dlp") / vendorId / productId / serial;
 
     // ACT
     auto result = MountPointBuilder::build(dev);
