@@ -40,8 +40,7 @@ class SqlExecutor {
         });
     }
 
-    template <typename T, typename... Args>
-    std::vector<T> query(std::string_view sql, const Args &...args) {
+    template <typename T, typename... Args> auto query(std::string_view sql, const Args &...args) {
         std::vector<T> result;
         withStatement(sql, [&](sqlite3_stmt *stmt) {
             db::bind::bind_all(stmt, args...);

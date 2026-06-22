@@ -12,8 +12,8 @@ core::Id DeviceInfoRepository::ensure(const DeviceInfo &info) {
                                 "vendorName = excluded.vendorName "
                                 "RETURNING id;";
 
-    auto id = executor.query<core::Id>(
+    auto id = executor.scalar<core::Id>(
         sql, info.vendorId, info.productId, info.serial, info.productName, info.vendorName);
 
-    return id.front();
+    return *id;
 }

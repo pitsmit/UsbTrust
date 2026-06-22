@@ -6,8 +6,8 @@ core::Id DeviceRepository::add(const DeviceInfo &dev) {
     auto deviceInfoId = info_rep.ensure(dev);
     static constexpr auto sql =
         "INSERT INTO Device (deviceInfoId, validTo) VALUES (?, NULL) RETURNING id;";
-    auto id = executor.query<core::Id>(sql, deviceInfoId);
-    return id.front();
+    auto id = executor.scalar<core::Id>(sql, deviceInfoId);
+    return *id;
 }
 
 std::vector<Device> DeviceRepository::getAll() {

@@ -30,9 +30,9 @@ inline void bind(sqlite3_stmt *stmt, int idx, const std::optional<std::string> &
         sqlite3_bind_null(stmt, idx);
 }
 
-template <typename... Args> void bind_all(sqlite3_stmt *stmt, Args &&...args) {
+template <typename... Args> void bind_all([[maybe_unused]] sqlite3_stmt *stmt, Args &&...args) {
     int idx = 1;
-    (db::bind::bind(stmt, idx++, std::forward<Args>(args)), ...);
+    (db::bind::bind(stmt, idx++, args), ...);
 }
 
 } // namespace db::bind
