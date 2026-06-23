@@ -7,7 +7,7 @@
 void RecoveryService::actualize(MountRecord &rec) {
     const auto &devNode = rec.devNode;
 
-    std::string mountPoint;
+    core::path mountPoint;
 
     try {
         mountPoint = resolver.getMountPoint(devNode);
@@ -46,7 +46,7 @@ void RecoveryService::actualize(MountRecord &rec) {
         try {
             manager.remount(rec);
         } catch (const MountError &e) {
-            mylog->error("Failed remount for {}", rec.devNode);
+            mylog->error("Failed remount for {}", rec.devNode.c_str());
         }
     }
 
@@ -71,7 +71,7 @@ void RecoveryService::run() {
                 registry.removeByDevNode(reg.devNode);
                 manager.unmount(reg.mountPoint);
             } catch (const UnMountError &e) {
-                mylog->error("Failed unmount for {}", reg.mountPoint);
+                mylog->error("Failed unmount for {}", reg.mountPoint.c_str());
             }
         }
     }
@@ -86,7 +86,7 @@ void RecoveryService::run() {
                 auto rec = manager.mount(node);
                 registry.add(rec);
             } catch (const MountError &e) {
-                mylog->error("Failed mount for {}", node);
+                mylog->error("Failed mount for {}", node.c_str());
             }
         }
     }

@@ -7,44 +7,48 @@
 
 #include "MountFlagsBuilder.hpp"
 
-int LinuxMountSystem::mount(std::string_view dev,
-                            std::string_view target,
+int LinuxMountSystem::mount(const core::path &dev,
+                            const core::path &target,
                             std::string_view fs,
                             MountMode mode,
                             std::string_view opts) noexcept {
-    return ::mount(dev.data(),
-                   target.data(),
+    return ::mount(dev.c_str(),
+                   target.c_str(),
                    fs.data(),
-                   MountFlagsBuilder::from(mode),
+                   MountFlagsBuilder().withFlagsFrom(mode).build(),
                    opts.empty() ? nullptr : opts.data());
 }
 
-int LinuxMountSystem::remount(std::string_view target, MountMode mode) noexcept {
-    return ::mount(nullptr, target.data(), nullptr, MountFlagsBuilder::remount_from(mode), nullptr);
+int LinuxMountSystem::remount(const core::path &target, MountMode mode) noexcept {
+    return ::mount(nullptr,
+                   target.c_str(),
+                   nullptr,
+                   MountFlagsBuilder().withFlagsFrom(mode).withRemount().build(),
+                   nullptr);
 }
 
-int LinuxMountSystem::umount(std::string_view target) noexcept {
-    return ::umount2(target.data(), MNT_DETACH);
+int LinuxMountSystem::umount(const core::path &target) noexcept {
+    return ::umount2(target.c_str(), MNT_DETACH);
 }
 
 void LinuxMountSystem::sync() noexcept {
     ::sync();
 }
 
-void LinuxMountSystem::chown(std::string_view target, int uid, int gid) noexcept {
-    ::chown(target.data(), uid, gid);
+void LinuxMountSystem::chown(const core::path &target, int uid, int gid) noexcept {
+    ::chown(target.c_str(), uid, gid);
 }
 
-void LinuxMountSystem::chmod(std::string_view target, int perms) noexcept {
-    ::chmod(target.data(), perms);
+void LinuxMountSystem::chmod(const core::path &target, int perms) noexcept {
+    ::chmod(target.c_str(), perms);
 }
 
-std::string LinuxMountSystem::getFsType(std::string_view dev) {
+std::string LinuxMountSystem::getFsType(const core::path &dev) {
     blkid_cache cache = nullptr;
     if (blkid_get_cache(&cache, nullptr) != 0) {
         return "";
     }
-    char *type = blkid_get_tag_value(cache, "TYPE", dev.data());
+    char *type = blkid_get_tag_value(cache, "TYPE", dev.c_str());
     blkid_put_cache(cache);
     return type ? type : "";
 }

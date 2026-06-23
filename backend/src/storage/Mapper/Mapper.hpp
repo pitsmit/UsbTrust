@@ -31,8 +31,8 @@ template <> inline Device Mapper::from<Device>(const Row &r) {
 template <> inline MountRecord Mapper::from<MountRecord>(const Row &r) {
     return MountRecordBuilder()
         .withId(r.get<std::uint64_t>("id"))
-        .withDevNode(r.get<std::string>("dev_node"))
-        .withMountPoint(r.get<std::string>("mount_point"))
+        .withDevNode(r.get<core::path>("dev_node"))
+        .withMountPoint(r.get<core::path>("mount_point"))
         .withMode(MountMode::parse(r.get<std::string>("mode")))
         .withInfo(Mapper::from<DeviceInfo>(r))
         .build();

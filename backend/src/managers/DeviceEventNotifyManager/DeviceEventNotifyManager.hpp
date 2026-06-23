@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ports/IWebSocketServer.hpp"
+#include "types/types.hpp"
 
 class MountRecord;
 
@@ -12,5 +13,5 @@ class DeviceEventNotifyManager {
     explicit DeviceEventNotifyManager(IWebSocketServer &ws) : ws_(ws) {}
 
     void notifyInsert(const MountRecord &record);
-    void notifyRemove(std::string_view mountPoint);
+    void notifyRemove(const core::path &mountPoint);
 };

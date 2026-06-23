@@ -6,6 +6,7 @@
 #include <systemd/sd-device.h>
 
 #include "exceptions/Exceptions.hpp"
+#include "types/types.hpp"
 
 class SDdevView {
   protected:
@@ -16,7 +17,7 @@ class SDdevView {
     explicit SDdevView() = default;
 
     bool isUsbDevice() const;
-    std::expected<std::string, SDdeviceError> getDevNode() const;
+    std::expected<core::path, SDdeviceError> getDevNode() const;
     std::expected<std::string, SDdeviceError> getSysAttr(std::string_view attr) const;
     sd_device_action_t getAction() const;
     explicit operator bool() const;

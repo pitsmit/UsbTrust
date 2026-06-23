@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include "entities/DeviceInfo.hpp"
+#include "types/types.hpp"
 
 class MountPointBuilder {
   public:
@@ -10,7 +11,7 @@ class MountPointBuilder {
         return std::filesystem::path("/media/dlp") / dev.vendorId / dev.productId / dev.serial;
     }
 
-    static void ensureExists(const std::filesystem::path &path) {
+    static void ensureExists(const core::path &path) {
         std::filesystem::create_directories(path);
     }
 };

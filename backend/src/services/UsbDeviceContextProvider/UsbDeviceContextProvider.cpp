@@ -4,17 +4,17 @@
 #include "linux/SDdev/SDdev.hpp"
 #include "linux/SDenum/SDenum.hpp"
 
-DeviceInfo UsbDeviceContextProvider::getDeviceInfo(std::string_view devNode) {
+DeviceInfo UsbDeviceContextProvider::getDeviceInfo(const core::path &devNode) {
     SDdev device(devNode);
     SDdevView usb = device.findUsbDevice();
     return DeviceInfoBuilder::buildFrom(usb);
 }
 
-std::vector<std::string> UsbDeviceContextProvider::getUsbDevNodes() {
+std::vector<core::path> UsbDeviceContextProvider::getUsbDevNodes() {
     SDenum enumerator;
     enumerator.applyFilter();
 
-    std::vector<std::string> result;
+    std::vector<core::path> result;
     for (auto dev = enumerator.first(); dev; dev = enumerator.next()) {
         if (dev.isUsbDevice()) {
             if (auto devNode = dev.getDevNode())
@@ -24,14 +24,14 @@ std::vector<std::string> UsbDeviceContextProvider::getUsbDevNodes() {
     return result;
 }
 
-std::string UsbDeviceContextProvider::getMountPoint(std::string_view devNode) {
+core::path UsbDeviceContextProvider::getMountPoint(const core::path &devNode) {
     auto mp = LibMountTab().findRecordFromDevNode(devNode).and_then(LibMountTab::extractMountPoint);
     if (!mp)
         throw mp.error();
     return *mp;
 }
 
-MountMode UsbDeviceContextProvider::getMountMode(std::string_view mountpoint) {
+MountMode UsbDeviceContextProvider::getMountMode(const core::path &mountpoint) {
     auto mode = LibMountTab()
                     .findRecordFromMountPoint(mountpoint)
                     .and_then(LibMountTab::getFSopts)

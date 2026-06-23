@@ -2,7 +2,7 @@
 
 #include "entities/MountRecord.hpp"
 #include "managers/DeviceManager/DeviceManager.hpp"
-#include "ports/IDeviceResolver.hpp"
+#include "ports/IUsbDeviceContextProvider.hpp"
 #include "services/MountService/MountService.hpp"
 
 class MountManager {
@@ -15,7 +15,7 @@ class MountManager {
     MountManager(DeviceManager &dm, MountService &ms, IUsbDeviceContextProvider &rs)
         : deviceManager(dm), mountService(ms), resolver(rs) {}
 
-    MountRecord mount(std::string_view devNode);
-    void unmount(std::string_view mountPoint);
+    MountRecord mount(const core::path &devNode);
+    void unmount(const core::path &mountPoint);
     void remount(const MountRecord &record);
 };

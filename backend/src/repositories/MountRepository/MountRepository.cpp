@@ -22,10 +22,10 @@ void MountRepository::update(const MountRecord &record) {
         sql, deviceInfoId, record.mountPoint, record.mode.toStringUpper(), record.devNode);
 }
 
-std::optional<std::string> MountRepository::getMountPointByDevNode(std::string_view devNode) {
+std::optional<core::path> MountRepository::getMountPointByDevNode(const core::path &devNode) {
     static constexpr auto sql = "SELECT mountPoint FROM MountRecord WHERE devNode = ? LIMIT 1;";
 
-    return executor.scalar<std::string>(sql, devNode);
+    return executor.scalar<core::path>(sql, devNode);
 }
 
 std::optional<MountRecord> MountRepository::getById(core::Id id) {
@@ -40,7 +40,7 @@ std::optional<MountRecord> MountRepository::getById(core::Id id) {
     return executor.query<MountRecord>(sql, id).front();
 }
 
-void MountRepository::removeByDevNode(std::string_view devNode) {
+void MountRepository::removeByDevNode(const core::path &devNode) {
     static constexpr auto sql = "DELETE FROM MountRecord WHERE devNode = ?;";
     executor.exec(sql, devNode);
 }

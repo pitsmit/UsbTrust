@@ -76,8 +76,8 @@ inline void to_json(json &j, const MountRecord &m) {
 
 inline void from_json(const json &j, MountRecord &m) {
     m.id = get_value<size_t>(j, "id", 0);
-    m.devNode = get_value<std::string>(j, "devNode", "");
-    m.mountPoint = get_value<std::string>(j, "mountPoint", "");
+    m.devNode = get_value<core::path>(j, "devNode", "");
+    m.mountPoint = get_value<core::path>(j, "mountPoint", "");
     m.info = get_value<DeviceInfo>(j, "info", DeviceInfo{});
     m.mode = get_value<MountMode>(j, "mode", MountMode::ro());
 }

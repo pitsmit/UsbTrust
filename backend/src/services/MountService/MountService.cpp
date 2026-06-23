@@ -12,9 +12,7 @@ MountService::FsPermModel MountService::classifyPermModel(const std::string &fs)
     return nativePosix.contains(fs) ? FsPermModel::NativePosix : FsPermModel::Emulated;
 }
 
-void MountService::mount(std::string_view devnode,
-                         std::filesystem::path mountPoint,
-                         MountMode mode) {
+void MountService::mount(const core::path &devnode, const core::path &mountPoint, MountMode mode) {
 
     const auto fs = sys.getFsType(devnode);
     const auto permModel = classifyPermModel(fs);
@@ -29,10 +27,10 @@ void MountService::mount(std::string_view devnode,
         }
     }
 
-    if (sys.mount(devnode, mountPoint.c_str(), fs, mode, opts) < 0) {
+    if (sys.mount(devnode, mountPoint, fs, mode, opts) < 0) {
         throw MountError(std::format("mount failed for devnode: {}, mountPoint: \
                 {}, error: {}, opts: {}, fs: {}",
-                                     devnode,
+                                     devnode.c_str(),
                                      mountPoint.c_str(),
                                      strerror(errno),
                                      opts,
@@ -40,21 +38,21 @@ void MountService::mount(std::string_view devnode,
     }
 
     if (mode.isReadWrite() && permModel == FsPermModel::NativePosix) {
-        sys.chown(mountPoint.c_str(), uid, gid);
-        sys.chmod(mountPoint.c_str(), 0775);
+        sys.chown(mountPoint, uid, gid);
+        sys.chmod(mountPoint, 0775);
     }
 }
 
-void MountService::unmount(std::string_view mountPoint) {
+void MountService::unmount(const core::path &mountPoint) {
     if (sys.umount(mountPoint) < 0) {
         throw UnMountError(std::format(
-            "unmount failed for mountPoint: {}, error: {}", mountPoint, strerror(errno)));
+            "unmount failed for mountPoint: {}, error: {}", mountPoint.c_str(), strerror(errno)));
     }
 }
 
-void MountService::remount(std::string_view mountPoint, MountMode mode) {
+void MountService::remount(const core::path &mountPoint, MountMode mode) {
     if (sys.remount(mountPoint, mode) < 0) {
         throw MountError(std::format(
-            "remount failed for mountPoint: {}, error: {}", mountPoint, strerror(errno)));
+            "remount failed for mountPoint: {}, error: {}", mountPoint.c_str(), strerror(errno)));
     }
 }

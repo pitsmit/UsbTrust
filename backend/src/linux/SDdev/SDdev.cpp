@@ -2,12 +2,14 @@
 
 #include <format>
 
-SDdev::SDdev(std::string_view node) {
+SDdev::SDdev(const core::path &node) {
     struct stat st {};
-    if (stat(node.data(), &st) < 0)
-        throw ResolveInfoError(std::format("Could not extract deviceInfo from devnode: {}", node));
+    if (stat(node.c_str(), &st) < 0)
+        throw ResolveInfoError(
+            std::format("Could not extract deviceInfo from devnode: {}", node.c_str()));
     if (sd_device_new_from_devnum(&dev, 'b', st.st_rdev) < 0 || !dev) {
-        throw ResolveInfoError(std::format("Could not extract deviceInfo from devnode: {}", node));
+        throw ResolveInfoError(
+            std::format("Could not extract deviceInfo from devnode: {}", node.c_str()));
     }
 }
 

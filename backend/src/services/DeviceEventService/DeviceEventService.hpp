@@ -3,7 +3,7 @@
 #include "managers/DeviceEventNotifyManager/DeviceEventNotifyManager.hpp"
 #include "managers/MountManager/MountManager.hpp"
 #include "managers/MountRegistryManager/MountRegistryManager.hpp"
-#include "ports/IDeviceResolver.hpp"
+#include "ports/IUsbDeviceContextProvider.hpp"
 
 class DeviceEvent;
 

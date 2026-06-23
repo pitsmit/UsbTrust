@@ -9,9 +9,9 @@
 const auto &Config::getCache() {
     using config_map = std::unordered_map<std::string, std::string>;
     static const config_map cfg = [] {
-        std::ifstream file(CONFIG_PATH.data());
+        std::ifstream file(CONFIG_PATH);
         if (!file)
-            throw FileException(std::format("{} not found!", CONFIG_PATH));
+            throw FileException(std::format("{} not found!", CONFIG_PATH.c_str()));
         std::string line;
         config_map m;
         while (std::getline(file, line)) {
@@ -43,8 +43,8 @@ int Config::getNumber(std::string_view name) {
     }
 }
 
-std::vector<std::filesystem::path> Config::getSchemaPaths() {
-    std::vector<std::filesystem::path> result;
+std::vector<core::path> Config::getSchemaPaths() {
+    std::vector<core::path> result;
     auto iter = std::filesystem::directory_iterator(get("db.schema.dir"));
     std::transform(begin(iter), end(iter), std::back_inserter(result), [](const auto &entry) {
         return entry.path();
@@ -53,11 +53,11 @@ std::vector<std::filesystem::path> Config::getSchemaPaths() {
     return result;
 }
 
-std::string Config::getDBPath() {
+core::path Config::getDBPath() {
     return get("db.path");
 }
 
-std::string Config::getLogFile() {
+core::path Config::getLogFile() {
     return get("log.file");
 }
 

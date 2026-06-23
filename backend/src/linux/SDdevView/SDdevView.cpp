@@ -8,7 +8,7 @@ bool SDdevView::isUsbDevice() const {
            parent != nullptr;
 }
 
-std::expected<std::string, SDdeviceError> SDdevView::getDevNode() const {
+std::expected<core::path, SDdeviceError> SDdevView::getDevNode() const {
     const char *devNode = nullptr;
     if (sd_device_get_devname(dev, &devNode) >= 0 && devNode) {
         return devNode;

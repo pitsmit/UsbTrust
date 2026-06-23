@@ -3,13 +3,14 @@
 #include <sqlite3.h>
 
 #include "exceptions/Exceptions.hpp"
+#include "types/types.hpp"
 
 class DataBase {
     sqlite3 *db = nullptr;
 
   public:
-    explicit DataBase(std::string_view dbPath) {
-        if (sqlite3_open(dbPath.data(), &db) != SQLITE_OK) {
+    explicit DataBase(core::path dbPath) {
+        if (sqlite3_open(dbPath.c_str(), &db) != SQLITE_OK) {
             throw SqlDataBaseError("Failed to open SQLite database");
         }
     }

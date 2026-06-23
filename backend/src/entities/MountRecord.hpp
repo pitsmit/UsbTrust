@@ -1,15 +1,13 @@
 #pragma once
 
-#include <string>
-
 #include "DeviceInfo.hpp"
 #include "MountMode.hpp"
 #include "types/types.hpp"
 
 struct MountRecord {
     std::optional<core::Id> id; /// id таблицы Device
-    std::string devNode;
-    std::string mountPoint;
+    core::path devNode;
+    core::path mountPoint;
     DeviceInfo info;
     MountMode mode{MountMode::RO};
 };
@@ -24,12 +22,12 @@ class MountRecordBuilder {
         return *this;
     }
 
-    MountRecordBuilder &withDevNode(std::string_view devNode) noexcept {
+    MountRecordBuilder &withDevNode(const core::path &devNode) noexcept {
         record_.devNode = devNode;
         return *this;
     }
 
-    MountRecordBuilder &withMountPoint(const std::string &mountPoint) noexcept {
+    MountRecordBuilder &withMountPoint(const core::path &mountPoint) noexcept {
         record_.mountPoint = mountPoint;
         return *this;
     }

@@ -3,7 +3,7 @@
 #include "repositories/RepositoryBase.hpp"
 #include "types/types.hpp"
 
-class DeviceInfo;
+struct DeviceInfo;
 class SqlExecutor;
 
 class DeviceInfoRepository : RepositoryBase {

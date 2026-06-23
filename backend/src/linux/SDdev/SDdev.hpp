@@ -1,10 +1,11 @@
 #pragma once
 
 #include "linux/SDdevView/SDdevView.hpp"
+#include "types/types.hpp"
 
 class SDdev : public SDdevView {
   public:
-    explicit SDdev(std::string_view node);
+    explicit SDdev(const core::path &node);
     ~SDdev();
     SDdevView findUsbDevice() const;
 };

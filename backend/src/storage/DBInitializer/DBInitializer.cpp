@@ -8,7 +8,7 @@
 #include "infrastructure/config/Config.hpp"
 #include "storage/SqlExecutor/SqlExecutor.hpp"
 
-std::string DBInitializer::loadSQL(const std::filesystem::path &path) {
+std::string DBInitializer::loadSQL(const core::path &path) {
     std::ifstream file(path);
     if (!file) {
         throw FileException(std::format("Cannot open schema file: {}", path.string()));

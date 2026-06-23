@@ -6,6 +6,8 @@
 
 class MountFlagsBuilder {
   private:
+    int flags;
+
     static constexpr auto ZeroFlags() noexcept {
         return 0;
     }
@@ -15,11 +17,17 @@ class MountFlagsBuilder {
     }
 
   public:
-    static auto from(MountMode md) noexcept {
-        return md.isReadOnly() ? ReadOnly() : ZeroFlags();
+    auto withFlagsFrom(MountMode md) noexcept {
+        flags = md.isReadOnly() ? ReadOnly() : ZeroFlags();
+        return *this;
     }
 
-    static auto remount_from(MountMode md) noexcept {
-        return from(md) | MS_REMOUNT;
+    auto withRemount() noexcept {
+        flags |= MS_REMOUNT;
+        return *this;
+    }
+
+    int build() const noexcept {
+        return flags;
     }
 };

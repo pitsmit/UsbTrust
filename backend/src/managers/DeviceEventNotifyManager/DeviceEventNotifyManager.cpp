@@ -8,7 +8,7 @@ void DeviceEventNotifyManager::notifyInsert(const MountRecord &record) {
     ws_.broadcast(payload.dump());
 }
 
-void DeviceEventNotifyManager::notifyRemove(std::string_view mountPoint) {
+void DeviceEventNotifyManager::notifyRemove(const core::path &mountPoint) {
     json payload = {{"type", "remove"}, {"data", {{"mountPoint", mountPoint}}}};
 
     ws_.broadcast(payload.dump());

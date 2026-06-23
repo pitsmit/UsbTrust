@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <format>
 #include <string>
 #include <unordered_map>
@@ -30,7 +31,7 @@ class Row {
     }
 
     template <typename T> constexpr static T extractValue(sqlite3_stmt *stmt, int i) {
-        if constexpr (std::same_as<T, std::string>) {
+        if constexpr (std::same_as<T, std::string> || std::same_as<T, std::filesystem::path>) {
             const unsigned char *txt = sqlite3_column_text(stmt, i);
             return txt ? reinterpret_cast<const char *>(txt) : "";
         } else if constexpr (std::integral<T>) {

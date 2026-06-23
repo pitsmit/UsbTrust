@@ -5,6 +5,8 @@
 #include <string>
 #include <string_view>
 
+#include "types/types.hpp"
+
 namespace db::bind {
 
 inline void bind(sqlite3_stmt *stmt, int idx, int value) {
@@ -12,6 +14,10 @@ inline void bind(sqlite3_stmt *stmt, int idx, int value) {
 }
 
 inline void bind(sqlite3_stmt *stmt, int idx, const std::string &value) {
+    sqlite3_bind_text(stmt, idx, value.c_str(), -1, SQLITE_TRANSIENT);
+}
+
+inline void bind(sqlite3_stmt *stmt, int idx, const core::path &value) {
     sqlite3_bind_text(stmt, idx, value.c_str(), -1, SQLITE_TRANSIENT);
 }
 

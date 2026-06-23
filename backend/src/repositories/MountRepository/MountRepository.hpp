@@ -3,7 +3,7 @@
 #include "repositories/DeviceInfoRepository/DeviceInfoRepository.hpp"
 #include "repositories/RepositoryBase.hpp"
 
-class MountRecord;
+struct MountRecord;
 class SqlExecutor;
 
 class MountRepository : public RepositoryBase {
@@ -15,8 +15,8 @@ class MountRepository : public RepositoryBase {
 
     void add(const MountRecord &record);
     void update(const MountRecord &record);
-    std::optional<std::string> getMountPointByDevNode(std::string_view devNode);
+    std::optional<core::path> getMountPointByDevNode(const core::path &devNode);
     std::optional<MountRecord> getById(core::Id id);
-    void removeByDevNode(std::string_view devNode);
+    void removeByDevNode(const core::path &devNode);
     std::vector<MountRecord> getAll();
 };

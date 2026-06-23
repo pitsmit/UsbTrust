@@ -6,7 +6,7 @@
 void DeviceEventService::handle(const DeviceEvent &event) {
     mylog->info("Start handle {} event with devnode {}",
                 event.type == EventType::INSERT ? "INSERT" : "REMOVE",
-                event.devNode);
+                event.devNode.c_str());
 
     if (event.type == EventType::INSERT) {
         auto record = mountManager_.mount(event.devNode);

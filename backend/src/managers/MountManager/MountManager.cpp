@@ -3,7 +3,7 @@
 #include "infrastructure/logging/DevLogger.hpp"
 #include "services/MountPointBuilder.hpp"
 
-MountRecord MountManager::mount(std::string_view devNode) {
+MountRecord MountManager::mount(const core::path &devNode) {
     auto info = resolver.getDeviceInfo(devNode);
     auto mountPoint = MountPointBuilder::build(info);
     MountPointBuilder::ensureExists(mountPoint);
@@ -20,12 +20,12 @@ MountRecord MountManager::mount(std::string_view devNode) {
         .build();
 }
 
-void MountManager::unmount(std::string_view mountPoint) {
+void MountManager::unmount(const core::path &mountPoint) {
     mountService.unmount(mountPoint);
-    mylog->info("Unmounted: {}", mountPoint);
+    mylog->info("Unmounted: {}", mountPoint.c_str());
 }
 
 void MountManager::remount(const MountRecord &record) {
     mountService.remount(record.mountPoint, record.mode);
-    mylog->info("Remounted: {}", record.mountPoint);
+    mylog->info("Remounted: {}", record.mountPoint.c_str());
 }

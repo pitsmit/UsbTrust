@@ -1,12 +1,12 @@
 #pragma once
 
-#include <string>
+#include "types/types.hpp"
 
 enum EventType { INSERT, REMOVE };
 
 struct DeviceEvent {
     EventType type;
-    std::string devNode;
+    core::path devNode;
 };
 
 class DeviceEventBuilder {
@@ -19,7 +19,7 @@ class DeviceEventBuilder {
         return *this;
     }
 
-    DeviceEventBuilder &withDevNode(std::string_view node) noexcept {
+    DeviceEventBuilder &withDevNode(const core::path &node) noexcept {
         event_.devNode = node;
         return *this;
     }
