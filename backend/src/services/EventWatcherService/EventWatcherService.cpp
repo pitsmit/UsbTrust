@@ -1,9 +1,9 @@
-#include "Watcher.hpp"
+#include "EventWatcherService.hpp"
 
 #include "linux/SDact/SDact.hpp"
 #include "linux/SDmon/SDmon.hpp"
 
-void Watcher::run() {
+void EventWatcherService::run() {
     SDmon mon;
     mon.applyFilter();
     mon.start([this](SDdevView dev) {

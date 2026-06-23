@@ -7,8 +7,8 @@
 #include "facade/Facade.hpp"
 #include "infrastructure/config/Config.hpp"
 #include "linux/LinuxMountSystem/LinuxMountSystem.hpp"
-#include "linux/Watcher/Watcher.hpp"
 #include "managers/DeviceEventNotifyManager/DeviceEventNotifyManager.hpp"
+#include "services/EventWatcherService/EventWatcherService.hpp"
 #include "services/RecoveryService/RecoveryService.hpp"
 #include "services/UsbDeviceContextProvider/UsbDeviceContextProvider.hpp"
 #include "storage/DBInitializer/DBInitializer.hpp"
@@ -31,7 +31,7 @@ class App {
     EventQueue<DeviceEvent> queue;
     DeviceEventService service;
     EventLoop loop;
-    Watcher watcher;
+    EventWatcherService watcher;
     RecoveryService rec;
 
 #ifdef BUILD_HTTP_SERVER
