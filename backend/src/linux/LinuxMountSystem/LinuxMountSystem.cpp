@@ -42,13 +42,3 @@ void LinuxMountSystem::chown(const core::path &target, int uid, int gid) noexcep
 void LinuxMountSystem::chmod(const core::path &target, int perms) noexcept {
     ::chmod(target.c_str(), perms);
 }
-
-std::string LinuxMountSystem::getFsType(const core::path &dev) {
-    blkid_cache cache = nullptr;
-    if (blkid_get_cache(&cache, nullptr) != 0) {
-        return "";
-    }
-    char *type = blkid_get_tag_value(cache, "TYPE", dev.c_str());
-    blkid_put_cache(cache);
-    return type ? type : "";
-}

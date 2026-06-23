@@ -84,7 +84,6 @@ gtest_discover_tests(unit_tests
 #target_link_libraries(integration_tests
 #    GTest::gtest_main
 #    sqlite3
-#    blkid
 #    mount
 #    systemd
 #)

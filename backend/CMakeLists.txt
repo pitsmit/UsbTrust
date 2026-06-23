@@ -60,7 +60,6 @@ if(BUILD_APP)
         PRIVATE
         sqlite3
         pthread
-        blkid
         systemd
         mount
         ixwebsocket

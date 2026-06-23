@@ -21,7 +21,7 @@ class Facade {
 
   public:
     Facade(SqlExecutor &ex, IMountSystem &sys, IUsbDeviceContextProvider &res)
-        : deviceManager(ex), mountRegistry(ex), mountService(sys),
+        : deviceManager(ex), mountRegistry(ex), mountService(sys, res),
           mountManager(deviceManager, mountService, res),
           ctx{deviceManager, mountRegistry, mountManager} {}
 

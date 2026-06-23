@@ -25,18 +25,27 @@ std::vector<core::path> UsbDeviceContextProvider::getUsbDevNodes() {
 }
 
 core::path UsbDeviceContextProvider::getMountPoint(const core::path &devNode) {
-    auto mp = LibMountTab().findRecordFromDevNode(devNode).and_then(LibMountTab::extractMountPoint);
+    const auto mp =
+        LibMountTab().findRecordFromDevNode(devNode).and_then(LibMountTab::extractMountPoint);
     if (!mp)
         throw mp.error();
     return *mp;
 }
 
 MountMode UsbDeviceContextProvider::getMountMode(const core::path &mountpoint) {
-    auto mode = LibMountTab()
-                    .findRecordFromMountPoint(mountpoint)
-                    .and_then(LibMountTab::getFSopts)
-                    .and_then(LibMountTab::extractMode);
+    const auto mode = LibMountTab()
+                          .findRecordFromMountPoint(mountpoint)
+                          .and_then(LibMountTab::getFSopts)
+                          .and_then(LibMountTab::extractMode);
     if (!mode)
         throw mode.error();
     return *mode;
+}
+
+std::string UsbDeviceContextProvider::getFsType(const core::path &node) {
+    SDdev device(node);
+    const auto fs = device.getFSType();
+    if (!fs)
+        throw fs.error();
+    return *fs;
 }

@@ -1,17 +1,19 @@
 #pragma once
 
 #include "ports/IMountSystem.hpp"
+#include "ports/IUsbDeviceContextProvider.hpp"
 
 class MountService {
   private:
     IMountSystem &sys;
+    IUsbDeviceContextProvider &provider;
 
     enum class FsPermModel { NativePosix, Emulated };
 
     static FsPermModel classifyPermModel(const std::string &fs);
 
   public:
-    explicit MountService(IMountSystem &s) : sys(s) {}
+    explicit MountService(IMountSystem &s, IUsbDeviceContextProvider &p) : sys(s), provider(p) {}
 
     void mount(const core::path &devnode, const core::path &mountPoint, MountMode mode);
     void unmount(const core::path &mountPoint);

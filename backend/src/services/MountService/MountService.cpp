@@ -14,7 +14,7 @@ MountService::FsPermModel MountService::classifyPermModel(const std::string &fs)
 
 void MountService::mount(const core::path &devnode, const core::path &mountPoint, MountMode mode) {
 
-    const auto fs = sys.getFsType(devnode);
+    const auto fs = provider.getFsType(devnode);
     const auto permModel = classifyPermModel(fs);
     const auto uid = 1000;
     const auto gid = 1000;

@@ -15,5 +15,4 @@ class LinuxMountSystem : public IMountSystem {
     void sync() noexcept override;
     void chown(const core::path &target, int uid, int gid) noexcept override;
     void chmod(const core::path &target, int perms) noexcept override;
-    std::string getFsType(const core::path &dev) override;
 };

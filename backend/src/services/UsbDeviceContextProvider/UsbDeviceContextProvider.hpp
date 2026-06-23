@@ -10,4 +10,5 @@ class UsbDeviceContextProvider : public IUsbDeviceContextProvider {
     std::vector<core::path> getUsbDevNodes() override;
     core::path getMountPoint(const core::path &devNode) override;
     MountMode getMountMode(const core::path &mountpoint) override;
+    std::string getFsType(const core::path &dev) override;
 };

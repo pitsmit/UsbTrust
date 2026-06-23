@@ -19,6 +19,7 @@ class SDdevView {
     bool isUsbDevice() const;
     std::expected<core::path, SDdeviceError> getDevNode() const;
     std::expected<std::string, SDdeviceError> getSysAttr(std::string_view attr) const;
+    std::expected<std::string, SDdeviceError> getFSType() const;
     sd_device_action_t getAction() const;
     explicit operator bool() const;
 };
