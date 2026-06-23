@@ -7,12 +7,13 @@
 
 class SDact {
     sd_device_action_t act;
+    SDdevView dev;
 
   public:
     explicit SDact(SDdevView dev_) {
         act = dev_.getAction();
+        dev = dev_;
     }
 
-    bool isValid() const;
-    std::optional<DeviceEvent> toEvent(const SDdevView &dev) const;
+    std::optional<DeviceEvent> toEvent() const;
 };

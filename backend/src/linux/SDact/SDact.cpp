@@ -1,10 +1,6 @@
 #include "SDact.hpp"
 
-bool SDact::isValid() const {
-    return act != _SD_DEVICE_ACTION_INVALID;
-}
-
-std::optional<DeviceEvent> SDact::toEvent(const SDdevView &dev) const {
+std::optional<DeviceEvent> SDact::toEvent() const {
     if (act == SD_DEVICE_ADD) {
         if (!dev.isUsbDevice())
             return std::nullopt;
