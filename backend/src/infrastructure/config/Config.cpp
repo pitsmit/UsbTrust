@@ -44,13 +44,17 @@ int Config::getNumber(std::string_view name) {
 }
 
 std::vector<core::path> Config::getSchemaPaths() {
-    std::vector<core::path> result;
-    auto iter = std::filesystem::directory_iterator(get("db.schema.dir"));
-    std::transform(begin(iter), end(iter), std::back_inserter(result), [](const auto &entry) {
-        return entry.path();
-    });
-    std::ranges::sort(result);
-    return result;
+    try {
+        std::vector<core::path> result;
+        auto iter = std::filesystem::directory_iterator(get("db.schema.dir"));
+        std::transform(begin(iter), end(iter), std::back_inserter(result), [](const auto &entry) {
+            return entry.path();
+        });
+        std::ranges::sort(result);
+        return result;
+    } catch (const std::filesystem::filesystem_error &e) {
+        throw FileException(e.what());
+    }
 }
 
 core::path Config::getDBPath() {

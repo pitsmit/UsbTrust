@@ -19,7 +19,8 @@ class EventLoop {
             try {
                 service_.handle(*event);
             } catch (const std::exception &ex) {
-                mylog->error("Failed to handle event for {}: {}", event->devNode, ex.what());
+                mylog->error(
+                    "Failed to handle event for {}: {}", event->devNode.c_str(), ex.what());
             }
         }
     }

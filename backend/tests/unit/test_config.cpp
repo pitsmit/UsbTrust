@@ -163,3 +163,16 @@ TEST_F(ConfigTest, ValidConfigReturnsNoPaths) {
     EXPECT_EQ(result, expected);
     std::filesystem::remove_all(base);
 }
+
+TEST_F(ConfigTest, ValidConfigButFakeFolder) {
+    // ARRANGE
+    constexpr auto base = "test";
+    ConfigFileBuilder()
+        .add("db.path", "/tmp/db")
+        .add("db.schema.dir", base)
+        .add("log.file", "/tmp/log")
+        .build();
+
+    // ACT && ASSERT
+    EXPECT_THROW(Config::getSchemaPaths(), FileException);
+}
