@@ -7,7 +7,7 @@
 
 #include "types/types.hpp"
 
-class Bind {
+class Binder {
     static inline void bind(sqlite3_stmt *stmt, int idx, int value) {
         sqlite3_bind_int(stmt, idx, value);
     }

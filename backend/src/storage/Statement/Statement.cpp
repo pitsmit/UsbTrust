@@ -1,11 +1,16 @@
 #include "Statement.hpp"
 
+Statement::Statement(sqlite3_stmt *stmt_) : stmt(stmt_) {
+    auto cols = sqlite3_column_count(stmt);
+    for (auto i = 0; i < cols; ++i) {
+        auto name = sqlite3_column_name(stmt, i);
+        if (name)
+            indexMap[name] = i;
+    }
+};
+
 Statement::~Statement() {
     sqlite3_finalize(stmt);
-}
-
-sqlite3_stmt *Statement::get() const noexcept {
-    return stmt;
 }
 
 int Statement::eval() {

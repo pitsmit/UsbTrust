@@ -1,12 +1,12 @@
 #pragma once
 
 #include <expected>
+#include <format>
 #include <vector>
 
 #include "exceptions/Exceptions.hpp"
 #include "storage/DataBase/DataBase.hpp"
 #include "storage/Mapper/Mapper.hpp"
-#include "storage/Row/Row.hpp"
 #include "storage/Statement/Statement.hpp"
 
 class SqlExecutor {
@@ -32,7 +32,7 @@ class SqlExecutor {
 
         stmt.eval();
         if (stmt.hasRow())
-            return Row::extractValue<T>(stmt.get(), 0);
+            return stmt.extractValueFromColumn<T>(0);
         if (stmt.done())
             return std::unexpected<RecordNotFoundError>(std::format("no rows for query: {}", sql));
         throw SqlDataBaseError(db.what());
@@ -45,7 +45,7 @@ class SqlExecutor {
 
         std::vector<T> result;
         while (stmt.next()) {
-            result.push_back(Mapper::from<T>(Row(stmt.get())));
+            result.push_back(Mapper::from<T>(stmt));
         }
         if (!stmt.done())
             throw SqlDataBaseError(db.what());

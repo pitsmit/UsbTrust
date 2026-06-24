@@ -3,14 +3,14 @@
 #include "entities/Device.hpp"
 #include "entities/DeviceInfo.hpp"
 #include "entities/MountRecord.hpp"
-#include "storage/Row/Row.hpp"
+#include "storage/Statement/Statement.hpp"
 
 class Mapper {
   public:
-    template <typename T> static T from(const Row &r);
+    template <typename T> static T from(const Statement &r);
 };
 
-template <> inline DeviceInfo Mapper::from<DeviceInfo>(const Row &r) {
+template <> inline DeviceInfo Mapper::from<DeviceInfo>(const Statement &r) {
     return DeviceInfoBuilder()
         .withVendorId(r.get<std::string>("vendor_id"))
         .withProductId(r.get<std::string>("product_id"))
@@ -20,7 +20,7 @@ template <> inline DeviceInfo Mapper::from<DeviceInfo>(const Row &r) {
         .build();
 }
 
-template <> inline Device Mapper::from<Device>(const Row &r) {
+template <> inline Device Mapper::from<Device>(const Statement &r) {
     return DeviceBuilder()
         .withValidTo(r.get<std::string>("valid_to"))
         .withId(r.get<core::Id>("id"))
@@ -28,7 +28,7 @@ template <> inline Device Mapper::from<Device>(const Row &r) {
         .build();
 }
 
-template <> inline MountRecord Mapper::from<MountRecord>(const Row &r) {
+template <> inline MountRecord Mapper::from<MountRecord>(const Statement &r) {
     return MountRecordBuilder()
         .withId(r.get<core::Id>("id"))
         .withDevNode(r.get<core::path>("dev_node"))
