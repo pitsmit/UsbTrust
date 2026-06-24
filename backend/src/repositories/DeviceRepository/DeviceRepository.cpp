@@ -7,6 +7,8 @@ core::Id DeviceRepository::add(const DeviceInfo &dev) {
     static constexpr auto sql =
         "INSERT INTO Device (deviceInfoId, validTo) VALUES (?, NULL) RETURNING id;";
     auto id = executor.scalar<core::Id>(sql, deviceInfoId);
+    if (!id)
+        throw id.error();
     return *id;
 }
 
@@ -39,5 +41,8 @@ std::optional<core::Id> DeviceRepository::findActiveId(const DeviceInfo &info) {
                                 "OR d.validTo >= date('now'))"
                                 " LIMIT 1;";
 
-    return executor.scalar<core::Id>(sql, info.vendorId, info.productId, info.serial);
+    auto id = executor.scalar<core::Id>(sql, info.vendorId, info.productId, info.serial);
+    if (!id)
+        return std::nullopt;
+    return *id;
 }

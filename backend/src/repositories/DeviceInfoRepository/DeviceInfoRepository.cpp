@@ -14,6 +14,7 @@ core::Id DeviceInfoRepository::ensure(const DeviceInfo &info) {
 
     auto id = executor.scalar<core::Id>(
         sql, info.vendorId, info.productId, info.serial, info.productName, info.vendorName);
-
+    if (!id)
+        throw id.error();
     return *id;
 }

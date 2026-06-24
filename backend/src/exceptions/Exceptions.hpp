@@ -7,7 +7,7 @@
 
 class BaseException : public std::exception {
   protected:
-    static constexpr size_t sizebuff = 128;
+    static constexpr size_t sizebuff = 256;
     char errormsg[sizebuff]{};
 
   public:
@@ -45,6 +45,13 @@ class SqlDataBaseError : public BaseException {
     SqlDataBaseError() noexcept : BaseException("SqlDataBaseError") {}
 
     explicit SqlDataBaseError(std::string_view msg) noexcept : BaseException(msg) {}
+};
+
+class RecordNotFoundError : public BaseException {
+  public:
+    RecordNotFoundError() noexcept : BaseException("NoDataInDataBaseError") {}
+
+    explicit RecordNotFoundError(std::string_view msg) noexcept : BaseException(msg) {}
 };
 
 class ResolveInfoError : public BaseException {

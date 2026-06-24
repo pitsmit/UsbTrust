@@ -12,6 +12,7 @@
 #include "services/RecoveryService/RecoveryService.hpp"
 #include "services/UsbDeviceContextProvider/UsbDeviceContextProvider.hpp"
 #include "storage/DBInitializer/DBInitializer.hpp"
+#include "storage/DataBase/DataBase.hpp"
 #include "storage/SqlExecutor/SqlExecutor.hpp"
 #include "transport/WebSocketServer/WebSocketServer.hpp"
 

@@ -7,10 +7,6 @@ void MountRegistryManager::add(const MountRecord &record) {
     repo.add(record);
 }
 
-std::optional<core::path> MountRegistryManager::getMountPointByDevNode(const core::path &devNode) {
-    return repo.getMountPointByDevNode(devNode);
-}
-
 std::optional<MountRecord> MountRegistryManager::getById(core::Id id) {
     return repo.getById(id);
 }

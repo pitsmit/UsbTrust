@@ -11,7 +11,6 @@ class MountRegistryManager {
     explicit MountRegistryManager(SqlExecutor &ex) : repo(ex) {}
 
     void add(const MountRecord &record);
-    std::optional<core::path> getMountPointByDevNode(const core::path &devNode);
     std::optional<MountRecord> getById(core::Id id);
     void removeByDevNode(const core::path &devNode);
     void recreate(const MountRecord &record);

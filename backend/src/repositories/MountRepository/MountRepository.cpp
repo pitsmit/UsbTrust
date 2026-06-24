@@ -22,12 +22,6 @@ void MountRepository::update(const MountRecord &record) {
         sql, deviceInfoId, record.mountPoint, record.mode.toStringUpper(), record.devNode);
 }
 
-std::optional<core::path> MountRepository::getMountPointByDevNode(const core::path &devNode) {
-    static constexpr auto sql = "SELECT mountPoint FROM MountRecord WHERE devNode = ? LIMIT 1;";
-
-    return executor.scalar<core::path>(sql, devNode);
-}
-
 std::optional<MountRecord> MountRepository::getById(core::Id id) {
     static constexpr auto sql =
         "SELECT mr.id, mr.deviceInfoId, mr.devNode, mr.mountPoint, mr.mode, "

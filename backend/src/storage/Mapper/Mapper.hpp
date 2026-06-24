@@ -23,14 +23,14 @@ template <> inline DeviceInfo Mapper::from<DeviceInfo>(const Row &r) {
 template <> inline Device Mapper::from<Device>(const Row &r) {
     return DeviceBuilder()
         .withValidTo(r.get<std::string>("valid_to"))
-        .withId(r.get<std::uint64_t>("id"))
+        .withId(r.get<core::Id>("id"))
         .withInfo(Mapper::from<DeviceInfo>(r))
         .build();
 }
 
 template <> inline MountRecord Mapper::from<MountRecord>(const Row &r) {
     return MountRecordBuilder()
-        .withId(r.get<std::uint64_t>("id"))
+        .withId(r.get<core::Id>("id"))
         .withDevNode(r.get<core::path>("dev_node"))
         .withMountPoint(r.get<core::path>("mount_point"))
         .withMode(MountMode::parse(r.get<std::string>("mode")))

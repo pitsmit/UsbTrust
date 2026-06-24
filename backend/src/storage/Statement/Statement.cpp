@@ -1,33 +1,25 @@
 #include "Statement.hpp"
 
-#include "exceptions/Exceptions.hpp"
-
-Statement::Statement(sqlite3 *db, std::string_view sql) : db(db) {
-    if (sqlite3_prepare_v2(db, sql.data(), -1, &stmt, nullptr) != SQLITE_OK) {
-        throw SqlDataBaseError(sqlite3_errmsg(db));
-    }
+Statement::~Statement() {
+    sqlite3_finalize(stmt);
 }
 
 sqlite3_stmt *Statement::get() const noexcept {
     return stmt;
 }
 
-Statement::~Statement() {
-    sqlite3_finalize(stmt);
+int Statement::eval() {
+    return last_rc = sqlite3_step(stmt);
 }
 
-Statement::Statement(Statement &&other) noexcept {
-    stmt = other.stmt;
-    db = other.db;
-    other.stmt = nullptr;
+bool Statement::next() {
+    return eval() == SQLITE_ROW;
 }
 
-Statement &Statement::operator=(Statement &&other) noexcept {
-    if (this != &other) {
-        sqlite3_finalize(stmt);
-        stmt = other.stmt;
-        db = other.db;
-        other.stmt = nullptr;
-    }
-    return *this;
+bool Statement::hasRow() const noexcept {
+    return last_rc == SQLITE_ROW;
+}
+
+bool Statement::done() const noexcept {
+    return last_rc == SQLITE_DONE;
 }
