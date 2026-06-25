@@ -1,8 +1,9 @@
-#include <filesystem>
-#include <gtest/gtest.h>
-#include <string>
-
 #include "services/MountPointBuilder.hpp"
+
+#include <gtest/gtest.h>
+
+#include <filesystem>
+#include <string>
 
 TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
     // ARRANGE

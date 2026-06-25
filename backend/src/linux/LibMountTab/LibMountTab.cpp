@@ -2,8 +2,8 @@
 
 #include <format>
 
-LibMountTab::LibMountTab() {
-    tb = mnt_new_table_from_file("/proc/self/mountinfo");
+LibMountTab::LibMountTab(const core::path &mountfile) {
+    tb = mnt_new_table_from_file(mountfile.c_str());
     if (!tb) {
         throw LibMountError("Failed to create mount table");
     }
@@ -38,8 +38,7 @@ std::expected<core::path, LibMountError> LibMountTab::extractMountPoint(libmnt_f
     if (!target) {
         return std::unexpected<LibMountError>("No mountpoint found");
     }
-    std::string mountPoint(target);
-    return mountPoint;
+    return target;
 }
 
 std::expected<const char *, LibMountError> LibMountTab::getFSopts(libmnt_fs *fs) {

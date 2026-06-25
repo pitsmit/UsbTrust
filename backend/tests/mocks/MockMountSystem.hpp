@@ -5,7 +5,7 @@
 #include "ports/IMountSystem.hpp"
 
 class MockMountSystem : public IMountSystem {
-public:
+  public:
     bool syncCalled = false;
 
     bool mountCalled = false;
@@ -30,13 +30,11 @@ public:
         return fsType;
     }
 
-    int mount(
-        std::string_view dev,
-        std::string_view target,
-        std::string_view fs,
-        MountMode mode,
-        std::string_view opts) noexcept override
-    {
+    int mount(std::string_view dev,
+              std::string_view target,
+              std::string_view fs,
+              MountMode mode,
+              std::string_view opts) noexcept override {
         mountCalled = true;
         lastDev = dev;
         lastTarget = target;
@@ -46,10 +44,7 @@ public:
         return mountResult;
     }
 
-    int remount(
-        std::string_view target,
-        MountMode mode) noexcept override
-    {
+    int remount(std::string_view target, MountMode mode) noexcept override {
         mountCalled = true;
         lastTarget = target;
         lastFlags = 1;
@@ -62,11 +57,7 @@ public:
         return umountResult;
     }
 
-    void chown(std::string_view target, int uid, int gid) noexcept override {
+    void chown(std::string_view target, int uid, int gid) noexcept override {}
 
-    }
-
-    void chmod(std::string_view target, int perms) noexcept override {
-
-    }
+    void chmod(std::string_view target, int perms) noexcept override {}
 };

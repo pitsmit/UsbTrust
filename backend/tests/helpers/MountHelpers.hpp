@@ -1,138 +1,121 @@
 #pragma once
 
-#include <string>
-#include <filesystem>
 #include <cstdlib>
+#include <filesystem>
+#include <string>
+#include <sys/mount.h>
 #include <unistd.h>
 
-struct LoopFs
-{
+struct LoopFs {
     std::string image;
     std::string device;
+    std::string filesystem;
+    std::string mountPoint;
 
     LoopFs() = default;
+    LoopFs(const LoopFs &) = delete;
+    LoopFs &operator=(const LoopFs &) = delete;
 
-    LoopFs(const LoopFs&) = delete;
-    LoopFs& operator=(const LoopFs&) = delete;
+  public:
+    void mnt() {
+        if (device.empty())
+            throw std::runtime_error("loop device is empty");
+        if (!mountPoint.empty())
+            throw std::runtime_error("already mounted");
 
-    LoopFs(LoopFs&& other) noexcept
-        : image(std::move(other.image)),
-          device(std::move(other.device))
-    {
+        char templ[] = "/tmp/loopfs_XXXXXX";
+        mountPoint = mkdtemp(templ);
+        if (mountPoint.empty()) {
+            throw std::runtime_error("mkdtemp failed");
+        }
+
+        if (mount(device.c_str(), mountPoint.c_str(), filesystem.c_str(), 0, nullptr) != 0) {
+            std::filesystem::remove(mountPoint);
+            mountPoint.clear();
+            throw std::system_error(errno, std::generic_category(), "mount failed");
+        }
+    }
+
+    LoopFs(LoopFs &&other) noexcept
+        : image(std::move(other.image)), device(std::move(other.device)) {
         other.image.clear();
         other.device.clear();
     }
 
-    ~LoopFs()
-    {
-        cleanup();
-    }
-
-    void cleanup()
-    {
-        if (!device.empty())
-        {
+    ~LoopFs() {
+        if (!device.empty()) {
             std::string cmd = "losetup -d " + device + " >/dev/null 2>&1";
             std::system(cmd.c_str());
-            device.clear();
         }
 
-        if (!image.empty())
-        {
-            std::error_code ec;
-            std::filesystem::remove(image, ec);
-            image.clear();
+        if (!image.empty()) {
+            std::filesystem::remove(image);
         }
     }
 };
 
-inline LoopFs createLoopFs(const std::string& fsType)
-{
+inline LoopFs createLoopFs(const std::string &fsType) {
     LoopFs result;
 
     result.image =
-        "/tmp/usb_" +
-        std::to_string(::getpid()) +
-        "_" +
-        std::to_string(std::rand()) +
-        ".img";
+        "/tmp/usb_" + std::to_string(::getpid()) + "_" + std::to_string(std::rand()) + ".img";
+
+    result.filesystem = fsType;
 
     std::string mkfsCmd;
-
-    if (fsType == "vfat")
-    {
+    if (fsType == "vfat") {
         mkfsCmd = "mkfs.vfat " + result.image;
-    }
-    else if (fsType == "ext4")
-    {
+    } else if (fsType == "ext4") {
         mkfsCmd = "mkfs.ext4 -F " + result.image;
-    }
-    else if (fsType == "ntfs")
-    {
+    } else if (fsType == "ntfs") {
         mkfsCmd = "mkfs.ntfs -F " + result.image;
-    }
-    else if (fsType == "exfat")
-    {
+    } else if (fsType == "exfat") {
         mkfsCmd = "mkfs.exfat " + result.image;
-    }
-    else
-    {
-        throw std::runtime_error(
-            "unsupported filesystem: " + fsType);
+    } else {
+        throw std::runtime_error("unsupported filesystem: " + fsType);
     }
 
-    std::string createImage =
-        "dd if=/dev/zero of=" + result.image +
-        " bs=1M count=32 status=none";
-
-    if (std::system(createImage.c_str()) != 0)
-    {
-        throw std::runtime_error("failed to create image");
+    int fd = ::open(result.image.c_str(), O_CREAT | O_RDWR | O_TRUNC, 0644);
+    if (fd < 0)
+        throw std::system_error(errno, std::generic_category());
+    if (::ftruncate(fd, 32 * 1024 * 1024) != 0) {
+        ::close(fd);
+        throw std::system_error(errno, std::generic_category());
     }
+    ::close(fd);
 
-    if (std::system(mkfsCmd.c_str()) != 0)
-    {
+    if (std::system(mkfsCmd.c_str()) != 0) {
         throw std::runtime_error("failed to create filesystem");
     }
 
-    FILE* pipe = popen(
-        ("losetup --find --show -P " + result.image).c_str(),
-        "r");
+    FILE *pipe = popen(("losetup --find --show -P " + result.image).c_str(), "r");
 
-    if (!pipe)
-    {
+    if (!pipe) {
         throw std::runtime_error("losetup failed");
     }
 
     char buffer[256]{};
-
-    if (!fgets(buffer, sizeof(buffer), pipe))
-    {
+    if (!fgets(buffer, sizeof(buffer), pipe)) {
         pclose(pipe);
         throw std::runtime_error("cannot obtain loop device");
     }
-
     pclose(pipe);
-
     result.device = buffer;
 
     while (!result.device.empty() &&
-           (result.device.back() == '\n' ||
-            result.device.back() == '\r' ||
-            result.device.back() == ' '))
-    {
+           (result.device.back() == '\n' || result.device.back() == '\r' ||
+            result.device.back() == ' ')) {
         result.device.pop_back();
     }
 
-    if (result.device.empty())
-    {
+    if (result.device.empty()) {
         throw std::runtime_error("empty loop device");
     }
 
     return result;
 }
 
-static bool isMounted(const std::string& path) {
+/*static bool isMounted(const std::string& path) {
     std::ifstream mounts("/proc/mounts");
     std::string line;
 
@@ -202,4 +185,4 @@ static int simulate_write(std::string mount_path)
     waitpid(pid, &status, 0);
 
     return status;
-}
+}*/

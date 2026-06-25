@@ -1,4 +1,8 @@
+#include "infrastructure/config/Config.hpp"
+
 #include <gtest/gtest.h>
+
+#include "../helpers/ConfigFileBuilder.hpp"
 
 #include <cstdio>
 #include <format>
@@ -6,9 +10,6 @@
 #include <string>
 
 #include "exceptions/Exceptions.hpp"
-#include "infrastructure/config/Config.hpp"
-
-#include "../helpers/ConfigFileBuilder.hpp"
 
 class ConfigTest : public ::testing::Test {
   protected:

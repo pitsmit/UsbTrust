@@ -38,8 +38,10 @@ add_executable(unit_tests
     unit/test_mount_point_builder.cpp
     unit/test_config.cpp
     unit/test_mount_flags_builder.cpp
+    unit/test_lib_mount_tab.cpp
     ../src/infrastructure/config/Config.cpp
     ../src/linux/LinuxMountSystem/MountFlagsBuilder.cpp
+    ../src/linux/LibMountTab/LibMountTab.cpp
     ../src/entities/MountMode/MountMode.cpp
 )
 
@@ -49,6 +51,7 @@ target_include_directories(unit_tests PUBLIC
 
 target_link_libraries(unit_tests
     GTest::gtest_main
+    mount
 )
 
 enable_coverage(unit_tests)

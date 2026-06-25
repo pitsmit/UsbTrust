@@ -1,8 +1,10 @@
+#include "linux/LinuxMountSystem/MountFlagsBuilder.hpp"
+
 #include <gtest/gtest.h>
+
 #include <sys/mount.h>
 
 #include "entities/MountMode/MountMode.hpp"
-#include "linux/LinuxMountSystem/MountFlagsBuilder.hpp"
 
 TEST(MountFlagsBuilderTest, BuildFromReadOnlyMode) {
     // ARRANGE

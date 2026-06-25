@@ -1,29 +1,20 @@
 #pragma once
 
 #include <curl/curl.h>
-#include <string>
 #include <stdexcept>
+#include <string>
 
-static size_t WriteCallback(
-    void* contents,
-    size_t size,
-    size_t nmemb,
-    void* userp)
-{
-    ((std::string*)userp)->append(
-        (char*)contents,
-        size * nmemb);
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
+    ((std::string *)userp)->append((char *)contents, size * nmemb);
 
     return size * nmemb;
 }
 
-static std::string request(
-    const std::string& method,
-    const std::string& url,
-    const std::string& body,
-    long& httpCode)
-{
-    CURL* curl = curl_easy_init();
+static std::string request(const std::string &method,
+                           const std::string &url,
+                           const std::string &body,
+                           long &httpCode) {
+    CURL *curl = curl_easy_init();
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
     if (!curl) {
@@ -32,11 +23,9 @@ static std::string request(
 
     std::string response;
 
-    struct curl_slist* headers = nullptr;
+    struct curl_slist *headers = nullptr;
 
-    headers = curl_slist_append(
-        headers,
-        "Content-Type: application/json");
+    headers = curl_slist_append(headers, "Content-Type: application/json");
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, method.c_str());
@@ -56,10 +45,7 @@ static std::string request(
         throw std::runtime_error(curl_easy_strerror(res));
     }
 
-    curl_easy_getinfo(
-        curl,
-        CURLINFO_RESPONSE_CODE,
-        &httpCode);
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
 
     curl_easy_cleanup(curl);
 

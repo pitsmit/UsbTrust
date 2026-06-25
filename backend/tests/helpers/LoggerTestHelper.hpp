@@ -3,7 +3,7 @@
 #include "infrastructure/logging/DevLogger.hpp"
 
 class LoggerTestHelper {
-public:
+  public:
     void disable() {
         DevLogger::instance().get()->setEnabled(false);
     }

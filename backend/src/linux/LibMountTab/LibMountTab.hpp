@@ -12,7 +12,7 @@ class LibMountTab {
     libmnt_table *tb = nullptr;
 
   public:
-    explicit LibMountTab();
+    explicit LibMountTab(const core::path &mountfile = "/proc/self/mountinfo");
     ~LibMountTab();
 
     std::expected<libmnt_fs *, LibMountError>
@@ -22,8 +22,6 @@ class LibMountTab {
     findRecordFromDevNode(const core::path &devNode) const;
 
     static std::expected<core::path, LibMountError> extractMountPoint(libmnt_fs *fs);
-
     static std::expected<const char *, LibMountError> getFSopts(libmnt_fs *fs);
-
     static std::expected<MountMode, LibMountError> extractMode(const char *opts);
 };
