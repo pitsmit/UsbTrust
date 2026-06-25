@@ -1,4 +1,4 @@
-#include "linux/LinuxMountSystem/MountFlagsBuilder.hpp"
+#include "linux/MountFlagsBuilder/MountFlagsBuilder.hpp"
 
 #include <gtest/gtest.h>
 

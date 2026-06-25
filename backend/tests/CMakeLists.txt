@@ -44,7 +44,7 @@ add_executable(unit_tests
     unit/test_mount_flags_builder.cpp
     unit/test_lib_mount_tab.cpp
     ../src/infrastructure/config/Config.cpp
-    ../src/linux/LinuxMountSystem/MountFlagsBuilder.cpp
+    ../src/linux/MountFlagsBuilder/MountFlagsBuilder.cpp
     ../src/linux/LibMountTab/LibMountTab.cpp
     ../src/entities/MountMode/MountMode.cpp
 )
