@@ -4,9 +4,7 @@ project(UsbTrust)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-#find_program(IWYU_PATH include-what-you-use)
-#set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
+#set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE include-what-you-use;-Xiwyu;--mapping_file=stdlib.imp)
 
 option(BUILD_APP "Build application" ON)
 option(BUILD_HTTP_SERVER "Build HTTP server" ON)
@@ -27,8 +25,8 @@ if(BUILD_APP)
 
     if(BUILD_HTTP_SERVER)
         list(APPEND APP_SOURCES
-            api-stubs/api/ApiBase.cpp
-            api-stubs/api/DefaultApi.cpp
+            api/ApiBase/ApiBase.cpp
+            api/DefaultApi/DefaultApi.cpp
         )
     endif()
 
@@ -40,7 +38,8 @@ if(BUILD_APP)
 
     if(BUILD_HTTP_SERVER)
         target_include_directories(app PUBLIC
-            ${PROJECT_SOURCE_DIR}/api-stubs/api
+            ${PROJECT_SOURCE_DIR}/api/ApiBase
+            ${PROJECT_SOURCE_DIR}/api/DefaultApi
         )
 
         target_compile_definitions(app PUBLIC

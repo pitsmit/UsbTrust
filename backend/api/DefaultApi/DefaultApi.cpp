@@ -1,12 +1,7 @@
 #include "DefaultApi.h"
+
 #include "commands/DeviceCommands.hpp"
-#include "entities/DeviceInfo.hpp"
-#include "facade/Facade.hpp"
 #include "transport/JsonUtils.hpp"
-
-#include <nlohmann/json.hpp>
-
-using json = nlohmann::json;
 
 namespace api {
 
@@ -118,6 +113,7 @@ void DefaultApi::get_current_connected_devices_list_handler(
 }
 
 #ifdef ENABLE_TEST_API
+#include "entities/DeviceInfo.hpp"
 void DefaultApi::seed_whitelist_handler(const Pistache::Rest::Request &request,
                                         Pistache::Http::ResponseWriter response) {
     try {

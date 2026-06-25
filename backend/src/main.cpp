@@ -34,6 +34,11 @@ class App {
     EventLoop loop;
     EventWatcherService watcher;
     RecoveryService rec;
+    MountService mountService;
+    DeviceManager deviceManager;
+    MountManager mountManager;
+    MountRegistryManager mountRegistry;
+    CommandContext ctx;
 
 #ifdef BUILD_HTTP_SERVER
     std::optional<std::jthread> httpThread;
@@ -63,10 +68,13 @@ class App {
 
   public:
     App()
-        : db(Config::getDBPath()), exec(db), linms(), resolver(), facade(exec, linms, resolver),
+        : db(Config::getDBPath()), exec(db), linms(), resolver(), facade(ctx),
           ws(Config::getWebSocketPort()), notifier(ws), queue(),
-          service(facade.registry(), facade.mounts(), notifier, resolver), loop(queue, service),
-          watcher(queue), rec(facade.registry(), resolver, facade.mounts(), facade.devices()) {}
+          service(mountRegistry, mountManager, notifier, resolver), loop(queue, service),
+          watcher(queue), rec(mountRegistry, resolver, mountManager, deviceManager),
+          mountService(linms, resolver), deviceManager(exec),
+          mountManager(deviceManager, mountService, resolver), mountRegistry(exec),
+          ctx{deviceManager, mountRegistry, mountManager} {}
 
     void init() {
         DBInitializer::init(exec);
@@ -77,11 +85,8 @@ class App {
 
     void run() {
         using namespace std::chrono_literals;
-
         auto watcherThread = makeThread("watcher", [this] { watcher.run(); });
-
         auto loopThread = makeThread("loop", [this] { loop.run(); });
-
         for (;;)
             std::this_thread::sleep_for(10s);
     }

@@ -1,18 +1,14 @@
 #pragma once
 
+#include <optional>
+#include <string>
 #include <vector>
 
-#include "entities/Device.hpp"
+#include "commands/Command.hpp"
 #include "entities/MountRecord.hpp"
 #include "types/types.hpp"
 
-class CommandContext;
-
-class Command {
-  public:
-    virtual ~Command() = default;
-    virtual void execute(CommandContext &ctx) = 0;
-};
+struct Device;
 
 class GetWhiteListDeviceCommand : public Command {
   public:

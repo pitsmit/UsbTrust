@@ -1,6 +1,6 @@
 #include "DeviceCommands.hpp"
 
-#include "CommandContext.hpp"
+#include "commands/CommandContext.hpp"
 #include "managers/DeviceManager/DeviceManager.hpp"
 #include "managers/MountManager/MountManager.hpp"
 #include "managers/MountRegistryManager/MountRegistryManager.hpp"

@@ -2,6 +2,7 @@
 #define ApiBase_H_
 
 #include <memory>
+
 #include <pistache/router.h>
 
 namespace api {

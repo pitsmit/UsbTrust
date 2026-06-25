@@ -1,41 +1,13 @@
 #pragma once
 
+#include "commands/Command.hpp"
 #include "commands/CommandContext.hpp"
-#include "commands/DeviceCommands.hpp"
-#include "managers/DeviceManager/DeviceManager.hpp"
-#include "managers/MountManager/MountManager.hpp"
-#include "managers/MountRegistryManager/MountRegistryManager.hpp"
-#include "services/MountService/MountService.hpp"
-
-class IMountSystem;
-class IUsbDeviceContextProvider;
-class SqlExecutor;
 
 class Facade {
-  private:
-    DeviceManager deviceManager;
-    MountRegistryManager mountRegistry;
-    MountService mountService;
-    MountManager mountManager;
     CommandContext ctx;
 
   public:
-    Facade(SqlExecutor &ex, IMountSystem &sys, IUsbDeviceContextProvider &res)
-        : deviceManager(ex), mountRegistry(ex), mountService(sys, res),
-          mountManager(deviceManager, mountService, res),
-          ctx{deviceManager, mountRegistry, mountManager} {}
+    Facade(CommandContext &ctx_) : ctx{ctx_} {}
 
-    void execute(Command &command) {
-        command.execute(ctx);
-    }
-
-    DeviceManager &devices() noexcept {
-        return deviceManager;
-    }
-    MountManager &mounts() noexcept {
-        return mountManager;
-    }
-    MountRegistryManager &registry() noexcept {
-        return mountRegistry;
-    }
+    void execute(Command &command);
 };
