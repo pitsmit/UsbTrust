@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DeviceInfo.hpp"
-#include "MountMode.hpp"
+#include "entities/MountMode/MountMode.hpp"
 #include "types/types.hpp"
 
 struct MountRecord {
@@ -9,7 +9,7 @@ struct MountRecord {
     core::path devNode;
     core::path mountPoint;
     DeviceInfo info;
-    MountMode mode{MountMode::RO};
+    MountMode mode;
 };
 
 class MountRecordBuilder {

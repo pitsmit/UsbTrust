@@ -4,7 +4,7 @@
 
 #include <libmount/libmount.h>
 
-#include "entities/MountMode.hpp"
+#include "entities/MountMode/MountMode.hpp"
 #include "exceptions/Exceptions.hpp"
 #include "types/types.hpp"
 

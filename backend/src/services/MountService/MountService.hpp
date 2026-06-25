@@ -15,7 +15,7 @@ class MountService {
   public:
     explicit MountService(IMountSystem &s, IUsbDeviceContextProvider &p) : sys(s), provider(p) {}
 
-    void mount(const core::path &devnode, const core::path &mountPoint, MountMode mode);
+    void mount(const core::path &devnode, const core::path &mountPoint, MountMode &mode);
     void unmount(const core::path &mountPoint);
-    void remount(const core::path &mountPoint, MountMode mode);
+    void remount(const core::path &mountPoint, const MountMode &mode);
 };

@@ -6,11 +6,12 @@
 #include <unistd.h>
 
 #include "MountFlagsBuilder.hpp"
+#include "entities/MountMode/MountMode.hpp"
 
 int LinuxMountSystem::mount(const core::path &dev,
                             const core::path &target,
                             std::string_view fs,
-                            MountMode mode,
+                            const MountMode &mode,
                             std::string_view opts) noexcept {
     return ::mount(dev.c_str(),
                    target.c_str(),
@@ -19,7 +20,7 @@ int LinuxMountSystem::mount(const core::path &dev,
                    opts.empty() ? nullptr : opts.data());
 }
 
-int LinuxMountSystem::remount(const core::path &target, MountMode mode) noexcept {
+int LinuxMountSystem::remount(const core::path &target, const MountMode &mode) noexcept {
     return ::mount(nullptr,
                    target.c_str(),
                    nullptr,

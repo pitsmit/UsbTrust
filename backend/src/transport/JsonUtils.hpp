@@ -7,7 +7,7 @@
 
 #include "entities/Device.hpp"
 #include "entities/DeviceInfo.hpp"
-#include "entities/MountMode.hpp"
+#include "entities/MountMode/MountMode.hpp"
 #include "entities/MountRecord.hpp"
 
 using json = nlohmann::json;

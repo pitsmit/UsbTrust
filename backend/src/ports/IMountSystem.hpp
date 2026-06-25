@@ -11,9 +11,9 @@ class IMountSystem {
     virtual int mount(const core::path &dev,
                       const core::path &target,
                       std::string_view fs,
-                      MountMode mode,
+                      const MountMode &mode,
                       std::string_view opts) noexcept = 0;
-    virtual int remount(const core::path &target, MountMode mode) noexcept = 0;
+    virtual int remount(const core::path &target, const MountMode &mode) noexcept = 0;
     virtual int umount(const core::path &target) noexcept = 0;
     virtual void sync() noexcept = 0;
     virtual void chown(const core::path &target, int uid, int gid) noexcept = 0;

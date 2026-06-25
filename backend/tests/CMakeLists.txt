@@ -37,7 +37,10 @@ endfunction()
 add_executable(unit_tests
     unit/test_mount_point_builder.cpp
     unit/test_config.cpp
+    unit/test_mount_flags_builder.cpp
     ../src/infrastructure/config/Config.cpp
+    ../src/linux/LinuxMountSystem/MountFlagsBuilder.cpp
+    ../src/entities/MountMode/MountMode.cpp
 )
 
 target_include_directories(unit_tests PUBLIC

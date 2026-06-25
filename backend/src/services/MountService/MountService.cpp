@@ -3,7 +3,7 @@
 #include <format>
 #include <unordered_set>
 
-#include "entities/MountMode.hpp"
+#include "entities/MountMode/MountMode.hpp"
 #include "exceptions/Exceptions.hpp"
 
 MountService::FsPermModel MountService::classifyPermModel(const std::string &fs) {
@@ -12,8 +12,7 @@ MountService::FsPermModel MountService::classifyPermModel(const std::string &fs)
     return nativePosix.contains(fs) ? FsPermModel::NativePosix : FsPermModel::Emulated;
 }
 
-void MountService::mount(const core::path &devnode, const core::path &mountPoint, MountMode mode) {
-
+void MountService::mount(const core::path &devnode, const core::path &mountPoint, MountMode &mode) {
     const auto fs = provider.getFsType(devnode);
     const auto permModel = classifyPermModel(fs);
     const auto uid = 1000;
@@ -50,7 +49,7 @@ void MountService::unmount(const core::path &mountPoint) {
     }
 }
 
-void MountService::remount(const core::path &mountPoint, MountMode mode) {
+void MountService::remount(const core::path &mountPoint, const MountMode &mode) {
     if (sys.remount(mountPoint, mode) < 0) {
         throw MountError(std::format(
             "remount failed for mountPoint: {}, error: {}", mountPoint.c_str(), strerror(errno)));

@@ -1,33 +1,15 @@
 #pragma once
 
-#include <sys/mount.h>
-
-#include "entities/MountMode.hpp"
+class MountMode;
 
 class MountFlagsBuilder {
-  private:
     int flags;
 
-    static constexpr auto ZeroFlags() noexcept {
-        return 0;
-    }
-
-    static constexpr auto ReadOnly() noexcept {
-        return MS_RDONLY | MS_NOEXEC;
-    }
+    static constexpr int ZeroFlags() noexcept;
+    static constexpr int ReadOnly() noexcept;
 
   public:
-    auto withFlagsFrom(MountMode md) noexcept {
-        flags = md.isReadOnly() ? ReadOnly() : ZeroFlags();
-        return *this;
-    }
-
-    auto withRemount() noexcept {
-        flags |= MS_REMOUNT;
-        return *this;
-    }
-
-    int build() const noexcept {
-        return flags;
-    }
+    MountFlagsBuilder &withFlagsFrom(const MountMode &md) noexcept;
+    MountFlagsBuilder &withRemount() noexcept;
+    int build() const noexcept;
 };
