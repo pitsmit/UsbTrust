@@ -4,7 +4,6 @@ project(UsbTrust)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-#set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE include-what-you-use;-Xiwyu;--mapping_file=stdlib.imp)
 
 option(BUILD_APP "Build application" ON)
 option(BUILD_HTTP_SERVER "Build HTTP server" ON)
@@ -15,6 +14,12 @@ add_compile_options(
     -Wall
     -Wextra
     -Wunused
+    -Wold-style-cast
+    -Wnon-virtual-dtor
+    -Wshadow
+    -Wsuggest-override
+    -Wlogical-op
+    -Wuseless-cast
 )
 
 if(BUILD_APP)
@@ -53,15 +58,12 @@ if(BUILD_APP)
         )
     endif()
 
-    add_subdirectory(external/IXWebSocket)
-
     target_link_libraries(app
         PRIVATE
         sqlite3
         pthread
         systemd
         mount
-        ixwebsocket
     )
 
     if(BUILD_HTTP_SERVER)

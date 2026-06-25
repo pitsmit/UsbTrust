@@ -17,9 +17,13 @@ enable_testing()
 add_compile_options(
     -Wall
     -Wextra
-    -Wpedantic
     -Wunused
+    -Wold-style-cast
+    -Wnon-virtual-dtor
     -Wshadow
+    -Wsuggest-override
+    -Wlogical-op
+    -Wuseless-cast
 )
 
 option(ENABLE_COVERAGE "Enable coverage" ON)

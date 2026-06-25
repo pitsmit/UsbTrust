@@ -6,7 +6,7 @@ class HttpServer {
     Facade &facade;
 
   public:
-    explicit HttpServer(Facade &facade) : facade(facade) {}
+    explicit HttpServer(Facade &facade_) : facade(facade_) {}
 
     void start();
 };

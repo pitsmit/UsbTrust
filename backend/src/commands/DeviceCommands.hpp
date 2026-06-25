@@ -34,7 +34,7 @@ class DeleteDeviceFromWhiteListCommand : public Command {
     core::Id id;
 
   public:
-    explicit DeleteDeviceFromWhiteListCommand(core::Id id) : id(id) {}
+    explicit DeleteDeviceFromWhiteListCommand(core::Id id_) : id(id_) {}
 
     void execute(CommandContext &ctx) override;
 };
@@ -45,8 +45,8 @@ class PatchValidToDeviceCommand : public Command {
     std::optional<std::string> validTo;
 
   public:
-    explicit PatchValidToDeviceCommand(core::Id id, std::optional<std::string> validTo)
-        : id(id), validTo(validTo) {}
+    explicit PatchValidToDeviceCommand(core::Id id_, std::optional<std::string> validTo_)
+        : id(id_), validTo(validTo_) {}
 
     void execute(CommandContext &ctx) override;
 };
