@@ -39,6 +39,7 @@ class App {
     MountManager mountManager;
     MountRegistryManager mountRegistry;
     CommandContext ctx;
+    MountCoordinator coordinator;
 
 #ifdef BUILD_HTTP_SERVER
     std::optional<std::jthread> httpThread;
@@ -70,11 +71,11 @@ class App {
     App()
         : db(Config::getDBPath()), exec(db), linms(), resolver(), facade(ctx),
           ws(Config::getWebSocketPort()), notifier(ws), queue(),
-          service(mountRegistry, mountManager, notifier, resolver), loop(queue, service),
-          watcher(queue), rec(mountRegistry, resolver, mountManager, deviceManager),
-          mountService(linms, resolver), deviceManager(exec),
-          mountManager(deviceManager, mountService, resolver), mountRegistry(exec),
-          ctx{deviceManager, mountRegistry, mountManager} {}
+          service(notifier, resolver, coordinator), loop(queue, service), watcher(queue),
+          rec(mountRegistry, resolver, deviceManager, coordinator), mountService(linms, resolver),
+          deviceManager(exec), mountManager(deviceManager, mountService, resolver),
+          mountRegistry(exec), ctx{deviceManager, mountRegistry, coordinator},
+          coordinator(mountManager, mountRegistry) {}
 
     void init() {
         DBInitializer::init(exec);

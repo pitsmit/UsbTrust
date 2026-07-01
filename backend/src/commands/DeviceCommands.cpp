@@ -2,7 +2,7 @@
 
 #include "commands/CommandContext.hpp"
 #include "managers/DeviceManager/DeviceManager.hpp"
-#include "managers/MountManager/MountManager.hpp"
+#include "managers/MountCoordinator/MountCoordinator.hpp"
 #include "managers/MountRegistryManager/MountRegistryManager.hpp"
 
 void GetWhiteListDeviceCommand::execute(CommandContext &ctx) {
@@ -13,15 +13,13 @@ void AddDeviceToWhiteListCommand::execute(CommandContext &ctx) {
     id = ctx.deviceManager.addToWhitelist(record.info);
     record.mode = MountMode::rw();
     record.id = id;
-    ctx.mountService.remount(record);
-    ctx.mountRegistry.refresh(record);
+    ctx.coordinator.remount(record);
 }
 
 void DeleteDeviceFromWhiteListCommand::execute(CommandContext &ctx) {
     if (auto record = ctx.mountRegistry.getById(id)) {
         record->mode = MountMode::ro();
-        ctx.mountService.remount(*record);
-        ctx.mountRegistry.refresh(*record);
+        ctx.coordinator.remount(*record);
     }
     ctx.deviceManager.removeFromWhitelist(id);
 }

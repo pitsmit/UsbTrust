@@ -5,8 +5,7 @@
 #include "linux/SDenum/SDenum.hpp"
 
 DeviceInfo UsbDeviceContextProvider::getDeviceInfo(const core::path &devNode) {
-    SDdev device(devNode);
-    SDdevView usb = device.findUsbDevice();
+    SDdevView usb = SDdev(devNode).findUsbDevice();
     return DeviceInfoBuilder::buildFrom(usb);
 }
 

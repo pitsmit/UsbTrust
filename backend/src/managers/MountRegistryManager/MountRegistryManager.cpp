@@ -15,11 +15,6 @@ void MountRegistryManager::removeByDevNode(const core::path &devNode) {
     repo.removeByDevNode(devNode);
 }
 
-void MountRegistryManager::recreate(const MountRecord &record) {
-    removeByDevNode(record.devNode);
-    add(record);
-}
-
 std::vector<MountRecord> MountRegistryManager::getAll() {
     return repo.getAll();
 }

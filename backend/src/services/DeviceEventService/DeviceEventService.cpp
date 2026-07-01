@@ -9,13 +9,11 @@ void DeviceEventService::handle(const DeviceEvent &event) {
                 event.devNode.c_str());
 
     if (event.type == EventType::INSERT) {
-        auto record = mountManager_.mount(event.devNode);
-        mountRegistry_.add(record);
+        auto record = coordinator.mount(event.devNode);
         notifier_.notifyInsert(record);
     } else if (event.type == EventType::REMOVE) {
         auto mountPoint = resolver_.getMountPoint(event.devNode);
-        mountManager_.unmount(mountPoint);
+        coordinator.unmount(mountPoint, event.devNode);
         notifier_.notifyRemove(mountPoint);
-        mountRegistry_.removeByDevNode(event.devNode);
     }
 }

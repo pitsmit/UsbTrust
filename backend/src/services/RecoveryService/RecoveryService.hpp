@@ -2,24 +2,24 @@
 
 #include "entities/MountRecord.hpp"
 #include "managers/DeviceManager/DeviceManager.hpp"
-#include "managers/MountManager/MountManager.hpp"
+#include "managers/MountCoordinator/MountCoordinator.hpp"
 #include "managers/MountRegistryManager/MountRegistryManager.hpp"
 
 class RecoveryService {
-  private:
-    MountRegistryManager &registry;
-    IUsbDeviceContextProvider &resolver;
-    MountManager &manager;
+    MountRegistryManager &registrator;
+    IUsbDeviceContextProvider &provider;
     DeviceManager &devman;
+    MountCoordinator &coordinator;
 
     void actualize(MountRecord &rec);
 
   public:
-    explicit RecoveryService(MountRegistryManager &mr,
-                             IUsbDeviceContextProvider &rs,
-                             MountManager &man,
-                             DeviceManager &devman_)
-        : registry(mr), resolver(rs), manager(man), devman(devman_) {}
+    explicit RecoveryService(MountRegistryManager &registrator_,
+                             IUsbDeviceContextProvider &provider_,
+                             DeviceManager &devman_,
+                             MountCoordinator &coordinator_)
+        : registrator(registrator_), provider(provider_), devman(devman_),
+          coordinator(coordinator_) {}
 
     void run();
 };

@@ -1,12 +1,9 @@
 #pragma once
 
-#include <format>
+#include <string>
 #include <unordered_map>
 
 #include <sqlite3.h>
-
-#include "exceptions/Exceptions.hpp"
-#include "storage/Binder/Binder.hpp"
 
 class Statement {
     sqlite3_stmt *stmt = nullptr;
@@ -28,6 +25,11 @@ class Statement {
     template <typename T> constexpr T extractValueFromColumn(int i) const;
     template <typename... Args> void bind(Args &&...args);
 };
+
+#include <format>
+
+#include "exceptions/Exceptions.hpp"
+#include "storage/Binder/Binder.hpp"
 
 template <typename T> T Statement::get(std::string_view col) const {
     auto it = indexMap.find(std::string(col));
