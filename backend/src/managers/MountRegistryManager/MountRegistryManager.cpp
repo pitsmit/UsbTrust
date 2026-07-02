@@ -4,21 +4,21 @@
 #include <vector>
 
 void MountRegistryManager::add(const MountRecord &record) {
-    repo.add(record);
+    repository.add(record);
 }
 
 std::optional<MountRecord> MountRegistryManager::getById(core::Id id) {
-    return repo.getById(id);
+    return repository.getById(id);
 }
 
 void MountRegistryManager::removeByDevNode(const core::path &devNode) {
-    repo.removeByDevNode(devNode);
+    repository.removeByDevNode(devNode);
 }
 
 std::vector<MountRecord> MountRegistryManager::getAll() {
-    return repo.getAll();
+    return repository.getAll();
 }
 
 void MountRegistryManager::refresh(const MountRecord &record) {
-    repo.update(record);
+    repository.update(record);
 }

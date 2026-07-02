@@ -6,11 +6,10 @@
 class MountRecord;
 
 class DeviceEventNotifyManager {
-  private:
-    IWebSocketServer &ws_;
+    IWebSocketServer &server;
 
   public:
-    explicit DeviceEventNotifyManager(IWebSocketServer &ws) : ws_(ws) {}
+    explicit DeviceEventNotifyManager(IWebSocketServer &server_) : server(server_) {}
 
     void notifyInsert(const MountRecord &record);
     void notifyRemove(const core::path &mountPoint);

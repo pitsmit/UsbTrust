@@ -1,5 +1,9 @@
 #include "MountMode.hpp"
 
+MountMode MountMode::fromBool(bool is) {
+    return is ? rw() : ro();
+}
+
 bool MountMode::isReadOnly() const noexcept {
     return value_ == RO;
 }

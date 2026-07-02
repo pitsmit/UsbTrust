@@ -1,15 +1,15 @@
 #include "MountManager.hpp"
 
 #include "infrastructure/logging/DevLogger.hpp"
-#include "services/MountPointBuilder.hpp"
+#include "services/MountPointBuilderService/MountPointBuilderService.hpp"
 
 MountRecord MountManager::mount(const core::path &devNode) {
-    auto info = resolver.getDeviceInfo(devNode);
-    auto mountPoint = MountPointBuilder::build(info);
-    MountPointBuilder::ensureExists(mountPoint);
-    auto id = deviceManager.isAllowed(info);
-    auto mode = MountMode::fromPresence(id);
-    mountService.mount(devNode, mountPoint, mode);
+    auto info = provider.getDeviceInfo(devNode);
+    auto mountPoint = MountPointBuilderService::build(info);
+    MountPointBuilderService::ensureExists(mountPoint);
+    auto id = devices.isAllowed(info);
+    auto mode = MountMode::fromBool(id.has_value());
+    mounter.mount(devNode, mountPoint, mode);
     mylog->info("Mounted: {}", mountPoint.c_str());
     return MountRecordBuilder()
         .withDevNode(devNode)
@@ -21,11 +21,11 @@ MountRecord MountManager::mount(const core::path &devNode) {
 }
 
 void MountManager::unmount(const core::path &mountPoint) {
-    mountService.unmount(mountPoint);
+    mounter.unmount(mountPoint);
     mylog->info("Unmounted: {}", mountPoint.c_str());
 }
 
 void MountManager::remount(const MountRecord &record) {
-    mountService.remount(record.mountPoint, record.mode);
+    mounter.remount(record.mountPoint, record.mode);
     mylog->info("Remounted: {}", record.mountPoint.c_str());
 }

@@ -38,6 +38,13 @@ class SqlDataBaseError : public BaseException {
     explicit SqlDataBaseError(std::string_view msg) noexcept : BaseException(msg) {}
 };
 
+class CreateMountPathError : public BaseException {
+  public:
+    CreateMountPathError() noexcept : BaseException("CreateMountPathError") {}
+
+    explicit CreateMountPathError(std::string_view msg) noexcept : BaseException(msg) {}
+};
+
 class RecordNotFoundError : public BaseException {
   public:
     RecordNotFoundError() noexcept : BaseException("NoDataInDataBaseError") {}

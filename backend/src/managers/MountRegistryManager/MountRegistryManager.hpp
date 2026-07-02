@@ -4,11 +4,10 @@
 #include "repositories/MountRepository/MountRepository.hpp"
 
 class MountRegistryManager {
-  private:
-    MountRepository repo;
+    MountRepository repository;
 
   public:
-    explicit MountRegistryManager(SqlExecutor &ex) : repo(ex) {}
+    explicit MountRegistryManager(SqlExecutor &executor) : repository(executor) {}
 
     void add(const MountRecord &record);
     std::optional<MountRecord> getById(core::Id id);

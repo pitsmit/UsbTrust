@@ -49,6 +49,7 @@ add_executable(unit_tests
     ../src/entities/MountMode/MountMode.cpp
     ../src/entities/DeviceInfo/DeviceInfoBuilder.cpp
     ../src/exceptions/Exceptions.cpp
+    ../src/services/MountPointBuilderService/MountPointBuilderService.cpp
 )
 
 target_include_directories(unit_tests PUBLIC

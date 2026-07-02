@@ -1,4 +1,4 @@
-#include "services/MountPointBuilder.hpp"
+#include "services/MountPointBuilderService/MountPointBuilderService.hpp"
 
 #include <gtest/gtest.h>
 
@@ -26,7 +26,7 @@ TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
     auto expected = std::filesystem::path("/media/dlp") / vendorId / productId / serial;
 
     // ACT
-    auto result = MountPointBuilder::build(dev);
+    auto result = MountPointBuilderService::build(dev);
 
     // ASSERT
     EXPECT_EQ(result, expected);
@@ -38,7 +38,7 @@ TEST(MountPointBuilderTest, EnsureExists_CreatesDirectory) {
     std::filesystem::remove_all(path);
 
     // ACT
-    MountPointBuilder::ensureExists(path);
+    MountPointBuilderService::ensureExists(path);
 
     // ASSERT
     EXPECT_TRUE(std::filesystem::exists(path));
@@ -50,8 +50,8 @@ TEST(MountPointBuilderTest, EnsureExists_Idempotent) {
     std::filesystem::remove_all(path);
 
     // ACT
-    MountPointBuilder::ensureExists(path);
-    MountPointBuilder::ensureExists(path);
+    MountPointBuilderService::ensureExists(path);
+    MountPointBuilderService::ensureExists(path);
 
     // ASSERT
     EXPECT_TRUE(std::filesystem::exists(path));

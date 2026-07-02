@@ -7,7 +7,6 @@
 class SqlExecutor;
 
 class DBInitializer {
-  private:
     static std::string loadSQL(const core::path &path);
 
   public:

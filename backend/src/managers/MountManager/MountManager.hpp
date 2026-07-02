@@ -6,14 +6,15 @@
 #include "services/MountService/MountService.hpp"
 
 class MountManager {
-  private:
-    DeviceManager &deviceManager;
-    MountService &mountService;
-    IUsbDeviceContextProvider &resolver;
+    DeviceManager &devices;
+    MountService &mounter;
+    IUsbDeviceContextProvider &provider;
 
   public:
-    MountManager(DeviceManager &dm, MountService &ms, IUsbDeviceContextProvider &rs)
-        : deviceManager(dm), mountService(ms), resolver(rs) {}
+    MountManager(DeviceManager &devices_,
+                 MountService &mounter_,
+                 IUsbDeviceContextProvider &provider_)
+        : devices(devices_), mounter(mounter_), provider(provider_) {}
 
     MountRecord mount(const core::path &devNode);
     void unmount(const core::path &mountPoint);

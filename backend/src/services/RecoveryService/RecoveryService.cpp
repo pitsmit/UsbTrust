@@ -17,7 +17,7 @@ void RecoveryService::actualize(MountRecord &rec) {
         rec.mountPoint = mountPoint;
         some_changes = true;
     }
-    MountMode desired = MountMode::fromPresence(devman.isAllowed(rec.info));
+    MountMode desired = MountMode::fromBool(devman.isAllowed(rec.info).has_value());
     if (rec.mode != desired) {
         rec.mode = desired;
         some_changes = true;

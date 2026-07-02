@@ -3,11 +3,10 @@
 #include "repositories/DeviceRepository/DeviceRepository.hpp"
 
 class DeviceManager {
-  private:
-    DeviceRepository repo;
+    DeviceRepository repository;
 
   public:
-    explicit DeviceManager(SqlExecutor &ex) : repo(ex) {}
+    explicit DeviceManager(SqlExecutor &executor) : repository(executor) {}
 
     int addToWhitelist(const DeviceInfo &dev);
     std::vector<Device> getWhitelist();
