@@ -41,12 +41,12 @@ void DefaultApi::add_device_to_white_list_handler(const Pistache::Rest::Request 
                                                   Pistache::Http::ResponseWriter response) {
     try {
         json body = json::parse(request.body());
-        MountRecord record = body.get<MountRecord>();
+        auto record = body.get<MountRecord>();
 
         AddDeviceToWhiteListCommand command(record);
         facade.execute(command);
 
-        json result = {{"id", command.id}};
+        json result = {{"id", *command.record.id}};
         response.send(Pistache::Http::Code::Created, result.dump(), MIME(Application, Json));
     } catch (const std::exception &e) {
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());

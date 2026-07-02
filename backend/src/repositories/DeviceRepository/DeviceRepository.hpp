@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entities/Device.hpp"
+#include "entities/Device/Device.hpp"
 #include "repositories/DeviceInfoRepository/DeviceInfoRepository.hpp"
 #include "repositories/RepositoryBase.hpp"
 

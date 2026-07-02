@@ -1,8 +1,8 @@
 #pragma once
 
-#include "entities/Device.hpp"
-#include "entities/DeviceInfo.hpp"
-#include "entities/MountRecord.hpp"
+#include "entities/Device/Device.hpp"
+#include "entities/DeviceInfo/DeviceInfo.hpp"
+#include "entities/MountRecord/MountRecord.hpp"
 #include "storage/Statement/Statement.hpp"
 
 class Mapper {

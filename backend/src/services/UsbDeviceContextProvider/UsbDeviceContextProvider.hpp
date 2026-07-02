@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entities/DeviceInfo.hpp"
+#include "entities/DeviceInfo/DeviceInfo.hpp"
 #include "ports/IUsbDeviceContextProvider.hpp"
 #include "types/types.hpp"
 

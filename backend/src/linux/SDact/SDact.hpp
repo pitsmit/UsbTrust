@@ -1,8 +1,10 @@
 #pragma once
 
+#include <optional>
+
 #include <systemd/sd-device.h>
 
-#include "entities/DeviceEvent.hpp"
+#include "entities/DeviceEvent/DeviceEvent.hpp"
 #include "linux/SDdevView/SDdevView.hpp"
 
 class SDact {

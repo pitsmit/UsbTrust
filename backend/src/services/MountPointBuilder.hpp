@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-#include "entities/DeviceInfo.hpp"
+#include "entities/DeviceInfo/DeviceInfo.hpp"
 #include "types/types.hpp"
 
 class MountPointBuilder {

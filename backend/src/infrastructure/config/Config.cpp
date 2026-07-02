@@ -1,5 +1,6 @@
 #include "Config.hpp"
 
+#include <algorithm>
 #include <format>
 #include <fstream>
 #include <unordered_map>
@@ -11,7 +12,7 @@ const auto &Config::getCache() {
     static const config_map cfg = [] {
         std::ifstream file(CONFIG_PATH);
         if (!file)
-            throw FileException(std::format("{} not found!", CONFIG_PATH.c_str()));
+            throw FileException(std::format("{} not found!", CONFIG_PATH));
         std::string line;
         config_map m;
         while (std::getline(file, line)) {

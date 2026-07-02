@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entities/MountRecord.hpp"
+#include "entities/MountRecord/MountRecord.hpp"
 #include "managers/MountManager/MountManager.hpp"
 #include "managers/MountRegistryManager/MountRegistryManager.hpp"
 #include "types/types.hpp"

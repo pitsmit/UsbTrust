@@ -1,6 +1,6 @@
 #include "DeviceInfoRepository.hpp"
 
-#include "entities/DeviceInfo.hpp"
+#include "entities/DeviceInfo/DeviceInfo.hpp"
 #include "types/types.hpp"
 
 core::Id DeviceInfoRepository::ensure(const DeviceInfo &info) {

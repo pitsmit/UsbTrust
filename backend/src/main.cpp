@@ -2,8 +2,8 @@
 #include <optional>
 #include <thread>
 
-#include "dispatch/EventLoop.hpp"
-#include "dispatch/EventQueue.hpp"
+#include "dispatch/EventLoop/EventLoop.hpp"
+#include "dispatch/EventQueue/EventQueue.hpp"
 #include "facade/Facade.hpp"
 #include "infrastructure/config/Config.hpp"
 #include "linux/LinuxMountSystem/LinuxMountSystem.hpp"

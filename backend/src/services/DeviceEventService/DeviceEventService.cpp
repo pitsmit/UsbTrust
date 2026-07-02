@@ -1,6 +1,6 @@
 #include "DeviceEventService.hpp"
 
-#include "entities/DeviceEvent.hpp"
+#include "entities/DeviceEvent/DeviceEvent.hpp"
 #include "infrastructure/logging/DevLogger.hpp"
 
 void DeviceEventService::handle(const DeviceEvent &event) {

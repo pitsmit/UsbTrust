@@ -5,6 +5,8 @@
 #include <filesystem>
 #include <string>
 
+#include "entities/DeviceInfo/DeviceInfo.hpp"
+
 TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
     // ARRANGE
     constexpr auto vendorId = "1234";

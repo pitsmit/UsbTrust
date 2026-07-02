@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entities/MountRecord.hpp"
+#include "entities/MountRecord/MountRecord.hpp"
 #include "managers/DeviceManager/DeviceManager.hpp"
 #include "managers/MountCoordinator/MountCoordinator.hpp"
 #include "managers/MountRegistryManager/MountRegistryManager.hpp"

@@ -5,10 +5,10 @@
 
 #include <nlohmann/json.hpp>
 
-#include "entities/Device.hpp"
-#include "entities/DeviceInfo.hpp"
+#include "entities/Device/Device.hpp"
+#include "entities/DeviceInfo/DeviceInfo.hpp"
 #include "entities/MountMode/MountMode.hpp"
-#include "entities/MountRecord.hpp"
+#include "entities/MountRecord/MountRecord.hpp"
 
 using json = nlohmann::json;
 

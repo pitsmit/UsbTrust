@@ -1,7 +1,7 @@
 #pragma once
 
-#include "dispatch/EventQueue.hpp"
-#include "entities/DeviceEvent.hpp"
+#include "dispatch/EventQueue/EventQueue.hpp"
+#include "entities/DeviceEvent/DeviceEvent.hpp"
 
 class EventWatcherService {
     EventQueue<DeviceEvent> &queue_;

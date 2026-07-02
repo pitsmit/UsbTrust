@@ -1,6 +1,6 @@
 #include "DeviceRepository.hpp"
 
-#include "entities/DeviceInfo.hpp"
+#include "entities/DeviceInfo/DeviceInfo.hpp"
 
 core::Id DeviceRepository::add(const DeviceInfo &dev) {
     auto deviceInfoId = info_rep.ensure(dev);

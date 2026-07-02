@@ -44,8 +44,7 @@ void RecoveryService::run() {
     }
 
     for (const auto &node : currentNodes) {
-        auto it = nodesRecordsMap.find(node);
-        if (it != nodesRecordsMap.end()) {
+        if (auto it = nodesRecordsMap.find(node); it != nodesRecordsMap.end()) {
             actualize(it->second);
         } else {
             coordinator.mount(node);

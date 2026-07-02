@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "commands/Command.hpp"
-#include "entities/MountRecord.hpp"
+#include "entities/MountRecord/MountRecord.hpp"
 #include "types/types.hpp"
 
 struct Device;
@@ -18,19 +18,15 @@ class GetWhiteListDeviceCommand : public Command {
 };
 
 class AddDeviceToWhiteListCommand : public Command {
-  private:
+  public:
     MountRecord record;
 
-  public:
-    core::Id id;
-
-    explicit AddDeviceToWhiteListCommand(MountRecord &d) : record(d) {}
+    explicit AddDeviceToWhiteListCommand(MountRecord &record_) : record(record_) {}
 
     void execute(CommandContext &ctx) override;
 };
 
 class DeleteDeviceFromWhiteListCommand : public Command {
-  private:
     core::Id id;
 
   public:
@@ -40,7 +36,6 @@ class DeleteDeviceFromWhiteListCommand : public Command {
 };
 
 class PatchValidToDeviceCommand : public Command {
-  private:
     core::Id id;
     std::optional<std::string> validTo;
 

@@ -47,10 +47,17 @@ add_executable(unit_tests
     ../src/linux/MountFlagsBuilder/MountFlagsBuilder.cpp
     ../src/linux/LibMountTab/LibMountTab.cpp
     ../src/entities/MountMode/MountMode.cpp
+    ../src/entities/DeviceInfo/DeviceInfoBuilder.cpp
+    ../src/exceptions/Exceptions.cpp
 )
 
 target_include_directories(unit_tests PUBLIC
     ${PROJECT_SOURCE_DIR}/src
+)
+
+set(CONFIG_PATH "config.txt")
+target_compile_definitions(unit_tests PRIVATE 
+    CONFIG_PATH="${CONFIG_PATH}"
 )
 
 target_link_libraries(unit_tests
@@ -63,68 +70,3 @@ enable_coverage(unit_tests)
 gtest_discover_tests(unit_tests
     PROPERTIES LABELS "unit"
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-# =========================
-# INTEGRATION TESTS
-# =========================
-#add_executable(integration_tests
-#    integration/test_device_repository.cpp
-#    integration/test_white_list_command.cpp
-#    integration/test_real_mount.cpp
-#    integration/test_delete_device_command.cpp
-#    integration/test_mount_registry.cpp
-#)
-#
-#target_include_directories(integration_tests PUBLIC
-#    ${PROJECT_SOURCE_DIR}/src
-#)
-#
-#target_link_libraries(integration_tests
-#    GTest::gtest_main
-#    sqlite3
-#    mount
-#    systemd
-#)
-#
-#enable_coverage(integration_tests)
-#
-#gtest_discover_tests(integration_tests
-#    PROPERTIES LABELS "integration"
-#)
-#
-#
-#if(BUILD_E2E_TESTS)
-#
-#find_package(CURL REQUIRED)
-#
-#add_executable(e2e_tests
-#    e2e/test_get_whitelist.cpp
-#)
-#
-#target_include_directories(e2e_tests PUBLIC
-#    ${PROJECT_SOURCE_DIR}/src
-#    ${PROJECT_SOURCE_DIR}/api-stubs/api
-#)
-#
-#target_link_libraries(e2e_tests
-#    GTest::gtest_main
-#    CURL::libcurl
-#)
-#
-#gtest_discover_tests(e2e_tests
-#    PROPERTIES LABELS "e2e"
-#)
-#
-#endif()

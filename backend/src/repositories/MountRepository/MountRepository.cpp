@@ -1,6 +1,6 @@
 #include "MountRepository.hpp"
 
-#include "entities/MountRecord.hpp"
+#include "entities/MountRecord/MountRecord.hpp"
 
 void MountRepository::add(const MountRecord &record) {
     auto deviceInfoId = info_rep.ensure(record.info);

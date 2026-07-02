@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entities/MountRecord.hpp"
+#include "entities/MountRecord/MountRecord.hpp"
 #include "managers/DeviceManager/DeviceManager.hpp"
 #include "ports/IUsbDeviceContextProvider.hpp"
 #include "services/MountService/MountService.hpp"

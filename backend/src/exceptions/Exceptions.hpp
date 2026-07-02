@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <cstring>
 #include <exception>
 #include <string_view>
@@ -12,18 +11,10 @@ class BaseException : public std::exception {
 
   public:
     BaseException() noexcept = default;
-
-    explicit BaseException(std::string_view msg) noexcept {
-        const auto len = std::min(msg.size(), sizebuff - 1);
-        std::memcpy(errormsg, msg.data(), len);
-        errormsg[len] = '\0';
-    }
-
     ~BaseException() override = default;
 
-    const char *what() const noexcept override {
-        return errormsg;
-    }
+    explicit BaseException(std::string_view msg) noexcept;
+    const char *what() const noexcept override;
 };
 
 class FileException : public BaseException {

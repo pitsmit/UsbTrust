@@ -10,9 +10,8 @@ void GetWhiteListDeviceCommand::execute(CommandContext &ctx) {
 }
 
 void AddDeviceToWhiteListCommand::execute(CommandContext &ctx) {
-    id = ctx.deviceManager.addToWhitelist(record.info);
     record.mode = MountMode::rw();
-    record.id = id;
+    record.id = ctx.deviceManager.addToWhitelist(record.info);
     ctx.coordinator.remount(record);
 }
 

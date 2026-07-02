@@ -17,9 +17,7 @@ class MountMode {
         return MountMode(RO);
     }
 
-    template <typename T> static constexpr MountMode fromPresence(T obj) {
-        return obj ? rw() : ro();
-    }
+    template <typename T> static constexpr MountMode fromPresence(T obj);
 
     bool isReadOnly() const noexcept;
     bool isReadWrite() const noexcept;
@@ -29,3 +27,7 @@ class MountMode {
     std::string toStringLower() const noexcept;
     static MountMode parse(std::string_view value);
 };
+
+template <typename T> constexpr MountMode MountMode::fromPresence(T obj) {
+    return obj ? rw() : ro();
+}

@@ -6,9 +6,6 @@
 #include "types/types.hpp"
 
 class Config {
-  private:
-    static inline const core::path CONFIG_PATH = "config.txt";
-
     static const auto &getCache();
     static std::string get(std::string_view key);
     static int getNumber(std::string_view name);
