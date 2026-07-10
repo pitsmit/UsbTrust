@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include "../helpers/ConfigFileBuilder.hpp"
+#include "../helpers/ConfigFileBuilder/ConfigFileBuilder.hpp"
 
 #include <cstdio>
 #include <format>

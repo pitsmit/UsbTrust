@@ -44,6 +44,7 @@ add_executable(unit_tests
     unit/test_mount_flags_builder.cpp
     unit/test_lib_mount_tab.cpp
     unit/test_mount_mode.cpp
+    helpers/ConfigFileBuilder/ConfigFileBuilder.cpp
     ../src/infrastructure/config/Config.cpp
     ../src/linux/MountFlagsBuilder/MountFlagsBuilder.cpp
     ../src/linux/LibMountTab/LibMountTab.cpp
@@ -79,6 +80,7 @@ gtest_discover_tests(unit_tests
 # =========================
 add_executable(integration_tests
     integration/test_mount_registry.cpp
+    helpers/ConfigFileBuilder/ConfigFileBuilder.cpp
     ../src/entities/DeviceInfo/DeviceInfoBuilder.cpp
     ../src/entities/MountRecord/MountRecordBuilder.cpp
     ../src/entities/MountMode/MountMode.cpp
@@ -103,6 +105,7 @@ target_compile_definitions(integration_tests PRIVATE
 
 target_link_libraries(integration_tests
     GTest::gtest_main
+    GTest::gmock
     mount
     sqlite3
 )

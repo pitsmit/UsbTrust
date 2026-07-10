@@ -10,6 +10,8 @@ struct MountRecord {
     core::path mountPoint;
     DeviceInfo info;
     MountMode mode;
+
+    bool operator==(const MountRecord &) const = default;
 };
 
 class MountRecordBuilder {

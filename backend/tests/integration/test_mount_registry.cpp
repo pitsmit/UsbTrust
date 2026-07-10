@@ -1,5 +1,6 @@
 #include "managers/MountRegistryManager/MountRegistryManager.hpp"
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include "entities/DeviceInfo/DeviceInfo.hpp"
@@ -25,41 +26,35 @@ class MountRegistryTest : public ::testing::Test {
 };
 
 TEST_F(MountRegistryTest, GetAll_ReturnsAllRecords) {
-    // ARRANGE
-    const std::string nodes[] = {"/dev/sda1", "/dev/sdb1", "/dev/sdc1"};
-    const DeviceInfo infos[] = {DeviceInfoBuilder()
-                                    .withProductId("1234")
-                                    .withVendorId("ABCD")
-                                    .withSerial("ACXDIFTGX6459KOD")
-                                    .build(),
-                                DeviceInfoBuilder()
-                                    .withProductId("1244")
-                                    .withVendorId("ABCD")
-                                    .withSerial("ACXDIFTGX6459KRD")
-                                    .build(),
-                                DeviceInfoBuilder()
-                                    .withProductId("1254")
-                                    .withVendorId("ABCD")
-                                    .withSerial("ACXDIFTP86459KOD")
-                                    .build()};
+    auto makeRecord =
+        [](int id, std::string_view devNode, std::string_view productId, std::string_view serial) {
+            return MountRecord{
+                .id = id,
+                .devNode = std::string(devNode),
+                .mountPoint = "m" + std::to_string(id),
+                .info = DeviceInfo{.vendorId = "ABCD",
+                                   .productId = productId.data(),
+                                   .serial = serial.data(),
+                                   .vendorName = "Samsung",
+                                   .productName = "SomeUsb"},
+                .mode = MountMode::ro(),
+            };
+        };
 
-    for (int i = 0; i < 3; ++i) {
-        registrator->add(MountRecord{.id = i + 1,
-                                     .devNode = nodes[i],
-                                     .mountPoint = "m" + std::to_string(i + 1),
-                                     .info = infos[i],
-                                     .mode = MountMode::ro()});
+    const std::vector<MountRecord> expected = {
+        makeRecord(1, "/dev/sda1", "1234", "ACXDIFTGX6459KOD"),
+        makeRecord(2, "/dev/sdb1", "1244", "ACXDIFTGX6459KRD"),
+        makeRecord(3, "/dev/sdc1", "1254", "ACXDIFTP86459KOD"),
+    };
+
+    // ARRANGE
+    for (const auto &record : expected) {
+        registrator->add(record);
     }
 
     // ACT
-    auto records = registrator->getAll();
+    const auto actual = registrator->getAll();
 
     // ASSERT
-    ASSERT_EQ(records.size(), 3);
-
-    for (const auto &node : nodes) {
-        EXPECT_TRUE(std::any_of(records.begin(), records.end(), [&](const MountRecord &r) {
-            return r.devNode == node;
-        }));
-    }
+    EXPECT_THAT(actual, ::testing::UnorderedElementsAreArray(expected));
 }
