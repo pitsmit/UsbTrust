@@ -71,7 +71,7 @@ inline void to_json(json &j, const MountRecord &m) {
     j["devNode"] = m.devNode;
     j["mountPoint"] = m.mountPoint;
     j["info"] = m.info;
-    j["mode"] = m.mode.toStringUpper();
+    j["mode"] = m.mode.toString();
 }
 
 inline void from_json(const json &j, MountRecord &m) {

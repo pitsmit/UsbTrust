@@ -20,7 +20,7 @@ void MountService::mount(const core::path &devnode, const core::path &mountPoint
     std::string opts = "";
 
     if (permModel == FsPermModel::Emulated) {
-        opts = std::format("{}, uid={},gid={},umask=0000", mode.toStringLower(), uid, gid);
+        opts = std::format("{}, uid={},gid={},umask=0000", mode.toString(), uid, gid);
         if (fs.starts_with("ntfs")) {
             opts += ",windows_names";
         }

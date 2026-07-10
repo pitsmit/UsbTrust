@@ -8,8 +8,7 @@ void MountRepository::add(const MountRecord &record) {
     static constexpr auto sql =
         "INSERT INTO MountRecord (deviceInfoId, devNode, mountPoint, mode) VALUES (?, ?, ?, ?);";
 
-    executor.exec(
-        sql, deviceInfoId, record.devNode, record.mountPoint, record.mode.toStringUpper());
+    executor.exec(sql, deviceInfoId, record.devNode, record.mountPoint, record.mode.toString());
 }
 
 void MountRepository::update(const MountRecord &record) {
@@ -18,8 +17,7 @@ void MountRepository::update(const MountRecord &record) {
     static constexpr auto sql =
         "UPDATE MountRecord SET deviceInfoId = ?, mountPoint = ?, mode = ? WHERE devNode = ?;";
 
-    executor.exec(
-        sql, deviceInfoId, record.mountPoint, record.mode.toStringUpper(), record.devNode);
+    executor.exec(sql, deviceInfoId, record.mountPoint, record.mode.toString(), record.devNode);
 }
 
 std::optional<MountRecord> MountRepository::getById(core::Id id) {

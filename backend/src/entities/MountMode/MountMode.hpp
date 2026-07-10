@@ -22,7 +22,6 @@ class MountMode {
     bool isReadWrite() const noexcept;
     bool operator==(const MountMode &mode) const noexcept;
 
-    std::string toStringUpper() const noexcept;
-    std::string toStringLower() const noexcept;
+    std::string toString() const noexcept;
     static MountMode parse(std::string_view value);
 };

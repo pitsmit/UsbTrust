@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "entities/MountMode/MountMode.hpp"
 #include "ports/IMountSystem.hpp"
 
 class MockMountSystem : public IMountSystem {
@@ -17,7 +18,6 @@ class MockMountSystem : public IMountSystem {
     int lastFlags;
     std::string lastOpts;
 
-    std::string fsType = "ext4";
     int mountResult = 0;
     int umountResult = 0;
 
@@ -25,15 +25,10 @@ class MockMountSystem : public IMountSystem {
         syncCalled = true;
     }
 
-    std::string getFsType(std::string_view dev) override {
-        lastDev = dev;
-        return fsType;
-    }
-
-    int mount(std::string_view dev,
-              std::string_view target,
+    int mount(const core::path &dev,
+              const core::path &target,
               std::string_view fs,
-              MountMode mode,
+              const MountMode &,
               std::string_view opts) noexcept override {
         mountCalled = true;
         lastDev = dev;
@@ -44,20 +39,20 @@ class MockMountSystem : public IMountSystem {
         return mountResult;
     }
 
-    int remount(std::string_view target, MountMode mode) noexcept override {
+    int remount(const core::path &target, const MountMode &) noexcept override {
         mountCalled = true;
         lastTarget = target;
         lastFlags = 1;
         return mountResult;
     }
 
-    int umount(std::string_view target) noexcept override {
+    int umount(const core::path &target) noexcept override {
         umountCalled = true;
         lastTarget = target;
         return umountResult;
     }
 
-    void chown(std::string_view target, int uid, int gid) noexcept override {}
+    void chown(const core::path &, int, int) noexcept override {}
 
-    void chmod(std::string_view target, int perms) noexcept override {}
+    void chmod(const core::path &, int) noexcept override {}
 };

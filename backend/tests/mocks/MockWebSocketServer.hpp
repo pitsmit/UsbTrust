@@ -6,6 +6,6 @@ class MockWebSocketServer : public IWebSocketServer {
   public:
     MockWebSocketServer() = default;
 
-    void start() {}
-    void broadcast(std::string_view) {}
+    void start() override {}
+    void broadcast(std::string_view) override {}
 };

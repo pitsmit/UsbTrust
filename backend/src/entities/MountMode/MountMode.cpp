@@ -16,11 +16,7 @@ bool MountMode::operator==(const MountMode &mode) const noexcept {
     return isReadWrite() == mode.isReadWrite();
 }
 
-std::string MountMode::toStringUpper() const noexcept {
-    return value_ == RW ? "RW" : "RO";
-}
-
-std::string MountMode::toStringLower() const noexcept {
+std::string MountMode::toString() const noexcept {
     return value_ == RW ? "rw" : "ro";
 }
 
