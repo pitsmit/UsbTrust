@@ -11,29 +11,23 @@ class Mapper {
 };
 
 template <> inline DeviceInfo Mapper::from<DeviceInfo>(const Statement &r) {
-    return DeviceInfoBuilder()
-        .withVendorId(r.get<std::string>("vendor_id"))
-        .withProductId(r.get<std::string>("product_id"))
-        .withSerial(r.get<std::string>("serial"))
-        .withVendorName(r.get<std::string>("vendor_name"))
-        .withProductName(r.get<std::string>("product_name"))
-        .build();
+    return DeviceInfo{.vendorId = r.get<std::string>("vendorId"),
+                      .productId = r.get<std::string>("productId"),
+                      .serial = r.get<std::string>("serial"),
+                      .vendorName = r.get<std::string>("vendorName"),
+                      .productName = r.get<std::string>("productName")};
 }
 
 template <> inline Device Mapper::from<Device>(const Statement &r) {
-    return DeviceBuilder()
-        .withValidTo(r.get<std::string>("valid_to"))
-        .withId(r.get<core::Id>("id"))
-        .withInfo(Mapper::from<DeviceInfo>(r))
-        .build();
+    return Device{.id = r.get<core::Id>("id"),
+                  .info = Mapper::from<DeviceInfo>(r),
+                  .validTo = r.get<std::string>("validTo")};
 }
 
 template <> inline MountRecord Mapper::from<MountRecord>(const Statement &r) {
-    return MountRecordBuilder()
-        .withId(r.get<core::Id>("id"))
-        .withDevNode(r.get<core::path>("dev_node"))
-        .withMountPoint(r.get<core::path>("mount_point"))
-        .withMode(MountMode::parse(r.get<std::string>("mode")))
-        .withInfo(Mapper::from<DeviceInfo>(r))
-        .build();
+    return MountRecord{.id = r.get<core::Id>("id"),
+                       .devNode = r.get<core::path>("devNode"),
+                       .mountPoint = r.get<core::path>("mountPoint"),
+                       .info = Mapper::from<DeviceInfo>(r),
+                       .mode = MountMode::parse(r.get<std::string>("mode"))};
 }

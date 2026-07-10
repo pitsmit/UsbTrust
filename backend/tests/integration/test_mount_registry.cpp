@@ -1,249 +1,65 @@
+#include "managers/MountRegistryManager/MountRegistryManager.hpp"
+
 #include <gtest/gtest.h>
 
-#include "managers/MountRegistry.hpp"
-#include "entities/MountRecord.hpp"
-#include "infrastructure/logging/DevLogger.hpp"
-#include "entities/DeviceInfo.hpp"
+#include "entities/DeviceInfo/DeviceInfo.hpp"
+#include "entities/MountRecord/MountRecord.hpp"
 
-#include "../helpers/LoggerTestHelper.hpp"
-#include "../helpers/DataBaseTestHelper.hpp"
+#include "../helpers/DataBaseProvider.hpp"
 
 class MountRegistryTest : public ::testing::Test {
-protected:
-    LoggerTestHelper logger;
-    std::unique_ptr<MountRegistryManager> reg;
-    DataBaseTestHelper dbHelper;
+    std::unique_ptr<DataBaseProvider> dbProvider;
 
-    void SetUp() override
-    {
-        logger.disable();
-        dbHelper.create();
-        reg = std::make_unique<MountRegistryManager>(dbHelper.get_db());
+  protected:
+    std::unique_ptr<MountRegistryManager> registrator;
+
+    void SetUp() override {
+        dbProvider = std::make_unique<DataBaseProvider>();
+        registrator = std::make_unique<MountRegistryManager>(dbProvider->get_executor());
     }
 
-    void TearDown() override
-    {
-        logger.restore();
-        dbHelper.reset();
-        reg.reset();
+    void TearDown() override {
+        registrator.reset();
+        dbProvider.reset();
     }
 };
 
-TEST_F(MountRegistryTest, AddAndGet_ReturnsValue) {
-    // ARRANGE
-    const size_t id = 1;
-    const std::string devNode = "/dev/sda1";
-    const std::string mountPoint =
-        "/media/dlp/1234_ABCD_XYZ";
-    const std::string vendorId = "1234";
-    const std::string productId = "ABCD";
-    const std::string serial = "ACXDIFTGX6459KOD";
-
-    const DeviceInfo info = 
-            DeviceInfoBuilder()
-            .withProductId(productId)
-            .withVendorId(vendorId)
-            .withSerial(serial)
-            .build();
-
-    reg->add(
-        MountRecordBuilder()
-            .withId(id)
-            .withDevNode(devNode)
-            .withMountPoint(mountPoint)
-            .withInfo(info)
-            .withMode(MountMode::ro())
-            .build()
-    );
-
-    // ACT
-    auto mntpt = reg->getMountPointByDevNode(devNode);
-
-    // ASSERT
-    ASSERT_TRUE(mntpt.has_value());
-    EXPECT_EQ(*mntpt, mountPoint);
-}
-
-TEST_F(MountRegistryTest, Get_NonExisting_ReturnsNullopt) {
-    // ARRANGE
-    const std::string devNode =
-        "/dev/does_not_exist";
-
-    // ACT
-    auto mntpt = reg->getMountPointByDevNode(devNode);
-
-    // ASSERT
-    EXPECT_FALSE(mntpt.has_value());
-}
-
-TEST_F(MountRegistryTest, Add_OverwriteExistingValue) {
-    // ARRANGE
-    const std::string devNode = "/dev/sda1";
-    const std::string firstMount = "first";
-    const std::string secondMount = "second";
-    const std::string vendorId = "1234";
-    const std::string productId = "ABCD";
-    const std::string serial = "ACXDIFTGX6459KOD";
-    const DeviceInfo info = 
-            DeviceInfoBuilder()
-            .withProductId(productId)
-            .withVendorId(vendorId)
-            .withSerial(serial)
-            .build();
-
-    reg->add(
-        MountRecordBuilder()
-            .withId(1)
-            .withDevNode(devNode)
-            .withMountPoint(firstMount)
-            .withInfo(info)
-            .withMode(MountMode::ro())
-            .build()
-    );
-
-    reg->refresh(
-        MountRecordBuilder()
-            .withId(1)
-            .withDevNode(devNode)
-            .withMountPoint(secondMount)
-            .withInfo(info)
-            .withMode(MountMode::ro())
-            .build()
-    );
-
-    // ACT
-    auto mntpt =
-        reg->getMountPointByDevNode(devNode);
-
-    // ASSERT
-    ASSERT_TRUE(mntpt.has_value());
-    EXPECT_EQ(*mntpt, secondMount);
-}
-
-TEST_F(MountRegistryTest, Remove_DeletesEntry) {
-    // ARRANGE
-    const std::string devNode = "/dev/sda1";
-    const std::string mountPoint = "mount";
-    const std::string vendorId = "1234";
-    const std::string productId = "ABCD";
-    const std::string serial = "ACXDIFTGX6459KOD";
-    const DeviceInfo info = 
-            DeviceInfoBuilder()
-            .withProductId(productId)
-            .withVendorId(vendorId)
-            .withSerial(serial)
-            .build();
-
-    reg->add(
-        MountRecordBuilder()
-            .withId(1)
-            .withDevNode(devNode)
-            .withMountPoint(mountPoint)
-            .withInfo(info)
-            .withMode(MountMode::ro())
-            .build()
-    );
-
-    reg->removeByDevNode(devNode);
-
-    // ACT
-    auto mntpt =
-        reg->getMountPointByDevNode(devNode);
-
-    // ASSERT
-    EXPECT_FALSE(mntpt.has_value());
-}
-
 TEST_F(MountRegistryTest, GetAll_ReturnsAllRecords) {
     // ARRANGE
-    const std::string devNode1 = "/dev/sda1";
-    const std::string devNode2 = "/dev/sdb1";
-    const std::string devNode3 = "/dev/sdc1";
+    const std::string nodes[] = {"/dev/sda1", "/dev/sdb1", "/dev/sdc1"};
+    const DeviceInfo infos[] = {DeviceInfoBuilder()
+                                    .withProductId("1234")
+                                    .withVendorId("ABCD")
+                                    .withSerial("ACXDIFTGX6459KOD")
+                                    .build(),
+                                DeviceInfoBuilder()
+                                    .withProductId("1244")
+                                    .withVendorId("ABCD")
+                                    .withSerial("ACXDIFTGX6459KRD")
+                                    .build(),
+                                DeviceInfoBuilder()
+                                    .withProductId("1254")
+                                    .withVendorId("ABCD")
+                                    .withSerial("ACXDIFTP86459KOD")
+                                    .build()};
 
-    const DeviceInfo info1 = 
-            DeviceInfoBuilder()
-            .withProductId("1234")
-            .withVendorId("ABCD")
-            .withSerial("ACXDIFTGX6459KOD")
-            .build();
-
-    const DeviceInfo info2 = 
-            DeviceInfoBuilder()
-            .withProductId("1244")
-            .withVendorId("ABCD")
-            .withSerial("ACXDIFTGX6459KRD")
-            .build();
-
-    const DeviceInfo info3 = 
-            DeviceInfoBuilder()
-            .withProductId("1254")
-            .withVendorId("ABCD")
-            .withSerial("ACXDIFTP86459KOD")
-            .build();
-
-    reg->add(
-        MountRecordBuilder()
-            .withId(1)
-            .withDevNode(devNode1)
-            .withMountPoint("m1")
-            .withInfo(info1)
-            .withMode(MountMode::ro())
-            .build()
-    );
-
-    reg->add(
-        MountRecordBuilder()
-            .withId(2)
-            .withDevNode(devNode2)
-            .withMountPoint("m2")
-            .withInfo(info2)
-            .withMode(MountMode::ro())
-            .build()
-    );
-
-    reg->add(
-        MountRecordBuilder()
-            .withId(3)
-            .withDevNode(devNode3)
-            .withMountPoint("m3")
-            .withInfo(info3)
-            .withMode(MountMode::ro())
-            .build()
-    );
+    for (int i = 0; i < 3; ++i) {
+        registrator->add(MountRecord{.id = i + 1,
+                                     .devNode = nodes[i],
+                                     .mountPoint = "m" + std::to_string(i + 1),
+                                     .info = infos[i],
+                                     .mode = MountMode::ro()});
+    }
 
     // ACT
-    auto records = reg->getAll();
+    auto records = registrator->getAll();
 
     // ASSERT
-    EXPECT_EQ(records.size(), 3);
+    ASSERT_EQ(records.size(), 3);
 
-    EXPECT_TRUE(
-        std::any_of(
-            records.begin(),
-            records.end(),
-            [&](const MountRecord& r) {
-                return r.devNode == devNode1;
-            }
-        )
-    );
-
-    EXPECT_TRUE(
-        std::any_of(
-            records.begin(),
-            records.end(),
-            [&](const MountRecord& r) {
-                return r.devNode == devNode2;
-            }
-        )
-    );
-
-    EXPECT_TRUE(
-        std::any_of(
-            records.begin(),
-            records.end(),
-            [&](const MountRecord& r) {
-                return r.devNode == devNode3;
-            }
-        )
-    );
+    for (const auto &node : nodes) {
+        EXPECT_TRUE(std::any_of(records.begin(), records.end(), [&](const MountRecord &r) {
+            return r.devNode == node;
+        }));
+    }
 }

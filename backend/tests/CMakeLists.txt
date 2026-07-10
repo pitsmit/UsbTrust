@@ -72,3 +72,43 @@ enable_coverage(unit_tests)
 gtest_discover_tests(unit_tests
     PROPERTIES LABELS "unit"
 )
+
+
+# =========================
+# INTEGRATION TESTS
+# =========================
+add_executable(integration_tests
+    integration/test_mount_registry.cpp
+    ../src/entities/DeviceInfo/DeviceInfoBuilder.cpp
+    ../src/entities/MountRecord/MountRecordBuilder.cpp
+    ../src/entities/MountMode/MountMode.cpp
+    ../src/managers/MountRegistryManager/MountRegistryManager.cpp
+    ../src/repositories/MountRepository/MountRepository.cpp
+    ../src/repositories/DeviceInfoRepository/DeviceInfoRepository.cpp
+    ../src/storage/DataBase/DataBase.cpp
+    ../src/storage/Statement/Statement.cpp
+    ../src/storage/DBInitializer/DBInitializer.cpp
+    ../src/exceptions/Exceptions.cpp
+    ../src/infrastructure/config/Config.cpp
+)
+
+target_include_directories(integration_tests PUBLIC
+    ${PROJECT_SOURCE_DIR}/src
+)
+
+set(CONFIG_PATH "config.txt")
+target_compile_definitions(integration_tests PRIVATE 
+    CONFIG_PATH="${CONFIG_PATH}"
+)
+
+target_link_libraries(integration_tests
+    GTest::gtest_main
+    mount
+    sqlite3
+)
+
+enable_coverage(integration_tests)
+
+gtest_discover_tests(integration_tests
+    PROPERTIES LABELS "integration"
+)

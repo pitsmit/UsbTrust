@@ -21,7 +21,6 @@
 #endif
 
 class App {
-  private:
     DataBase db;
     SqlExecutor exec;
     LinuxMountSystem linms;

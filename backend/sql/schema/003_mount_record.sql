@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS MountRecord (
     mountPoint TEXT NOT NULL UNIQUE,
 
     mode TEXT NOT NULL CHECK (
-        mode IN ('RO', 'RW')
+        mode IN ('ro', 'rw')
     ),
 
     FOREIGN KEY(deviceInfoId)

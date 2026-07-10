@@ -8,7 +8,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libmount-dev \
     cmake \
     # создание loop-устройства
-    dosfstools 
+    dosfstools \
+    # база данных
+    libsqlite3-dev \
+    sqlite3
 
 WORKDIR /app
 
@@ -25,6 +28,6 @@ RUN cmake -S . -B build -G Ninja \
     -DBUILD_APP=OFF \
     -DENABLE_TESTS=ON
 
-RUN cmake --build build --target unit_tests
+RUN cmake --build build --target integration_tests
 
-CMD ["sh", "-c", "set -e && ctest --test-dir build --output-on-failure -L unit"]
+CMD ["sh", "-c", "set -e && ctest --test-dir build --output-on-failure -L integration"]
