@@ -18,8 +18,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Docker image
+      - name: Build unit tests
         run: docker build -t unit -f Dockerfile.unit .
 
-      - name: Run unit tests in container
+      - name: Run unit tests
         run: docker run --privileged --rm unit
+
+      - name: Build integration tests
+        run: docker build -t integration -f Dockerfile.integration .
+
+      - name: Run integration tests
+        run: docker run --privileged --rm integration
