@@ -24,14 +24,14 @@ class MountRegistryTest : public ::testing::Test {
         dbProvider.reset();
     }
 
-    MountRecord makeRecord(int id,
+    MountRecord makeRecord(int mountpoint_modificator,
                            const std::string &devNode,
                            const std::string &productId,
                            const std::string &serial) {
         return MountRecord{
-            .id = id,
+            .id = std::nullopt,
             .devNode = std::string(devNode),
-            .mountPoint = "m" + std::to_string(id),
+            .mountPoint = "m" + std::to_string(mountpoint_modificator),
             .info = DeviceInfo{.vendorId = "ABCD",
                                .productId = productId,
                                .serial = serial,
@@ -82,4 +82,19 @@ TEST_F(MountRegistryTest, GetByIdEmpty) {
 
     // ASSERT
     EXPECT_FALSE(rec);
+}
+
+TEST_F(MountRegistryTest, UpdateMountPointAndModeInRecord) {
+    // ARRANGE
+    auto record = makeRecord(1, "/dev/sda1", "1234", "ACXDIFTGX6459KOD");
+    registrator->add(record);
+    record.mountPoint = "some/new/mount/point";
+    record.mode = MountMode::rw();
+
+    // ACT
+    registrator->refresh(record);
+
+    // ASSERT
+    auto actual = registrator->getAll().front();
+    EXPECT_EQ(actual, record);
 }

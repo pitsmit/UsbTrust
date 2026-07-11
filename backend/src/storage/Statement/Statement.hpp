@@ -38,12 +38,22 @@ template <typename T> T Statement::get(std::string_view col) const {
     return extractValueFromColumn<T>(it->second);
 }
 
+template <typename> struct is_optional : std::false_type {};
+
+template <typename U> struct is_optional<std::optional<U>> : std::true_type {};
+template <typename T> using Value = typename T::value_type;
+
 template <typename T> constexpr T Statement::extractValueFromColumn(int i) const {
     if constexpr (std::same_as<T, std::string> || std::same_as<T, core::path>) {
         const unsigned char *txt = sqlite3_column_text(stmt, i);
         return txt ? reinterpret_cast<const char *>(txt) : "";
     } else if constexpr (std::integral<T>) {
         return static_cast<T>(sqlite3_column_int64(stmt, i));
+    } else if constexpr (is_optional<T>::value && std::integral<Value<T>>) {
+        if (sqlite3_column_type(stmt, i) == SQLITE_NULL)
+            return std::nullopt;
+
+        return static_cast<Value<T>>(sqlite3_column_int64(stmt, i));
     } else {
         static_assert(sizeof(T) == 0, "Unsupported type for SQLite extraction");
     }

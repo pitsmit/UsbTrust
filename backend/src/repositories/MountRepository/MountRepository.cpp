@@ -42,10 +42,11 @@ void MountRepository::removeByDevNode(const core::path &devNode) {
 
 std::vector<MountRecord> MountRepository::getAll() {
     static constexpr auto sql =
-        "SELECT mr.id, mr.deviceInfoId, mr.devNode, mr.mountPoint, mr.mode, "
+        "SELECT d.id, mr.deviceInfoId, mr.devNode, mr.mountPoint, mr.mode, "
         "di.vendorId, di.productId, di.serial, di.vendorName, di.productName "
         "FROM MountRecord mr "
-        "JOIN DeviceInfo di ON mr.deviceInfoId = di.id;";
+        "JOIN DeviceInfo di ON mr.deviceInfoId = di.id "
+        "LEFT JOIN Device d ON d.deviceInfoId = mr.deviceInfoId;";
 
     return executor.query<MountRecord>(sql);
 }

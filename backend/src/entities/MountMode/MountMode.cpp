@@ -21,5 +21,5 @@ std::string MountMode::toString() const noexcept {
 }
 
 MountMode MountMode::parse(std::string_view value) {
-    return value == "RW" ? rw() : ro();
+    return value == "rw" ? rw() : ro();
 }
