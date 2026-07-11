@@ -23,31 +23,33 @@ class MountRegistryTest : public ::testing::Test {
         registrator.reset();
         dbProvider.reset();
     }
+
+    MountRecord makeRecord(int id,
+                           const std::string &devNode,
+                           const std::string &productId,
+                           const std::string &serial) {
+        return MountRecord{
+            .id = id,
+            .devNode = std::string(devNode),
+            .mountPoint = "m" + std::to_string(id),
+            .info = DeviceInfo{.vendorId = "ABCD",
+                               .productId = productId,
+                               .serial = serial,
+                               .vendorName = "Samsung",
+                               .productName = "SomeUsb"},
+            .mode = MountMode::ro(),
+        };
+    }
 };
 
 TEST_F(MountRegistryTest, GetAll_ReturnsAllRecords) {
-    auto makeRecord =
-        [](int id, std::string_view devNode, std::string_view productId, std::string_view serial) {
-            return MountRecord{
-                .id = id,
-                .devNode = std::string(devNode),
-                .mountPoint = "m" + std::to_string(id),
-                .info = DeviceInfo{.vendorId = "ABCD",
-                                   .productId = productId.data(),
-                                   .serial = serial.data(),
-                                   .vendorName = "Samsung",
-                                   .productName = "SomeUsb"},
-                .mode = MountMode::ro(),
-            };
-        };
-
+    // ARRANGE
     const std::vector<MountRecord> expected = {
         makeRecord(1, "/dev/sda1", "1234", "ACXDIFTGX6459KOD"),
         makeRecord(2, "/dev/sdb1", "1244", "ACXDIFTGX6459KRD"),
         makeRecord(3, "/dev/sdc1", "1254", "ACXDIFTP86459KOD"),
     };
 
-    // ARRANGE
     for (const auto &record : expected) {
         registrator->add(record);
     }
@@ -57,4 +59,27 @@ TEST_F(MountRegistryTest, GetAll_ReturnsAllRecords) {
 
     // ASSERT
     EXPECT_THAT(actual, ::testing::UnorderedElementsAreArray(expected));
+}
+
+TEST_F(MountRegistryTest, AfterRemoveRecordIsNoRecords) {
+    // ARRANGE
+    constexpr auto node = "/dev/sda1";
+    registrator->add(makeRecord(1, node, "1234", "ACXDIFTGX6459KOD"));
+
+    // ACT
+    registrator->removeByDevNode(node);
+
+    // ASSERT
+    EXPECT_TRUE(registrator->getAll().empty());
+}
+
+TEST_F(MountRegistryTest, GetByIdEmpty) {
+    // ARRANGE
+    constexpr auto id = 1;
+
+    // ACT
+    auto rec = registrator->getById(id);
+
+    // ASSERT
+    EXPECT_FALSE(rec);
 }

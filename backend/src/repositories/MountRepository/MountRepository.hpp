@@ -15,7 +15,7 @@ class MountRepository : public RepositoryBase {
 
     void add(const MountRecord &record);
     void update(const MountRecord &record);
-    std::optional<MountRecord> getById(core::Id id);
+    std::optional<MountRecord> getByDevice(core::Id id);
     void removeByDevNode(const core::path &devNode);
     std::vector<MountRecord> getAll();
 };

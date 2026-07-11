@@ -8,7 +8,7 @@ void MountRegistryManager::add(const MountRecord &record) {
 }
 
 std::optional<MountRecord> MountRegistryManager::getById(core::Id id) {
-    return repository.getById(id);
+    return repository.getByDevice(id);
 }
 
 void MountRegistryManager::removeByDevNode(const core::path &devNode) {

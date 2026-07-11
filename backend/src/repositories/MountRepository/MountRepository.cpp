@@ -20,7 +20,7 @@ void MountRepository::update(const MountRecord &record) {
     executor.exec(sql, deviceInfoId, record.mountPoint, record.mode.toString(), record.devNode);
 }
 
-std::optional<MountRecord> MountRepository::getById(core::Id id) {
+std::optional<MountRecord> MountRepository::getByDevice(core::Id id) {
     static constexpr auto sql =
         "SELECT mr.id, mr.deviceInfoId, mr.devNode, mr.mountPoint, mr.mode, "
         "di.vendorId, di.productId, di.serial, di.vendorName, di.productName "
@@ -29,7 +29,10 @@ std::optional<MountRecord> MountRepository::getById(core::Id id) {
         "JOIN DeviceInfo di ON mr.deviceInfoId = di.id "
         "WHERE d.id = ? LIMIT 1;";
 
-    return executor.query<MountRecord>(sql, id).front();
+    auto record = executor.record<MountRecord>(sql, id);
+    if (!record)
+        return std::nullopt;
+    return *record;
 }
 
 void MountRepository::removeByDevNode(const core::path &devNode) {
