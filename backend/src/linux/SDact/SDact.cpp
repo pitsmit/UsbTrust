@@ -6,12 +6,12 @@ std::optional<DeviceEvent> SDact::toEvent() const {
             return std::nullopt;
 
         if (auto node = dev.getDevNode()) {
-            return DeviceEventBuilder().withType(EventType::INSERT).withDevNode(*node).build();
+            return DeviceEvent{.type = EventType::INSERT, .devNode = *node};
         }
     }
     if (act == SD_DEVICE_REMOVE) {
         if (auto node = dev.getDevNode()) {
-            return DeviceEventBuilder().withType(EventType::REMOVE).withDevNode(*node).build();
+            return DeviceEvent{.type = EventType::REMOVE, .devNode = *node};
         }
     }
     return std::nullopt;
