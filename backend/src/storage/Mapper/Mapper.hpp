@@ -25,7 +25,7 @@ template <> inline Device Mapper::from<Device>(const Statement &r) {
 }
 
 template <> inline MountRecord Mapper::from<MountRecord>(const Statement &r) {
-    return MountRecord{.id = r.get<std::optional<core::Id>>("id"),
+    return MountRecord{.device_id = r.get<std::optional<core::Id>>("id"),
                        .devNode = r.get<core::path>("devNode"),
                        .mountPoint = r.get<core::path>("mountPoint"),
                        .info = Mapper::from<DeviceInfo>(r),

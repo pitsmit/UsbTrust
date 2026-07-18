@@ -38,32 +38,11 @@ class SqlDataBaseError : public BaseException {
     explicit SqlDataBaseError(std::string_view msg) noexcept : BaseException(msg) {}
 };
 
-class CreateMountPathError : public BaseException {
-  public:
-    CreateMountPathError() noexcept : BaseException("CreateMountPathError") {}
-
-    explicit CreateMountPathError(std::string_view msg) noexcept : BaseException(msg) {}
-};
-
 class RecordNotFoundError : public BaseException {
   public:
     RecordNotFoundError() noexcept : BaseException("NoDataInDataBaseError") {}
 
     explicit RecordNotFoundError(std::string_view msg) noexcept : BaseException(msg) {}
-};
-
-class ResolveInfoError : public BaseException {
-  public:
-    ResolveInfoError() noexcept : BaseException("ResolveInfoError") {}
-
-    explicit ResolveInfoError(std::string_view msg) noexcept : BaseException(msg) {}
-};
-
-class UnknownFsError : public BaseException {
-  public:
-    UnknownFsError() noexcept : BaseException("UnknownFsError") {}
-
-    explicit UnknownFsError(std::string_view msg) noexcept : BaseException(msg) {}
 };
 
 class MountError : public BaseException {

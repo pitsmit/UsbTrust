@@ -11,13 +11,8 @@ MountRecord MountManager::mount(const core::path &devNode) {
     auto mode = MountMode::fromBool(id.has_value());
     mounter.mount(devNode, mountPoint, mode);
     mylog->info("Mounted: {}", mountPoint.c_str());
-    return MountRecordBuilder()
-        .withDevNode(devNode)
-        .withId(id)
-        .withInfo(info)
-        .withMountPoint(mountPoint)
-        .withMode(mode)
-        .build();
+    return MountRecord{
+        .device_id = id, .devNode = devNode, .mountPoint = mountPoint, .info = info, .mode = mode};
 }
 
 void MountManager::unmount(const core::path &mountPoint) {

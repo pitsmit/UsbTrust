@@ -29,7 +29,7 @@ class MountRegistryTest : public ::testing::Test {
                            const std::string &productId,
                            const std::string &serial) {
         return MountRecord{
-            .id = std::nullopt,
+            .device_id = std::nullopt,
             .devNode = std::string(devNode),
             .mountPoint = "m" + std::to_string(mountpoint_modificator),
             .info = DeviceInfo{.vendorId = "ABCD",

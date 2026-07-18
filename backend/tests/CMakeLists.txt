@@ -83,7 +83,6 @@ add_executable(integration_tests
     integration/test_device_manager.cpp
     helpers/ConfigFileBuilder/ConfigFileBuilder.cpp
     ../src/entities/DeviceInfo/DeviceInfoBuilder.cpp
-    ../src/entities/MountRecord/MountRecordBuilder.cpp
     ../src/entities/MountMode/MountMode.cpp
     ../src/managers/MountRegistryManager/MountRegistryManager.cpp
     ../src/managers/DeviceManager/DeviceManager.cpp

@@ -67,7 +67,7 @@ inline void from_json(const json &j, Device &d) {
 inline void to_json(json &j, const MountRecord &m) {
     j = json::object();
 
-    set_optional(j, "id", m.id);
+    set_optional(j, "id", m.device_id);
     j["devNode"] = m.devNode;
     j["mountPoint"] = m.mountPoint;
     j["info"] = m.info;
@@ -75,7 +75,7 @@ inline void to_json(json &j, const MountRecord &m) {
 }
 
 inline void from_json(const json &j, MountRecord &m) {
-    m.id = get_value<size_t>(j, "id", 0);
+    m.device_id = get_value<size_t>(j, "id", 0);
     m.devNode = get_value<core::path>(j, "devNode", "");
     m.mountPoint = get_value<core::path>(j, "mountPoint", "");
     m.info = get_value<DeviceInfo>(j, "info", DeviceInfo{});

@@ -5,11 +5,9 @@
 SDdev::SDdev(const core::path &node) {
     struct stat st {};
     if (stat(node.c_str(), &st) < 0)
-        throw ResolveInfoError(
-            std::format("Failed to create SDdev from devnode: {}", node.c_str()));
+        throw SDdeviceError(std::format("Failed to create SDdev from devnode: {}", node.c_str()));
     if (sd_device_new_from_devnum(&dev, 'b', st.st_rdev) < 0 || !dev) {
-        throw ResolveInfoError(
-            std::format("Failed to create SDdev from devnode: {}", node.c_str()));
+        throw SDdeviceError(std::format("Failed to create SDdev from devnode: {}", node.c_str()));
     }
 }
 
@@ -27,7 +25,7 @@ SDdevView SDdev::findUsbDevice() const {
         }
     }
     if (!usb) {
-        throw ResolveInfoError("No usb device found!");
+        throw SDdeviceError("No usb device found!");
     }
 
     return SDdevView(usb);
