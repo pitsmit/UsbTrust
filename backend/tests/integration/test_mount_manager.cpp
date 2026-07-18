@@ -15,9 +15,9 @@ class MountManagerTest : public ::testing::Test {
     std::unique_ptr<DataBaseProvider> dbProvider;
     std::unique_ptr<LinuxMountSystem> linux_system;
     std::unique_ptr<MountService> mount_service;
-    std::unique_ptr<DeviceManager> dev_manager;
 
   protected:
+    std::unique_ptr<DeviceManager> dev_manager;
     std::unique_ptr<MockUsbDeviceContextProvider> info_provider;
     std::unique_ptr<MountManager> manager;
 
@@ -65,4 +65,80 @@ TEST_F(MountManagerTest, CorrectMountReadOnlyTest) {
     EXPECT_TRUE(record.mode.isReadOnly());
     EXPECT_FALSE(record.device_id.has_value());
     EXPECT_STREQ(record.devNode.c_str(), lp.device.c_str());
+}
+
+TEST_F(MountManagerTest, CorrectMountReadWriteTest) {
+    // ARRANGE
+    const auto info = DeviceInfo{.vendorId = "1234",
+                                 .productId = "5678",
+                                 .serial = "ABCDEF",
+                                 .vendorName = "Samsung",
+                                 .productName = "Flash Drive"};
+    auto id = dev_manager->addToWhitelist(info);
+    auto lp = createLoopFs("vfat");
+
+    EXPECT_CALL(*info_provider, getDeviceInfo(_)).WillOnce(Return(info));
+    EXPECT_CALL(*info_provider, getFsType(_)).WillOnce(Return("vfat"));
+
+    // ACT
+    auto record = manager->mount(lp.device);
+
+    // ASSERT
+    EXPECT_EQ(info, record.info);
+    EXPECT_TRUE(record.mode.isReadWrite());
+    EXPECT_TRUE(record.device_id.has_value() && *record.device_id == id);
+    EXPECT_STREQ(record.devNode.c_str(), lp.device.c_str());
+    dev_manager->removeFromWhitelist(id);
+}
+
+TEST_F(MountManagerTest, FakeNodeMountTest) {
+    // ARRANGE
+    const auto info = DeviceInfo{.vendorId = "1234",
+                                 .productId = "5678",
+                                 .serial = "ABCDEF",
+                                 .vendorName = "Samsung",
+                                 .productName = "Flash Drive"};
+
+    EXPECT_CALL(*info_provider, getDeviceInfo(_)).WillOnce(Return(info));
+    EXPECT_CALL(*info_provider, getFsType(_)).WillOnce(Return("vfat"));
+
+    // ACT && ASSERT
+    EXPECT_THROW(manager->mount("fake/node"), MountError);
+}
+
+TEST_F(MountManagerTest, CorrectUnmountTest) {
+    // ARRANGE
+    auto lp = createLoopFs("vfat");
+    lp.mnt();
+
+    // ACT
+    manager->unmount(lp.mountPoint);
+
+    // ASSERT
+    EXPECT_FALSE(lp.isMounted());
+}
+
+TEST_F(MountManagerTest, FakeMountPointUnmountTest) {
+    // ACT && ASSERT
+    EXPECT_THROW(manager->unmount("fake"), UnMountError);
+}
+
+TEST_F(MountManagerTest, CorrectRemountToReadWriteTest) {
+    // ARRANGE
+    auto lp = createLoopFs("vfat");
+    lp.mnt();
+    auto record = MountRecord{.mountPoint = lp.mountPoint, .mode = MountMode::rw()};
+
+    // ACT
+    manager->remount(record);
+
+    // ASSERT
+    EXPECT_TRUE(lp.currentMountMode().isReadWrite());
+    EXPECT_STREQ(lp.currentMountPoint().c_str(), lp.mountPoint.c_str());
+}
+
+TEST_F(MountManagerTest, FakeRecordRemountTest) {
+    // ACT && ASSERT
+    EXPECT_THROW(manager->remount(MountRecord{.mountPoint = "fake", .mode = MountMode::rw()}),
+                 MountError);
 }

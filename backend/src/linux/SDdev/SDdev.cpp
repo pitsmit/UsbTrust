@@ -4,11 +4,8 @@
 
 SDdev::SDdev(const core::path &node) {
     struct stat st {};
-    if (stat(node.c_str(), &st) < 0)
+    if (stat(node.c_str(), &st) < 0 || sd_device_new_from_devnum(&dev, 'b', st.st_rdev) < 0 || !dev)
         throw SDdeviceError(std::format("Failed to create SDdev from devnode: {}", node.c_str()));
-    if (sd_device_new_from_devnum(&dev, 'b', st.st_rdev) < 0 || !dev) {
-        throw SDdeviceError(std::format("Failed to create SDdev from devnode: {}", node.c_str()));
-    }
 }
 
 SDdev::~SDdev() {

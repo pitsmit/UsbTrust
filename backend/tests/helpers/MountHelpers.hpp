@@ -2,9 +2,17 @@
 
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <string>
 #include <sys/mount.h>
 #include <unistd.h>
+
+#include "entities/MountMode/MountMode.hpp"
+
+struct MountInfo {
+    std::string mountPoint;
+    MountMode mode;
+};
 
 struct LoopFs {
     std::string image;
@@ -34,6 +42,78 @@ struct LoopFs {
             mountPoint.clear();
             throw std::system_error(errno, std::generic_category(), "mount failed");
         }
+    }
+
+    MountInfo getMountInfo() const {
+        if (device.empty())
+            return {};
+
+        std::ifstream mounts("/proc/self/mountinfo");
+        if (!mounts)
+            throw std::runtime_error("failed to open /proc/self/mountinfo");
+
+        std::string line;
+        while (std::getline(mounts, line)) {
+            auto dash = line.find(" - ");
+            if (dash == std::string::npos)
+                continue;
+
+            // Левая часть
+            std::istringstream left(line.substr(0, dash));
+            std::string id, parent, majorMinor, root, mnt, options;
+
+            if (!(left >> id >> parent >> majorMinor >> root >> mnt >> options))
+                continue;
+
+            // Правая часть
+            std::istringstream right(line.substr(dash + 3));
+            std::string fsType, source, superOptions;
+
+            if (!(right >> fsType >> source >> superOptions))
+                continue;
+
+            if (source != device)
+                continue;
+
+            MountInfo info;
+            info.mountPoint = mnt;
+            info.mode = options.starts_with("ro") || options.find(",ro") != std::string::npos
+                            ? MountMode::ro()
+                            : MountMode::rw();
+
+            return info;
+        }
+
+        return {};
+    }
+
+    std::string currentMountPoint() const {
+        return getMountInfo().mountPoint;
+    }
+
+    MountMode currentMountMode() const {
+        return getMountInfo().mode;
+    }
+
+    bool isMounted() const {
+        if (mountPoint.empty())
+            return false;
+
+        std::ifstream mounts("/proc/self/mountinfo");
+        if (!mounts)
+            throw std::runtime_error("failed to open /proc/self/mountinfo");
+
+        std::string line;
+        while (std::getline(mounts, line)) {
+            std::istringstream iss(line);
+            std::string id, parent, majorMinor, root, mnt;
+            if (iss >> id >> parent >> majorMinor >> root >> mnt) {
+                if (mnt == mountPoint)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     LoopFs(LoopFs &&other) noexcept
