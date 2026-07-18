@@ -20,15 +20,15 @@ void MountService::mount(const core::path &devnode, const core::path &mountPoint
     std::string opts = "";
 
     if (permModel == FsPermModel::Emulated) {
-        opts = std::format("{}, uid={},gid={},umask=0000", mode.toString(), uid, gid);
+        opts = std::format("{},uid={},gid={},umask=0000", mode.toString(), uid, gid);
         if (fs.starts_with("ntfs")) {
             opts += ",windows_names";
         }
     }
 
     if (sys.mount(devnode, mountPoint, fs, mode, opts) < 0) {
-        throw MountError(std::format("mount failed for devnode: {}, mountPoint: \
-                {}, error: {}, opts: {}, fs: {}",
+        throw MountError(std::format("mount failed for devnode: {}, mountPoint: "
+                                     "{}, error: {}, opts: {}, fs: {}",
                                      devnode.c_str(),
                                      mountPoint.c_str(),
                                      strerror(errno),

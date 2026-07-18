@@ -81,14 +81,20 @@ gtest_discover_tests(unit_tests
 add_executable(integration_tests
     integration/test_mount_registry.cpp
     integration/test_device_manager.cpp
+    integration/test_mount_manager.cpp
     helpers/ConfigFileBuilder/ConfigFileBuilder.cpp
     ../src/entities/DeviceInfo/DeviceInfoBuilder.cpp
     ../src/entities/MountMode/MountMode.cpp
     ../src/managers/MountRegistryManager/MountRegistryManager.cpp
     ../src/managers/DeviceManager/DeviceManager.cpp
+    ../src/managers/MountManager/MountManager.cpp
     ../src/repositories/MountRepository/MountRepository.cpp
     ../src/repositories/DeviceInfoRepository/DeviceInfoRepository.cpp
     ../src/repositories/DeviceRepository/DeviceRepository.cpp
+    ../src/services/MountService/MountService.cpp
+    ../src/services/MountPointBuilderService/MountPointBuilderService.cpp
+    ../src/linux/LinuxMountSystem/LinuxMountSystem.cpp
+    ../src/linux/MountFlagsBuilder/MountFlagsBuilder.cpp
     ../src/storage/DataBase/DataBase.cpp
     ../src/storage/Statement/Statement.cpp
     ../src/storage/DBInitializer/DBInitializer.cpp

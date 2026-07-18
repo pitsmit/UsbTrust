@@ -4,7 +4,6 @@
 #include "ports/IUsbDeviceContextProvider.hpp"
 
 class MountService {
-  private:
     IMountSystem &sys;
     IUsbDeviceContextProvider &provider;
 
