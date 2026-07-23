@@ -13,5 +13,6 @@ class MountRegistryManager {
     std::optional<MountRecord> getById(core::Id id);
     void removeByDevNode(const core::path &devNode);
     std::vector<MountRecord> getAll();
+    void clear();
     void refresh(const MountRecord &record);
 };

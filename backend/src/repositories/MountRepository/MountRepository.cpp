@@ -50,3 +50,8 @@ std::vector<MountRecord> MountRepository::getAll() {
 
     return executor.query<MountRecord>(sql);
 }
+
+void MountRepository::clear() {
+    static constexpr auto sql = "DELETE * FROM MountRecord";
+    executor.exec(sql);
+}

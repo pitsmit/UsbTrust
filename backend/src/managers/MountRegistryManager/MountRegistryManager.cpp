@@ -19,6 +19,10 @@ std::vector<MountRecord> MountRegistryManager::getAll() {
     return repository.getAll();
 }
 
+void MountRegistryManager::clear() {
+    repository.clear();
+}
+
 void MountRegistryManager::refresh(const MountRecord &record) {
     repository.update(record);
 }

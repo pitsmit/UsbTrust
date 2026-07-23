@@ -71,7 +71,7 @@ class App {
         : db(Config::getDBPath()), exec(db), linms(), resolver(), facade(ctx),
           ws(Config::getWebSocketPort()), notifier(ws), queue(),
           service(notifier, resolver, coordinator), loop(queue, service), watcher(queue),
-          rec(mountRegistry, resolver, deviceManager, coordinator), mountService(linms, resolver),
+          rec(mountRegistry, resolver, coordinator), mountService(linms, resolver),
           deviceManager(exec), mountManager(deviceManager, mountService, resolver),
           mountRegistry(exec), ctx{deviceManager, mountRegistry, coordinator},
           coordinator(mountManager, mountRegistry) {}

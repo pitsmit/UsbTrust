@@ -25,3 +25,7 @@ void MountCoordinator::unmount(const core::path &mountPoint, const core::path &n
     mounter.unmount(mountPoint);
     registrator.removeByDevNode(node);
 }
+
+void MountCoordinator::unmount(const core::path &mountPoint) {
+    mounter.unmount(mountPoint);
+}

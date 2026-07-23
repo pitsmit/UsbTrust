@@ -17,4 +17,5 @@ class MountCoordinator {
     void unmount(const core::path &mountPoint, const core::path &node);
     void remount(const MountRecord &record);
     void refresh(const MountRecord &record);
+    void unmount(const core::path &mountPoint);
 };
