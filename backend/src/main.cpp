@@ -17,28 +17,28 @@
 #include "transport/WebSocketServer/WebSocketServer.hpp"
 
 #ifdef BUILD_HTTP_SERVER
-#include "transport/HttpServer/HttpServer.hpp"
+#include "transport/http/HttpServer/HttpServer.hpp"
 #endif
 
 class App {
     DataBase db;
     SqlExecutor exec;
+    DeviceManager deviceManager;
+    MountRegistryManager mountRegistry;
     LinuxMountSystem linms;
-    UsbDeviceContextProvider resolver;
-    Facade facade;
+    UsbDeviceContextProvider provider;
+    MountService mountService;
+    MountManager mountManager;
+    EventQueue<DeviceEvent> queue;
+    EventWatcherService watcher;
+    MountCoordinator coordinator;
     WebSocketServer ws;
     DeviceEventNotifyManager notifier;
-    EventQueue<DeviceEvent> queue;
     DeviceEventService service;
     EventLoop loop;
-    EventWatcherService watcher;
     RecoveryService rec;
-    MountService mountService;
-    DeviceManager deviceManager;
-    MountManager mountManager;
-    MountRegistryManager mountRegistry;
     CommandContext ctx;
-    MountCoordinator coordinator;
+    Facade facade;
 
 #ifdef BUILD_HTTP_SERVER
     std::optional<std::jthread> httpThread;
@@ -68,13 +68,13 @@ class App {
 
   public:
     App()
-        : db(Config::getDBPath()), exec(db), linms(), resolver(), facade(ctx),
-          ws(Config::getWebSocketPort()), notifier(ws), queue(),
-          service(notifier, resolver, coordinator), loop(queue, service), watcher(queue),
-          rec(mountRegistry, resolver, coordinator), mountService(linms, resolver),
-          deviceManager(exec), mountManager(deviceManager, mountService, resolver),
-          mountRegistry(exec), ctx{deviceManager, mountRegistry, coordinator},
-          coordinator(mountManager, mountRegistry) {}
+        : db(Config::getDBPath()), exec(db), deviceManager(exec), mountRegistry(exec), linms(),
+          provider(), mountService(linms, provider),
+          mountManager(deviceManager, mountService, provider), queue(), watcher(queue),
+          coordinator(mountManager, mountRegistry), ws(Config::getWebSocketPort()), notifier(ws),
+          service(notifier, provider, coordinator), loop(queue, service),
+          rec(mountRegistry, provider, coordinator), ctx{deviceManager, mountRegistry, coordinator},
+          facade(ctx) {}
 
     void init() {
         DBInitializer::init(exec);

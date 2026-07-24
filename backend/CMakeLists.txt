@@ -28,13 +28,6 @@ if(BUILD_APP)
         src/*.cpp
     )
 
-    if(BUILD_HTTP_SERVER)
-        list(APPEND APP_SOURCES
-            api/ApiBase/ApiBase.cpp
-            api/DefaultApi/DefaultApi.cpp
-        )
-    endif()
-
     add_executable(app ${APP_SOURCES})
 
     set(CONFIG_PATH "config.txt")
@@ -47,13 +40,23 @@ if(BUILD_APP)
     )
 
     if(BUILD_HTTP_SERVER)
-        target_include_directories(app PUBLIC
-            ${PROJECT_SOURCE_DIR}/api/ApiBase
-            ${PROJECT_SOURCE_DIR}/api/DefaultApi
+        include(FetchContent)
+
+        FetchContent_Declare(
+            httplib
+            GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
+            GIT_TAG v0.51.0
         )
+
+        FetchContent_MakeAvailable(httplib)
 
         target_compile_definitions(app PUBLIC
             BUILD_HTTP_SERVER
+        )
+
+        target_link_libraries(app
+            PRIVATE
+            httplib::httplib
         )
     endif()
 
@@ -70,13 +73,6 @@ if(BUILD_APP)
         systemd
         mount
     )
-
-    if(BUILD_HTTP_SERVER)
-        target_link_libraries(app
-            PRIVATE
-            pistache
-        )
-    endif()
 
 endif()
 
@@ -127,7 +123,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
 
         COMMAND lcov --extract coverage.tmp.info
             '*/src/*'
-            '*/api-stubs/*'
             --output-file coverage.filtered.info
 
         COMMAND genhtml coverage.filtered.info
