@@ -1,19 +1,21 @@
 #include "DeviceEventService.hpp"
 
 #include "entities/DeviceEvent/DeviceEvent.hpp"
-#include "infrastructure/logging/DevLogger.hpp"
+#include "services/DeviceEventService/HandleStrategy/HandleStrategy.hpp"
+
+std::unique_ptr<HandleEventStrategy> DeviceEventService::create_strategy(EventType type) {
+    switch (type) {
+    case EventType::INSERT:
+        return std::make_unique<HandleInsertEventStrategy>(context);
+
+    case EventType::REMOVE:
+        return std::make_unique<HandleRemoveEventStrategy>(context);
+    }
+
+    throw std::logic_error("Unknown event type");
+}
 
 void DeviceEventService::handle(const DeviceEvent &event) {
-    mylog->info("Start handle {} event with devnode {}",
-                event.type == EventType::INSERT ? "INSERT" : "REMOVE",
-                event.devNode.c_str());
-
-    if (event.type == EventType::INSERT) {
-        auto record = coordinator.mount(event.devNode);
-        notifier_.notifyInsert(record);
-    } else if (event.type == EventType::REMOVE) {
-        auto mountPoint = resolver_.getMountPoint(event.devNode);
-        coordinator.unmount(mountPoint, event.devNode);
-        notifier_.notifyRemove(mountPoint);
-    }
+    auto strategy = create_strategy(event.type);
+    strategy->handle(event.devNode);
 }
