@@ -2,12 +2,10 @@
 
 #include "infrastructure/config/Config.hpp"
 #include "infrastructure/logging/DevLogger.hpp"
-#include "transport/http/api/Api.hpp"
-
-HttpServer::HttpServer(Facade &f) : facade(f) {}
+#include "transport/http/Api/Api.hpp"
 
 void HttpServer::start() {
-    api::DeviceApi api(facade);
+    Api api(facade);
     api.registerRoutes(server);
     auto port = Config::getHttpPort();
     mylog->info("Listening on {}", port);

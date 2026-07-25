@@ -6,12 +6,10 @@
 
 class HttpServer {
   public:
-    explicit HttpServer(Facade &facade);
-
+    explicit HttpServer(Facade &f) : facade(f){};
     void start();
 
   private:
     Facade &facade;
-
     httplib::Server server;
 };
