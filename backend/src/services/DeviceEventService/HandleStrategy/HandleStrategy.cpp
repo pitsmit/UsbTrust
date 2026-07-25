@@ -8,9 +8,17 @@ void HandleInsertEventStrategy::handle(const core::path &node) {
     context.notifier.notifyInsert(record);
 }
 
+bool HandleInsertEventStrategy::can_handle(EventType type) {
+    return type == EventType::INSERT;
+}
+
 void HandleRemoveEventStrategy::handle(const core::path &node) {
     mylog->info("Start handle REMOVE event with devnode {}", node.c_str());
     auto mountPoint = context.provider.getMountPoint(node);
     context.coordinator.unmount(mountPoint, node);
     context.notifier.notifyRemove(mountPoint);
+}
+
+bool HandleRemoveEventStrategy::can_handle(EventType type) {
+    return type == EventType::REMOVE;
 }

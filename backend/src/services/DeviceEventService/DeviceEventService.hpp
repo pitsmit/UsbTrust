@@ -8,13 +8,16 @@
 
 class DeviceEventService {
     StrategyContext context;
+    std::vector<std::unique_ptr<HandleEventStrategy>> strategies;
 
   public:
     DeviceEventService(DeviceEventNotifyManager &notifier_,
                        IUsbDeviceContextProvider &provider_,
                        MountCoordinator &coordinator_)
-        : context{notifier_, provider_, coordinator_} {}
+        : context{notifier_, provider_, coordinator_} {
+        strategies.push_back(std::make_unique<HandleInsertEventStrategy>(context));
+        strategies.push_back(std::make_unique<HandleRemoveEventStrategy>(context));
+    }
 
-    std::unique_ptr<HandleEventStrategy> create_strategy(EventType type);
     void handle(const DeviceEvent &event);
 };

@@ -59,6 +59,13 @@ class UnMountError : public BaseException {
     explicit UnMountError(std::string_view msg) noexcept : BaseException(msg) {}
 };
 
+class UnSupportedEventError : public BaseException {
+  public:
+    UnSupportedEventError() noexcept : BaseException("UnSupportedEventError") {}
+
+    explicit UnSupportedEventError(std::string_view msg) noexcept : BaseException(msg) {}
+};
+
 class DeviceMonitorError : public BaseException {
   public:
     DeviceMonitorError() noexcept : BaseException("DeviceMonitorError") {}
