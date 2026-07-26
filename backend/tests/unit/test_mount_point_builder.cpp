@@ -15,13 +15,11 @@ TEST(MountPointBuilderTest, Build_AllFieldsPresent) {
     constexpr auto productName = "Galaxy";
     constexpr auto vendorName = "Samsung";
 
-    auto dev = DeviceInfoBuilder()
-                   .withVendorId(vendorId)
-                   .withProductId(productId)
-                   .withSerial(serial)
-                   .withProductName(productName)
-                   .withVendorName(vendorName)
-                   .build();
+    auto dev = DeviceInfo{.vendorId = vendorId,
+                          .productId = productId,
+                          .serial = serial,
+                          .vendorName = vendorName,
+                          .productName = productName};
 
     auto expected = std::filesystem::path("/media/dlp") / vendorId / productId / serial;
 

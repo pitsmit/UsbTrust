@@ -6,7 +6,7 @@
 
 DeviceInfo UsbDeviceContextProvider::getDeviceInfo(const core::path &devNode) {
     SDdevView usb = SDdev(devNode).findUsbDevice();
-    return DeviceInfoBuilder::buildFrom(usb);
+    return DeviceInfoBuilder().build(usb);
 }
 
 std::vector<core::path> UsbDeviceContextProvider::getUsbDevNodes() {

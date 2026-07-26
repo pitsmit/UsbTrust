@@ -49,7 +49,6 @@ add_executable(unit_tests
     ../src/linux/MountFlagsBuilder/MountFlagsBuilder.cpp
     ../src/linux/LibMountTab/LibMountTab.cpp
     ../src/entities/MountMode/MountMode.cpp
-    ../src/entities/DeviceInfo/DeviceInfoBuilder.cpp
     ../src/exceptions/Exceptions.cpp
     ../src/services/MountPointBuilderService/MountPointBuilderService.cpp
 )
@@ -83,7 +82,6 @@ add_executable(integration_tests
     integration/test_device_manager.cpp
     integration/test_mount_manager.cpp
     helpers/ConfigFileBuilder/ConfigFileBuilder.cpp
-    ../src/entities/DeviceInfo/DeviceInfoBuilder.cpp
     ../src/entities/MountMode/MountMode.cpp
     ../src/managers/MountRegistryManager/MountRegistryManager.cpp
     ../src/managers/DeviceManager/DeviceManager.cpp
